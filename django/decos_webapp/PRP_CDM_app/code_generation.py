@@ -5,7 +5,7 @@ from PRP_CDM_app.models import Proposals, ServiceRequests, Samples
 from datetime import datetime
 import re
 import random as rd
-
+from uuid import uuid4
 
 def affiliationShortnener(affiliation):
     out = re.sub("(?<=\\w{4})(\\w+)","", affiliation)
@@ -35,8 +35,6 @@ def proposal_id_generation(affiliation):
     new_proposal_id = f"p_{datetime.now().year}_{affiliationShortnener(affiliation)}_{new_progressive:05d}"
 
     return new_proposal_id
-
-
 
 def sr_id_generation(proposal, lab):
     proposal_id = proposal.proposal_id
@@ -82,5 +80,17 @@ def sample_id_generation(sr_id):
 
     return new_sample_id
 
+def result_id_generation(result):
+    result_id = str(uuid4())
+    return result_id
+
+#
+def xid_code_generation(relation_id_1, relation_id_2):
+    if len(relation_id_1)>22:
+        relation_id_1 = relation_id_1[-22:]
+    if len(relation_id_2)>22:
+        relation_id_2 = relation_id_2[-22:]
+    return relation_id_1 + "_x_" + relation_id_2
+    
 
 # TO DO: step_id_generation: s_year_{sample_id[22:]}_intrument_technique_progr

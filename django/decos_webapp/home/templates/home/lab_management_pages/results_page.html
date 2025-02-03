@@ -144,6 +144,21 @@
     {% endfor %}
     </div>
 
+    <div class="section_div">
+        <form id="sent" method="post" action="">
+            {% csrf_token %}
+
+            <input type="hidden" id="article_doi_hidden" name="article_doi" value="{{ article_doi }}">
+            <input type="hidden" id="main_repository_hidden" name="main_repository" value="{{ main_repository }}">
+
+            <input type="hidden" id="sample_list_hidden" name="sample_list" value="{{ sample_list }}">
+            <input type="hidden" id="public_dataset_list_hidden" name="public_dataset_list" value="{{ public_dataset_list }}">
+           
+            <input type="hidden" id="instrument_list_hidden" name="instrument_list" value="{{ instrument_list }}">
+            <input type="hidden" id="software_list_hidden" name="software_list" value="{{ software_list }}">
+            <input type="submit" class="btn btn-primary">Submit Result</button>
+    </div>
+
     
 {% endblock %}
 

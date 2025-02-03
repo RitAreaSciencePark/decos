@@ -354,6 +354,7 @@ class Results(models.Model):
     result_id = models.CharField(max_length=50, primary_key=True)
     main_repository = models.CharField(max_length=2048, blank=True)
     article_doi = models.CharField(max_length=256, blank=True)
+    
     # TODO: complete the model
     class Meta:
         db_table= 'results'.lower()
@@ -370,7 +371,7 @@ class ResultxInstrument(models.Model):
 class ResultxSample(models.Model):
     x_id = models.CharField(max_length=50, primary_key=True)
     results = models.ForeignKey(Results, on_delete=models.PROTECT)
-    samples = models.ForeignKey(Instruments, on_delete=models.PROTECT)
+    samples = models.ForeignKey(Samples, on_delete=models.PROTECT)
 
     # give the name of the table, lowercase for postgres (I've put a "lower() to remember")
     class Meta:

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailuserbar navigation_tags wagtailimages_tags django_tables2  %}
+
+{% block body_class %}template-form{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link rel="stylesheet" href="{% static 'css/home_page.css' %}">
+<link rel="stylesheet" href="{% static 'css/forms/labdmp_page.css' %}">
+
+
+    <h1><b>Experiment Data Management Plan</b></h1>
+
+    {{ page.intro | richtext }}
+
+<div class="section_div">
+    <p>
+    <b>Data</b>: <br>
+    <i> Result internal PID: </i>{{ data.result_id }} <br>
+    <i> DOI: </i>{{ data.article_doi }} <br>
+    <i> Main Repository location: </i>{{ data.main_repository }} <br>
+    </p>
+</div>
+<div class="section_div">
+    {% for sample in sample_list %}
+    <p>
+    {{ sample.sample_id }} <br>
+    {{ sample.lab_id }} <br>
+    {{sample.type}} <br>
+    {{sample.is_volume_in_ul}} <br>
+    {{sample.is_buffer_used}} <br>
+    {{sample.is_quality}} <br>
+    {{sample.sample_date_of_delivery}} <br>
+    {{sample.sample_back}} <br>
+    {{sample.reagents_provided_by_client}} <br>
+    {{sample.reagents_date_of_delivery}} <br>
+    </p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

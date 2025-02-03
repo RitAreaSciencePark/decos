@@ -23,8 +23,9 @@ from django.contrib.auth.models import User, Group
 
 from .forms import form_orchestrator, LabSwitchForm, DMPform, UserDataForm, APITokenForm, ProposalSubmissionForm, SRSubmissionForm, InstrumentsForm, ResultsForm #, LageSamplesForm, LameSamplesForm
 
-from PRP_CDM_app.models import labDMP, Users, Proposals, ServiceRequests, Laboratories, Samples, API_Tokens, Instruments
-from PRP_CDM_app.models import LabXInstrument
+from PRP_CDM_app.models import labDMP, Users, Proposals, ServiceRequests, Laboratories, Samples, API_Tokens, Instruments, Results, ResultxSample, ResultxInstrument
+from PRP_CDM_app.models import LabXInstrument, LageSamples
+
 from django.template.loader import render_to_string
 # TODO: use it or not, decide: from PRP_CDM_app.reports import ReportDefinition 
 ### end django forms imports with PRP_CDM
@@ -36,11 +37,11 @@ from os.path import isfile,join,dirname
 
 ### Id generators
 # FIXME: is this used? from uuid import uuid4
-from PRP_CDM_app.code_generation import sr_id_generation, proposal_id_generation, sample_id_generation, instrument_id_generation
+from PRP_CDM_app.code_generation import sr_id_generation, proposal_id_generation, sample_id_generation, instrument_id_generation, result_id_generation, xid_code_generation
 ### end Id generators
 
 ### dynamic tables for reporting 
-from .tables import ProposalsTable,ServiceRequestTable,SamplesTable, SamplesForResultsTable, InstrumentsForResultsTable
+from .tables import ProposalsTable,ServiceRequestTable,SamplesTable, SamplesForResultsTable, InstrumentsForResultsTable, ResultsTable
 from django_tables2.config import RequestConfig
 ### end dynamic tables for reporting 
 
@@ -51,6 +52,8 @@ from .decos_elab import Decos_Elab_API
 from .decos_jenkins import Decos_Jenkins_API
 from APIs.decos_minio_API.decos_minio_API import decos_minio
 ### end APIs
+
+# TODO: MAYBE ABC? implement Abstract classes and methods could be useful in this page.
 
 # FIXME: the first character of the widget when recovered do not appear. Editsamples
 # FIXME: I frankly do not remember what does the next line does: so, good luck.
@@ -348,7 +351,6 @@ class SamplePage(Page): # EASYDMP / DIMMT?
                 # We pass the data to the thank you page, data.datavarchar and data.dataint!
                 'data': data,
                 })
-
         else:
             forms = form_orchestrator(user_lab=lab.lab_id, request=None, filerequest=None, getInstance=False)
         
@@ -358,7 +360,7 @@ class SamplePage(Page): # EASYDMP / DIMMT?
         dataQuery = dataQuery.filter(sr_id__contains = filter)
         table = ServiceRequestTable(dataQuery)
         RequestConfig(request).configure(table)
-        table.paginate(page=request.GET.get("page",1), per_page=25) # TODO: implement dynamic per page settings?
+        table.paginate(page=request.GET.get("page",1), per_page=5) # TODO: implement dynamic per page settings?
         pageDict = {
             'page': self,
             'lab': lab.lab_id,
@@ -439,6 +441,7 @@ class SampleListPage(Page): # EASYDMP
             request.GET["filter"] = request.POST.get("filter","")
             elab_write = request.POST.get("elab_write",None)
             if elab_write:
+                # TODO: ElabWrite
                 tokens = API_Tokens.objects.filter(laboratory_id=lab.lab_id,user_id=Users.objects.get(pk = username))
                 token = tokens.first()
                 elab_api = Decos_Elab_API(ApiSettings.objects.get(pk = 1).elab_base_url,token.elab_token)
@@ -482,7 +485,7 @@ class SampleListPage(Page): # EASYDMP
         table = SamplesTable(data)
         RequestConfig(request).configure(table)
 
-        table.paginate(page=request.GET.get("page",1), per_page=25) # TODO: softcode paginate settings
+        table.paginate(page=request.GET.get("page",1), per_page=5) # TODO: softcode paginate settings
         return render(request, 'home/sample_pages/sample_list.html', {
             'page': self,
             'table': table,
@@ -843,6 +846,50 @@ class ResultsPage(Page):
         
         lab = request.session['lab_selected']
 
+        sample_list = []
+        if "sample_list" in request.GET:
+            sample_list =request.GET.get('sample_list','')
+            if sample_list != "":
+                sample_list = json.loads(sample_list)
+        if "sample_id" in request.GET:
+            sample_id = request.GET.get("sample_id","")
+            if sample_id != "" and sample_id != 'public':
+                    sample_list.append(sample_id)
+
+        public_dataset_list = []
+        if "public_dataset_list" in request.GET:
+            public_dataset_list =request.GET.get('public_dataset_list','')
+            if public_dataset_list != "[]":
+                public_dataset_list = json.loads(public_dataset_list)
+            else:
+                public_dataset_list = []
+        if "public_dataset_location" in request.GET:
+            public_dataset_location = request.GET.get("public_dataset_location","")
+            if public_dataset_location != "":
+                public_dataset_list.append(public_dataset_location)
+
+
+        instrument_list = []
+        if "instrument_list" in request.GET:
+            instrument_list =request.GET.get('instrument_list','')
+            if instrument_list != "":
+                instrument_list = json.loads(instrument_list)
+        if "instrument_id" in request.GET:
+            instrument_id = request.GET.get("instrument_id","")
+            if instrument_id != "":
+                instrument_list.append(instrument_id)
+
+        software_list = []
+        if "software_list" in request.GET:
+            software_list =request.GET.get('software_list','')
+            if software_list != "":
+                software_list = json.loads(software_list)
+        if "software_id" in request.GET:
+            software_id = request.GET.get("software_id","")
+            if software_id != "":
+                software_list.append(software_id)
+
+
         if request.method == 'POST':
             # If the method is POST, validate the data and perform a save() == INSERT VALUE INTO
             form = ResultsForm(data=request.POST)
@@ -851,16 +898,29 @@ class ResultsPage(Page):
                 # to work with a normal django object insert a line: data = form.save(commit=False) and then data is a basic model: e.g., you can use data.save(using=external_generic_db)
                 # In our example the routing takes care of the external db save
                 data = form.save(commit=False)
-                data.result_id = data.doi # FIXME: a improve the pk?
+                result_id = result_id_generation(data) # NOTE: for now it is a UUID
+                data.result_id = result_id
+                data.save()
+            # TODO: check uniqueness on doi, and so on
+                result = Results.objects.get(pk = result_id)
+                for sample in sample_list:
+                    sample = Samples.objects.get(pk = sample)
+                    ResultxSample.objects.get_or_create(x_id = xid_code_generation(result_id,sample.sample_id), results = result, samples = sample)
+
+                
+                for instrument in instrument_list:
+                    instrument = Instruments.objects.get(pk = instrument)
+                    ResultxInstrument.objects.get_or_create(x_id = xid_code_generation(result_id,instrument.instrument_id), results = result, instruments = instrument)
+
+                
                 # data.save()
                 # data.lab_id = request.session["lab_selected"]
                 # data.user_id = username
                 # data.save()
-                return render(request, 'home/lab_management_pages/results_page.html', { # TODO: softcode the template selection
-                    'page': self,
-                    # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                    'data': form,
-                    'lab': request.session['lab_selected'],
+                return render(request, 'home/thank_you_page.html', {
+                'page': self,
+                # We pass the data to the thank you page, data.datavarchar and data.dataint!
+                'data': data,
                 })
             else:
                 return render(request, 'home/error_page.html', {
@@ -882,27 +942,7 @@ class ResultsPage(Page):
             request.GET["sample_filter"]= ""
             sample_filter_set = " "
 
-        sample_list = []
-        if "sample_list" in request.GET:
-            sample_list =request.GET.get('sample_list','')
-            if sample_list != "":
-                sample_list = json.loads(sample_list)
-            if "sample_id" in request.GET:
-                sample_id = request.GET.get("sample_id","")
-                if sample_id != "" and sample_id != 'public':
-                    sample_list.append(sample_id)
 
-        public_dataset_list = []
-        if "public_dataset_list" in request.GET:
-            public_dataset_list =request.GET.get('public_dataset_list','')
-            if public_dataset_list != "[]":
-                public_dataset_list = json.loads(public_dataset_list)
-            else:
-                public_dataset_list = []
-        if "public_dataset_location" in request.GET:
-            public_dataset_location = request.GET.get("public_dataset_location","")
-            if public_dataset_location != "":
-                public_dataset_list.append(public_dataset_location)
 
                 # first sample filter selection dropdown ->
         if "instrument_filter" in request.GET:
@@ -917,26 +957,6 @@ class ResultsPage(Page):
             request.GET["instrument_filter"]= ""
             instrument_filter_set = " "
 
-        instrument_list = []
-        if "instrument_list" in request.GET:
-            instrument_list =request.GET.get('instrument_list','')
-            if instrument_list != "":
-                instrument_list = json.loads(instrument_list)
-            if "instrument_id" in request.GET:
-                instrument_id = request.GET.get("instrument_id","")
-                if instrument_id != "":
-                    instrument_list.append(instrument_id)
-
-        software_list = []
-        if "software_list" in request.GET:
-            software_list =request.GET.get('software_list','')
-            if software_list != "":
-                software_list = json.loads(software_list)
-            if "software_id" in request.GET:
-                software_id = request.GET.get("software_id","")
-                if software_id != "":
-                    software_list.append(software_id)
-
 
         # REPORTS
         article_doi = request.GET.get("article_doi","")
@@ -947,19 +967,33 @@ class ResultsPage(Page):
         # check the Samples request in the dropdown
         dataQuery = Samples.objects.filter(lab_id=lab)
         dataQuery = dataQuery.filter(sample_id__contains = sample_filter)
-        sample_table = SamplesForResultsTable(dataQuery)
+        sample_table = SamplesForResultsTable(dataQuery,prefix="sample_")
         RequestConfig(request).configure(sample_table)
-        sample_table.paginate(page=request.GET.get("page",1), per_page=5) # TODO: implement dynamic per page settings?
+        sample_table.paginate(page=request.GET.get("sample_page",1), per_page=5) # TODO: implement dynamic per page settings?
         
+        if "sample_page" in request.GET:
+            sample_page = request.GET.get("sample_page","")
+            if sample_page != "" :
+                sample_filter_set = "open "
+            else:
+                sample_filter_set = " "
+
         # INSTRUMENTS
         # Dropdown for Instruments requests --> 
         # check the Instruments request in the dropdown
         # dataQuery = Instruments.objects.filter(lab_id=lab)
         dataQuery = Instruments.objects.filter(instrument_id__contains = instrument_filter)
-        instrument_table = InstrumentsForResultsTable(dataQuery)
+        instrument_table = InstrumentsForResultsTable(dataQuery,prefix="inst_")
         RequestConfig(request).configure(instrument_table)
-        instrument_table.paginate(page=request.GET.get("page",1), per_page=5) # TODO: implement dynamic per page settings?
+        instrument_table.paginate(page=request.GET.get("inst_page",1), per_page=5) # TODO: implement dynamic per page settings?
         
+        if "inst_page" in request.GET:
+            inst_page = request.GET.get("inst_page","")
+            if inst_page != "" :
+                instrument_filter_set = "open "
+            else:
+                instrument_filter_set = " "
+
         pageDict = {
             'page': self,
             'lab': lab,
@@ -983,6 +1017,113 @@ class ResultsPage(Page):
 
 
         return render(request, 'home/lab_management_pages/results_page.html', pageDict)
+
+class ResultsListPage(Page): # EASYDMP 
+    
+    intro = RichTextField(blank=True)
+    content_panels = Page.content_panels + [
+        FieldPanel('intro', classname="full"),
+    ]
+
+    def serve(self,request):
+        if request.user.is_authenticated:
+            username = request.user.username
+        
+        try:
+            if(request.session['lab_selected'] is None):
+                request.session["return_page"] = request.META['HTTP_REFERER']
+                next = request.POST.get("next", "/switch-laboratory")
+                return redirect(next)
+            else:
+                lab = Laboratories.objects.get(pk = request.session['lab_selected'])
+        except KeyError:
+            request.session["return_page"] = request.META['HTTP_REFERER']
+            next = request.POST.get("next", "/switch-laboratory")
+            return redirect(next)
+
+            # JENKINS
+            # TODO: Add a callback or a initial timer
+        '''
+        try:
+            jenkins_api = Decos_Jenkins_API(username=username, lab=lab)
+            if jenkins_filelist_status is None:
+                jenkins_filelist_status = 'Waiting'
+            else:
+                if request.POST['list_folders'] == 'true':
+                    jenkins_filelist_status = jenkins_api.get_latest_build(f"test_Folder/job/folderList")['result']
+                    jenkins_api.build_job(job_path= f"test_Folder/job/folderList", secret_token="folderList_SECRET_TOKEN")
+                    jenkins_filelist_status = 'Sent'
+
+        except Exception as e: # TODO: catch and manage this
+            print(f"error on jenkins_api: {e}") 
+        '''
+        if "filter" in request.GET:
+            filter = request.GET.get("filter","")
+        else:
+            filter = ""
+            request.GET = request.GET.copy()
+            request.GET["filter"]= ""
+
+        if request.method == 'POST':
+            filter = request.POST.get("filter","")
+            request.GET = request.GET.copy()
+            request.GET["filter"] = request.POST.get("filter","")
+
+        # FIXME: put a lab_id in the model or something else!
+        # data = Results.objects.filter(lab_id=request.session.get('lab_selected'))
+        data = Results.objects.all()
+        data = data.filter(result_id__contains = filter)
+        table = ResultsTable(data)
+        RequestConfig(request).configure(table)
+
+        table.paginate(page=request.GET.get("page",1), per_page=5) # TODO: softcode paginate settings
+        return render(request, 'home/lab_management_pages/results_list_page.html', {
+            'page': self,
+            'table': table,
+        })
+
+class ExperimentDMPPage(Page):
+    intro = RichTextField(blank=True)
+    content_panels = Page.content_panels + [
+        FieldPanel('intro', classname="full"),
+    ]
+
+    def serve(self,request):
+        if request.user.is_authenticated:
+            username = request.user.username
+        
+        try:
+            if(request.session['lab_selected'] is None):
+                request.session["return_page"] = request.META['HTTP_REFERER']
+                next = request.POST.get("next", "/switch-laboratory")
+                return redirect(next)
+            else:
+                lab = Laboratories.objects.get(pk = request.session['lab_selected'])
+        except KeyError:
+            request.session["return_page"] = request.META['HTTP_REFERER']
+            next = request.POST.get("next", "/switch-laboratory")
+            return redirect(next)
+        
+        result_id = request.GET.get("result_id","")
+        if result_id != "":
+            data = Results.objects.get(pk = result_id)
+            sample_x_list = ResultxSample.objects.filter(results = data)
+            sample_list = []
+            for sample in sample_x_list:
+                sample = Samples.objects.get(pk = sample.samples_id)
+                # TODO: dynamic this -> hasattr and so on and match
+                if(sample.lab_id.lab_id == 'LAGE'):
+                    sample = LageSamples.objects.get(pk = sample.sample_id)
+                sample_list.append(sample)
+        
+        return render(request, 'home/lab_management_pages/dmp_page.html', {
+            'page': self,
+            'data': data,
+            'sample_list': sample_list,
+        })
+
+                
+
 
 
 class ProposalSubmissionPage(Page): # USER DATA DIMMT

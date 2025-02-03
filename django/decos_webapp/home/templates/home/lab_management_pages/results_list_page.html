@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailuserbar navigation_tags wagtailimages_tags django_tables2  %}
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/home_page.css' %}">
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link rel="stylesheet" href="{% static 'css/list_page.css' %}">
+
+Filter:
+<form action="." method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText" placeholder="filter...">
+    <button type="submit" class="btn btn-primary">search</button>
+</form>
+<form method="get" action="./dmp/" id="result_selection">
+    <input type="hidden" id="result_id_hidden" name="result_id" value="tryme">
+{% render_table table %}
+</form>
+{% endblock %}
