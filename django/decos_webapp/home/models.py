@@ -435,6 +435,8 @@ class SampleListPage(Page): # EASYDMP
             request.GET = request.GET.copy()
             request.GET["filter"]= ""
 
+        minIO_status = ""
+
         if request.method == 'POST':
             filter = request.POST.get("filter","")
             request.GET = request.GET.copy()
@@ -457,17 +459,31 @@ class SampleListPage(Page): # EASYDMP
                 # MINIO
                 debug = request.POST.get("refresh")
                 if request.POST.get("refresh","false") == "true":
-                    client = decos_minio(endpoint="s3.dev.rd.areasciencepark.it", access_key="zxRyi8A7evZKbitAyU5t",
-                                        secret_key="HaQnLIJaKTvjkktpAp9UccSU3vv1P4g3cl5wuH2t")
-                    data_locations = client.get_sample_list(lab=lab)
-                    for sample_id, sample_location in data_locations:
+                    try:
+                        client = decos_minio(endpoint="s3.dev.rd.areasciencepark.it", access_key="zxRyi8A7evZKbitAyU5t",
+                                            secret_key="HaQnLIJaKTvjkktpAp9UccSU3vv1P4g3cl5wuH2t")
+                        data_locations = client.get_sample_list(lab=lab)
+                        minIO_status = "minIO buckets read correctly"
+                    except Exception as e:
+                        # TODO properly catch this and manage logging/debugging verbosity
+                        minIO_status = f"Error on MinIO: {e}"
+
+                    samples = Samples.objects.filter(lab_id = request.session['lab_selected'])
+
+
+                    for sample in samples:
                         try:
-                            sample = (Samples.objects.get(pk = sample_id))
-                            sample.sample_location = "/"+ sample_location.object_name
+                            sample = Samples.objects.get(pk = sample.sample_id)
+                            for sample_id, sample_location in data_locations:
+                                if sample.pk == sample_id:
+                                    sample.sample_location = sample_location.object_name
+                                    break
+                                else:
+                                    sample.sample_location = None
                             sample.save()
                         except Samples.DoesNotExist as e:
                             print("Debug: {e}") # TODO: properly manage this, TODO: implement a log library?
-                
+                       
                 '''sample_list = []
                 for sample_id, sample_location in data_locations:
                     try:
@@ -489,7 +505,7 @@ class SampleListPage(Page): # EASYDMP
         return render(request, 'home/sample_pages/sample_list.html', {
             'page': self,
             'table': table,
-            'minio_filelist_status': "",
+            'minio_filelist_status': minIO_status,
         })
 
 class EditSamplePage(Page): # EASYDMP

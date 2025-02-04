@@ -5,27 +5,18 @@
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" href="{% static 'css/list_page.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<form method="post" action="">
-    {% csrf_token %}
-    <button type="submit" class="btn btn-light" name="list_folders" value="true">List folders</button>
-</form>
-
+<i> Refresh file location: </i>
 <form method="post" action="" id="refresh_form" name="refresh" value="true" >
     {% csrf_token %}
     <input type="hidden" name="refresh" value="true">
-    <input type="submit" class="btn btn-light" id="refresh_btn" value="refresh"></button>
+    <button type="submit" class="btn btn-light" id="refresh_btn" value="refresh">
+        <i class="fa fa-rotate-right"></i>
+        </button>
 </form>
 <p>
-{% if jenkins_file_status == "Waiting" %}
-    The system is checking the file, refresh the page.
-{% elif jenkins_file_status == "Sent" %}
-    Request sent. Wait sometime and refresh the page.
-{% elif jenkins_file_status != "SUCCESS" %}
-    warning: file search completed with failure.
-{% else %}
-    File list ready.
-{% endif %}
+<i>{{ minio_filelist_status }}</i>
 </p>
 
 Filter:

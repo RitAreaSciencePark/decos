@@ -1,16 +1,20 @@
-<form method="get" action="/edit-sample-entry/">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head><form method="get" action="/edit-sample-entry/">
     <input type="hidden" name="sample_id" value="{{ record.sample_id }}">
-    <input type="submit" class="btn btn-light" id="edit_btn" value="edit"></button>
+    <button type="submit" class="btn btn-light" id="edit_btn" value="edit">
+        <i class="fa fa-edit"></i>
+    </button>
 </form>
 <form method="post" action="">
     {% csrf_token %}
     <input type="hidden" name="elab_write" value="{{ record.sample_id }}">
-    <input type="submit" class="btn btn-light" id="edit_btn" value="elab write"></button>
+    <button type="submit" class="btn btn-light" id="edit_btn"><i class="fa fa-book"></i></button>
 </form>
-
 <form method="get" action="/pipelines/">
     <input type="hidden" name="pipelines" value="{{ record.sample_id }}">
-    <input type="submit" class="btn btn-light" id="edit_btn" value="pipelines"></button>
+    <button type="submit" class="btn btn-light" id="edit_btn" value="pipelines">
+        <i class="fa fa-industry"></i>
+    </button>
 </form>
 
 

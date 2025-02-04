@@ -13,3 +13,11 @@
 .table-container a{
     font-size: small;
 }
+
+button {
+    display: flex;
+}
+
+form {
+    display: inline-flex;
+}
