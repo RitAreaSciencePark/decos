@@ -1114,12 +1114,28 @@ class ExperimentDMPPage(Page):
                 # TODO: dynamic this -> hasattr and so on and match
                 if(sample.lab_id.lab_id == 'LAGE'):
                     sample = LageSamples.objects.get(pk = sample.sample_id)
+                else:
+                    pass # TODO: implement other labs
                 sample_list.append(sample)
+            instrument_x_list = ResultxInstrument.objects.filter(results = data)
+            instrument_list = []
+            for instrument in instrument_x_list:
+                instrument = Instruments.objects.get(pk = instrument.instruments.instrument_id)
+                instrument_list.append(instrument)
+
+            try:
+                lab_dmp = labDMP.objects.get(pk = request.session['lab_selected'])
+            except labDMP.DoesNotExist as e:
+                lab_dmp = None
+
+
         
         return render(request, 'home/lab_management_pages/dmp_page.html', {
             'page': self,
             'data': data,
             'sample_list': sample_list,
+            'instrument_list': instrument_list,
+            'lab_dmp': lab_dmp,
         })
 
                 

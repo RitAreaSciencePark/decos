@@ -14,27 +14,60 @@
     {{ page.intro | richtext }}
 
 <div class="section_div">
+   <h4><b>Data</b>:</h4>
     <p>
-    <b>Data</b>: <br>
     <i> Result internal PID: </i>{{ data.result_id }} <br>
     <i> DOI: </i>{{ data.article_doi }} <br>
     <i> Main Repository location: </i>{{ data.main_repository }} <br>
     </p>
 </div>
+
 <div class="section_div">
+    <b>General laboratory policies: </b>
+    <p>
+        <i>Electronic notebook used: </i>{{ lab_dmp.additional_enotebook_open_collection }}<br>
+        <i>Open Data License: </i>{{ lab_dmp.open_data_licence }}<br>
+        <i>Raw data storage time retention policy: </i>{{ lab_dmp.raw_data_storage_time_retention }}<br>
+        <i>Backup policy of published data: </i>{{ lab_dmp.backup_policy_published_data }}<br>
+        <i>Backup policy of unplished data: </i>{{ backup_policy_unplublished_data }}<br>
+
+    </p>
+</div>
+
+<div class="section_div">
+    <h4><b>Next Generation Sequencing sample data:</b></h4>
     {% for sample in sample_list %}
     <p>
-    {{ sample.sample_id }} <br>
-    {{ sample.lab_id }} <br>
-    {{sample.type}} <br>
-    {{sample.is_volume_in_ul}} <br>
-    {{sample.is_buffer_used}} <br>
-    {{sample.is_quality}} <br>
-    {{sample.sample_date_of_delivery}} <br>
-    {{sample.sample_back}} <br>
-    {{sample.reagents_provided_by_client}} <br>
-    {{sample.reagents_date_of_delivery}} <br>
+
+     <b> <i>Sample id: </i>
+        {{ sample.sample_id }}</b> <br>
+    <i>Sample laboratory: </i>
+            {{ sample.lab_id }} <br>
+    <i>Sample Data location: </i>
+        {{ sample.sample_location }}<br>
+    {% if "LAGE" in sample.lab_id.lab_id %}
+    {% include "./includes/ngs_include.html" %}
+    {% elif "LAME" in sample.lab_id.lab_id %}
+    - TO BE IMPLEMENTED
+    {% else %}
+    - TO BE IMPLEMENTED
+    {% endif %}
+
+    {% endfor %}
+
+</div>
+
+<div class="section_div">
+
+    <h4><b>Instruments:</b></h4>
+    {% for instrument in instrument_list %}
+    <p>
+    <i>Model: </i>
+    {{ instrument.model }} <br>
+    <i>Vendor: </i>
+    {{ instrument.vendor }} <br>
     </p>
+
     {% endfor %}
 
 </div>
