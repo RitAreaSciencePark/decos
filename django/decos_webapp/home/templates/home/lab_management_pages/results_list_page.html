@@ -7,11 +7,13 @@
 <link rel="stylesheet" href="{% static 'css/list_page.css' %}">
 
 Filter:
+<div>
 <form action="." method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText" placeholder="filter...">
     <button type="submit" class="btn btn-primary">search</button>
 </form>
+</div>
 <form method="get" action="./dmp/" id="result_selection">
     <input type="hidden" id="result_id_hidden" name="result_id" value="tryme">
 {% render_table table %}
