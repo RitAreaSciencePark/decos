@@ -1,3 +1,5 @@
+from decos_secrets import minIO_secrets
+
 # modules implemented in the container! In case you see red
 from django.db import models, connections
 
@@ -460,8 +462,8 @@ class SampleListPage(Page): # EASYDMP
                 debug = request.POST.get("refresh")
                 if request.POST.get("refresh","false") == "true":
                     try:
-                        client = decos_minio(endpoint="s3.dev.rd.areasciencepark.it", access_key="zxRyi8A7evZKbitAyU5t",
-                                            secret_key="HaQnLIJaKTvjkktpAp9UccSU3vv1P4g3cl5wuH2t")
+                        client = decos_minio(endpoint=minIO_secrets.endpoint, access_key=minIO_secrets.access_key,
+                                            secret_key=minIO_secrets.secret_key)
                         data_locations = client.get_sample_list(lab=lab)
                         minIO_status = "minIO buckets read correctly"
                     except Exception as e:
