@@ -4,7 +4,7 @@
   "pk": 1,
   "fields": {
     "header_text": "",
-    "prp_icon": null
+    "prp_icon": 1
   }
 },
 {
@@ -20,8 +20,47 @@
   "model": "home.apisettings",
   "pk": 1,
   "fields": {
-    "elab_base_url": "",
-    "jenkins_base_url": ""
+    "elab_base_url": "https://prp-electronic-lab.areasciencepark.it/",
+    "jenkins_base_url": "http://localhost:9000/"
+  }
+},
+{
+  "model": "wagtailimages.rendition",
+  "pk": 1,
+  "fields": {
+    "filter_spec": "max-165x165",
+    "file": "images/logo_prp_pathogen_ri_tzETPJY.max-165x165.png",
+    "width": 165,
+    "height": 57,
+    "focal_point_key": "",
+    "image": 1
+  }
+},
+{
+  "model": "wagtailimages.rendition",
+  "pk": 2,
+  "fields": {
+    "filter_spec": "max-250x100",
+    "file": "images/logo_prp_pathogen_ri_tzETPJY.max-250x100.png",
+    "width": 201,
+    "height": 70,
+    "focal_point_key": "",
+    "image": 1
+  }
+},
+{
+  "model": "wagtailsearch.indexentry",
+  "pk": 1,
+  "fields": {
+    "content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "1",
+    "title_norm": 2.142857142857143,
+    "autocomplete": "'root':1",
+    "title": "'root':1B",
+    "body": ""
   }
 },
 {
@@ -33,9 +72,9 @@
       "homepage"
     ],
     "object_id": "3",
-    "title_norm": 1.25,
-    "autocomplete": "'easydmp':1 'home':2",
-    "title": "'easydmp':1B 'home':2B",
+    "title_norm": 1.0,
+    "autocomplete": "",
+    "title": "",
     "body": ""
   }
 },
@@ -48,9 +87,9 @@
       "switchlabpage"
     ],
     "object_id": "4",
-    "title_norm": 1.25,
-    "autocomplete": "'laboratory':2 'select':1",
-    "title": "'laboratori':2B 'select':1B",
+    "title_norm": 1.0,
+    "autocomplete": "",
+    "title": "",
     "body": ""
   }
 },
@@ -63,9 +102,9 @@
       "userdatapage"
     ],
     "object_id": "5",
-    "title_norm": 1.25,
-    "autocomplete": "'information':2 'user':1",
-    "title": "'inform':2B 'user':1B",
+    "title_norm": 1.0,
+    "autocomplete": "",
+    "title": "",
     "body": ""
   }
 },
@@ -78,9 +117,9 @@
       "dmppage"
     ],
     "object_id": "6",
-    "title_norm": 0.6,
-    "autocomplete": "'core':1 'data':2 'management':3 'plan':4",
-    "title": "'core':1B 'data':2B 'manag':3B 'plan':4B",
+    "title_norm": 1.0,
+    "autocomplete": "",
+    "title": "",
     "body": ""
   }
 },
@@ -93,9 +132,9 @@
       "samplepage"
     ],
     "object_id": "7",
-    "title_norm": 1.2,
-    "autocomplete": "'add':1 'sample':2",
-    "title": "'add':1B 'sampl':2B",
+    "title_norm": 1.0,
+    "autocomplete": "",
+    "title": "",
     "body": ""
   }
 },
@@ -108,9 +147,114 @@
       "samplelistpage"
     ],
     "object_id": "8",
-    "title_norm": 1.1666666666666667,
-    "autocomplete": "'list':2 'sample':1",
-    "title": "'list':2B 'sampl':1B",
+    "title_norm": 1.0,
+    "autocomplete": "",
+    "title": "",
+    "body": ""
+  }
+},
+{
+  "model": "wagtailsearch.indexentry",
+  "pk": 34,
+  "fields": {
+    "content_type": [
+      "home",
+      "instrumentspage"
+    ],
+    "object_id": "9",
+    "title_norm": 0.75,
+    "autocomplete": "'add':1 'instrument':2",
+    "title": "'add':1B 'instrument':2B",
+    "body": ""
+  }
+},
+{
+  "model": "wagtailsearch.indexentry",
+  "pk": 39,
+  "fields": {
+    "content_type": [
+      "home",
+      "editsamplepage"
+    ],
+    "object_id": "10",
+    "title_norm": 0.6666666666666666,
+    "autocomplete": "'edit':1 'entry':3 'sample':2",
+    "title": "'edit':1B 'entri':3B 'sampl':2B",
+    "body": ""
+  }
+},
+{
+  "model": "wagtailsearch.indexentry",
+  "pk": 44,
+  "fields": {
+    "content_type": [
+      "home",
+      "pipelinespage"
+    ],
+    "object_id": "11",
+    "title_norm": 1.75,
+    "autocomplete": "'pipelines':1",
+    "title": "'pipelin':1B",
+    "body": ""
+  }
+},
+{
+  "model": "wagtailsearch.indexentry",
+  "pk": 49,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultspage"
+    ],
+    "object_id": "12",
+    "title_norm": 0.9,
+    "autocomplete": "'add':1 'result':2",
+    "title": "'add':1B 'result':2B",
+    "body": ""
+  }
+},
+{
+  "model": "wagtailsearch.indexentry",
+  "pk": 54,
+  "fields": {
+    "content_type": [
+      "wagtailimages",
+      "image"
+    ],
+    "object_id": "1",
+    "title_norm": 0.5416666666666666,
+    "autocomplete": "'logo':1 'pathogen':3 'prp':2 'ri':4",
+    "title": "'logo':1A 'pathogen':3A 'prp':2A 'ri':4A",
+    "body": ""
+  }
+},
+{
+  "model": "wagtailsearch.indexentry",
+  "pk": 56,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultslistpage"
+    ],
+    "object_id": "13",
+    "title_norm": 1.0714285714285714,
+    "autocomplete": "'list':2 'result':1",
+    "title": "'list':2B 'result':1B",
+    "body": ""
+  }
+},
+{
+  "model": "wagtailsearch.indexentry",
+  "pk": 61,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "object_id": "14",
+    "title_norm": 1.0625,
+    "autocomplete": "'dmp':2 'experiment':1",
+    "title": "'dmp':2B 'experi':1B",
     "body": ""
   }
 },
@@ -139,6 +283,29 @@
     "depth": 1,
     "numchild": 0,
     "name": "Root"
+  }
+},
+{
+  "model": "wagtailcore.referenceindex",
+  "pk": 1,
+  "fields": {
+    "content_type": [
+      "wagtailimages",
+      "image"
+    ],
+    "base_content_type": [
+      "wagtailimages",
+      "image"
+    ],
+    "object_id": "1",
+    "to_content_type": [
+      "wagtailcore",
+      "collection"
+    ],
+    "to_object_id": "1",
+    "model_path": "collection",
+    "content_path": "collection",
+    "content_path_hash": "b40b1263-e929-57f2-a7f8-9dbce56b887b"
   }
 },
 {
@@ -292,10 +459,26 @@
   }
 },
 {
+  "model": "auth.group",
+  "fields": {
+    "name": "LADE",
+    "laboratory": true,
+    "permissions": []
+  }
+},
+{
+  "model": "auth.group",
+  "fields": {
+    "name": "LATE",
+    "laboratory": true,
+    "permissions": []
+  }
+},
+{
   "model": "auth.user",
   "fields": {
     "password": "pbkdf2_sha256$870000$owYE1NygG4O7Rfn0QKi9lY$zmcdWzE/8/WyqnHxKDnEZKccGVy2kSaQZ6na+XrLrJ8=",
-    "last_login": "2025-01-17T11:42:09.896Z",
+    "last_login": "2025-02-05T08:52:33.989Z",
     "is_superuser": true,
     "username": "admin",
     "first_name": "Marco",
@@ -310,17 +493,15 @@
       ],
       [
         "LAME"
+      ],
+      [
+        "LADE"
+      ],
+      [
+        "LATE"
       ]
     ],
     "user_permissions": []
-  }
-},
-{
-  "model": "sessions.session",
-  "pk": "0u3587628le04pmp7bhy7na1vu23hrcm",
-  "fields": {
-    "session_data": ".eJxVjs0OgjAQhN-lZ4NQ2qV608R40WdotrvLj5JiKJyM7y4kHPQ638yXeSuP89T6OcnoO1ZHpdXuNwtIT4kr4AfGZshoiNPYhWytZBtN2X1g6c9b90_QYmqXNdVgDWhXss01c-lAA2htoSZXG4bqEEjIGIfWVZgDVQ4KkyOjLri2YZGOMs1j9C9sZBHul6TH4JP0QpOsD2-n60V9vnu4RBY:1tYklT:BAiTbYm-49CXQK_gs14JXncn7LZgbSPpxkLn_cqAk7Y",
-    "expire_date": "2025-01-31T11:43:51.446Z"
   }
 },
 {
@@ -329,6 +510,22 @@
   "fields": {
     "session_data": ".eJxVjEEOwiAQRe_C2hBKYYpduvcMZJgBixowpU00xrtrExe6_e_99xQe12Xya4uzzyxGocXudwtIl1g2wGcspyqplmXOQW6K_NImj5Xj9fB1_wITtunzpgTWgHY9W6WZewcaQGsLiVwyDMM-UCRjHFo3oAIaHHRGIaPuONmwRVtsLdfi4_2W54cY1esNaW0-vA:1tYkeu:t4yuTaOSS2l2rAQQgCuzVkjgZ14oK8wAJ45g49o15xM",
     "expire_date": "2025-01-31T11:37:04.517Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "h5kr0j0p8ik8kqfh0oltfy956rlsk1cu",
+  "fields": {
+    "session_data": ".eJxVj0FugzAQRe8yawTG2MawS6Wqm_YEVYUGewi0YCNs1EZR7l7cZpPdaP7_T3pXQGP87mKHexzJxclgnLzrFoqjtwHa9yv839DCiiF8-81CBhihLetK10JKWeWNFrKpMtgDbQ4XOspol8nB7SODP3aXom5KmBIefj2aL3IpsJ_ozj433sVt6vNUye9pyN-8pfnp3n0AjBjGY20GJYXiurKScWsrrbhSnEs1GD0Iq-qmN2SE0Ch1jUyZWqtSMLTISzvIPkEDhZD06WedtsuhyFmjGMtgo7hvrlvxnNzGGNe2KAjDxS5rPnuD8-hDbDXTrDhAM_YHayYTKYm9nl6e4fYLexd3uQ:1tfb9C:8s8MAzC9Ecjdo7brP4bZ54SlfWRkuvkx1iQ1KFfafrM",
+    "expire_date": "2025-02-19T08:52:38.010Z"
+  }
+},
+{
+  "model": "sessions.session",
+  "pk": "i797q1qldazn8lusph02n6u0qf5aogi7",
+  "fields": {
+    "session_data": ".eJxVjEEOwiAQRe_C2hCKMMUu3XsGMsyARQ2Y0iYa4921SRe6_e_99xIel3n0S4uTzywG0Ynd7xaQrrGsgC9YzlVSLfOUg1wVudEmT5Xj7bi5f4ER2_h9UwJrQLs9W6WZ9w40gNYWErlkGPpDoEjGOLSuRwXUO-iMQkbdcbJhjbbYWq7Fx8c9T08xqPcHaMA-uw:1td2ov:g11-aKUMcbzfshLZjTGmnpeQBHev_Ytc0rwOvx84e9c",
+    "expire_date": "2025-02-12T07:49:09.099Z"
   }
 },
 {
@@ -394,6 +591,72 @@
       "admin"
     ],
     "page": 8,
+    "comment_notifications": true
+  }
+},
+{
+  "model": "wagtailcore.pagesubscription",
+  "pk": 7,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "page": 9,
+    "comment_notifications": true
+  }
+},
+{
+  "model": "wagtailcore.pagesubscription",
+  "pk": 8,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "page": 10,
+    "comment_notifications": true
+  }
+},
+{
+  "model": "wagtailcore.pagesubscription",
+  "pk": 9,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "page": 11,
+    "comment_notifications": true
+  }
+},
+{
+  "model": "wagtailcore.pagesubscription",
+  "pk": 10,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "page": 12,
+    "comment_notifications": true
+  }
+},
+{
+  "model": "wagtailcore.pagesubscription",
+  "pk": 11,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "page": 13,
+    "comment_notifications": true
+  }
+},
+{
+  "model": "wagtailcore.pagesubscription",
+  "pk": 12,
+  "fields": {
+    "user": [
+      "admin"
+    ],
+    "page": 14,
     "comment_notifications": true
   }
 },
@@ -1357,6 +1620,859 @@
   }
 },
 {
+  "model": "wagtailcore.pagelogentry",
+  "pk": 43,
+  "fields": {
+    "content_type": [
+      "home",
+      "instrumentspage"
+    ],
+    "label": "Add Instrument",
+    "action": "wagtail.create",
+    "data": {},
+    "timestamp": "2025-01-20T14:00:14.994Z",
+    "uuid": "810ea04b-ca65-41fa-ad43-05ec779a53b1",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": true,
+    "deleted": false,
+    "page": 9
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 44,
+  "fields": {
+    "content_type": [
+      "home",
+      "instrumentspage"
+    ],
+    "label": "Add Instrument",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-01-20T14:00:15.010Z",
+    "uuid": "810ea04b-ca65-41fa-ad43-05ec779a53b1",
+    "user": [
+      "admin"
+    ],
+    "revision": 16,
+    "content_changed": true,
+    "deleted": false,
+    "page": 9
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 45,
+  "fields": {
+    "content_type": [
+      "home",
+      "instrumentspage"
+    ],
+    "label": "Add Instrument",
+    "action": "wagtail.publish",
+    "data": {},
+    "timestamp": "2025-01-20T14:00:15.040Z",
+    "uuid": "810ea04b-ca65-41fa-ad43-05ec779a53b1",
+    "user": [
+      "admin"
+    ],
+    "revision": 16,
+    "content_changed": true,
+    "deleted": false,
+    "page": 9
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 46,
+  "fields": {
+    "content_type": [
+      "home",
+      "instrumentspage"
+    ],
+    "label": "Add Instrument",
+    "action": "wagtail.view_restriction.create",
+    "data": {
+      "restriction": {
+        "type": "login",
+        "title": "Private, accessible to any logged-in users"
+      }
+    },
+    "timestamp": "2025-01-20T15:55:12.668Z",
+    "uuid": "0fa544ba-007e-4f3b-b04a-00aa4d21b213",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": false,
+    "deleted": false,
+    "page": 9
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 47,
+  "fields": {
+    "content_type": [
+      "home",
+      "instrumentspage"
+    ],
+    "label": "Add Instrument",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-01-20T15:55:15.466Z",
+    "uuid": "be6cd92b-6747-4303-ba4c-184348878c01",
+    "user": [
+      "admin"
+    ],
+    "revision": 17,
+    "content_changed": true,
+    "deleted": false,
+    "page": 9
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 48,
+  "fields": {
+    "content_type": [
+      "home",
+      "instrumentspage"
+    ],
+    "label": "Add Instrument",
+    "action": "wagtail.publish",
+    "data": {},
+    "timestamp": "2025-01-20T15:55:15.491Z",
+    "uuid": "be6cd92b-6747-4303-ba4c-184348878c01",
+    "user": [
+      "admin"
+    ],
+    "revision": 17,
+    "content_changed": false,
+    "deleted": false,
+    "page": 9
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 49,
+  "fields": {
+    "content_type": [
+      "home",
+      "editsamplepage"
+    ],
+    "label": "Edit sample entry",
+    "action": "wagtail.create",
+    "data": {},
+    "timestamp": "2025-01-27T08:34:12.385Z",
+    "uuid": "a873b08c-58b8-4fa2-b520-a44402a6f25f",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": true,
+    "deleted": false,
+    "page": 10
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 50,
+  "fields": {
+    "content_type": [
+      "home",
+      "editsamplepage"
+    ],
+    "label": "Edit sample entry",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-01-27T08:34:12.398Z",
+    "uuid": "a873b08c-58b8-4fa2-b520-a44402a6f25f",
+    "user": [
+      "admin"
+    ],
+    "revision": 18,
+    "content_changed": true,
+    "deleted": false,
+    "page": 10
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 51,
+  "fields": {
+    "content_type": [
+      "home",
+      "editsamplepage"
+    ],
+    "label": "Edit sample entry",
+    "action": "wagtail.publish",
+    "data": {},
+    "timestamp": "2025-01-27T08:34:12.412Z",
+    "uuid": "a873b08c-58b8-4fa2-b520-a44402a6f25f",
+    "user": [
+      "admin"
+    ],
+    "revision": 18,
+    "content_changed": true,
+    "deleted": false,
+    "page": 10
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 52,
+  "fields": {
+    "content_type": [
+      "home",
+      "editsamplepage"
+    ],
+    "label": "Edit sample entry",
+    "action": "wagtail.view_restriction.create",
+    "data": {
+      "restriction": {
+        "type": "login",
+        "title": "Private, accessible to any logged-in users"
+      }
+    },
+    "timestamp": "2025-01-27T08:34:22.098Z",
+    "uuid": "dfad4504-28e5-4340-b91c-9c9034585518",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": false,
+    "deleted": false,
+    "page": 10
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 53,
+  "fields": {
+    "content_type": [
+      "home",
+      "editsamplepage"
+    ],
+    "label": "Edit sample entry",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-01-27T08:34:32.683Z",
+    "uuid": "1c6ef6d3-a98b-42dd-8afa-47b5c820747d",
+    "user": [
+      "admin"
+    ],
+    "revision": 19,
+    "content_changed": true,
+    "deleted": false,
+    "page": 10
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 54,
+  "fields": {
+    "content_type": [
+      "home",
+      "editsamplepage"
+    ],
+    "label": "Edit sample entry",
+    "action": "wagtail.publish",
+    "data": {},
+    "timestamp": "2025-01-27T08:34:32.701Z",
+    "uuid": "1c6ef6d3-a98b-42dd-8afa-47b5c820747d",
+    "user": [
+      "admin"
+    ],
+    "revision": 19,
+    "content_changed": false,
+    "deleted": false,
+    "page": 10
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 55,
+  "fields": {
+    "content_type": [
+      "home",
+      "pipelinespage"
+    ],
+    "label": "Pipelines",
+    "action": "wagtail.create",
+    "data": {},
+    "timestamp": "2025-01-28T13:04:27.343Z",
+    "uuid": "bf84d810-0795-4349-93d7-6076c9a95987",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": true,
+    "deleted": false,
+    "page": 11
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 56,
+  "fields": {
+    "content_type": [
+      "home",
+      "pipelinespage"
+    ],
+    "label": "Pipelines",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-01-28T13:04:27.357Z",
+    "uuid": "bf84d810-0795-4349-93d7-6076c9a95987",
+    "user": [
+      "admin"
+    ],
+    "revision": 20,
+    "content_changed": true,
+    "deleted": false,
+    "page": 11
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 57,
+  "fields": {
+    "content_type": [
+      "home",
+      "pipelinespage"
+    ],
+    "label": "Pipelines",
+    "action": "wagtail.view_restriction.create",
+    "data": {
+      "restriction": {
+        "type": "login",
+        "title": "Private, accessible to any logged-in users"
+      }
+    },
+    "timestamp": "2025-01-28T13:04:32.272Z",
+    "uuid": "5ee17d96-0765-435e-b317-d76d5eb287a0",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": false,
+    "deleted": false,
+    "page": 11
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 58,
+  "fields": {
+    "content_type": [
+      "home",
+      "pipelinespage"
+    ],
+    "label": "Pipelines",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-01-28T13:04:34.419Z",
+    "uuid": "2a1523a9-aac8-402d-9f95-1bc64a24b6e0",
+    "user": [
+      "admin"
+    ],
+    "revision": 21,
+    "content_changed": true,
+    "deleted": false,
+    "page": 11
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 59,
+  "fields": {
+    "content_type": [
+      "home",
+      "pipelinespage"
+    ],
+    "label": "Pipelines",
+    "action": "wagtail.publish",
+    "data": {},
+    "timestamp": "2025-01-28T13:04:34.435Z",
+    "uuid": "2a1523a9-aac8-402d-9f95-1bc64a24b6e0",
+    "user": [
+      "admin"
+    ],
+    "revision": 21,
+    "content_changed": false,
+    "deleted": false,
+    "page": 11
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 60,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultspage"
+    ],
+    "label": "Add result",
+    "action": "wagtail.create",
+    "data": {},
+    "timestamp": "2025-01-29T07:54:05.587Z",
+    "uuid": "27bc62b8-db6f-4f27-a50d-0dd2232a6fd6",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": true,
+    "deleted": false,
+    "page": 12
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 61,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultspage"
+    ],
+    "label": "Add result",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-01-29T07:54:05.610Z",
+    "uuid": "27bc62b8-db6f-4f27-a50d-0dd2232a6fd6",
+    "user": [
+      "admin"
+    ],
+    "revision": 22,
+    "content_changed": true,
+    "deleted": false,
+    "page": 12
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 62,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultspage"
+    ],
+    "label": "Add result",
+    "action": "wagtail.view_restriction.create",
+    "data": {
+      "restriction": {
+        "type": "login",
+        "title": "Private, accessible to any logged-in users"
+      }
+    },
+    "timestamp": "2025-01-29T07:54:10.244Z",
+    "uuid": "538ba6a0-1463-43a4-aa5a-7f74637bfaf2",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": false,
+    "deleted": false,
+    "page": 12
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 63,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultspage"
+    ],
+    "label": "Add result",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-01-29T07:54:19.309Z",
+    "uuid": "4d0c22d3-cd47-46f8-b4fe-63fcedfe863c",
+    "user": [
+      "admin"
+    ],
+    "revision": 23,
+    "content_changed": true,
+    "deleted": false,
+    "page": 12
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 64,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultspage"
+    ],
+    "label": "Add result",
+    "action": "wagtail.publish",
+    "data": {},
+    "timestamp": "2025-01-29T07:54:19.324Z",
+    "uuid": "4d0c22d3-cd47-46f8-b4fe-63fcedfe863c",
+    "user": [
+      "admin"
+    ],
+    "revision": 23,
+    "content_changed": true,
+    "deleted": false,
+    "page": 12
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 65,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultslistpage"
+    ],
+    "label": "Result List",
+    "action": "wagtail.create",
+    "data": {},
+    "timestamp": "2025-02-03T14:44:37.803Z",
+    "uuid": "dadeb14f-6349-4510-ab68-91c0345c9524",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": true,
+    "deleted": false,
+    "page": 13
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 66,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultslistpage"
+    ],
+    "label": "Result List",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-02-03T14:44:37.815Z",
+    "uuid": "dadeb14f-6349-4510-ab68-91c0345c9524",
+    "user": [
+      "admin"
+    ],
+    "revision": 24,
+    "content_changed": true,
+    "deleted": false,
+    "page": 13
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 67,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultslistpage"
+    ],
+    "label": "Result List",
+    "action": "wagtail.view_restriction.create",
+    "data": {
+      "restriction": {
+        "type": "login",
+        "title": "Private, accessible to any logged-in users"
+      }
+    },
+    "timestamp": "2025-02-03T14:44:42.569Z",
+    "uuid": "1e33c00c-09c3-4ab9-824f-db3945eaab92",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": false,
+    "deleted": false,
+    "page": 13
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 68,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultslistpage"
+    ],
+    "label": "Result List",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-02-03T14:44:47.746Z",
+    "uuid": "3b7c3a91-9447-4c54-af01-37a14107955f",
+    "user": [
+      "admin"
+    ],
+    "revision": 25,
+    "content_changed": true,
+    "deleted": false,
+    "page": 13
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 69,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultslistpage"
+    ],
+    "label": "Result List",
+    "action": "wagtail.publish",
+    "data": {},
+    "timestamp": "2025-02-03T14:44:47.758Z",
+    "uuid": "3b7c3a91-9447-4c54-af01-37a14107955f",
+    "user": [
+      "admin"
+    ],
+    "revision": 25,
+    "content_changed": true,
+    "deleted": false,
+    "page": 13
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 70,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "label": "Experiment DMP",
+    "action": "wagtail.create",
+    "data": {},
+    "timestamp": "2025-02-03T15:23:58.647Z",
+    "uuid": "f08c9c42-e6a6-49ce-b3a1-3ba0a99ff847",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": true,
+    "deleted": false,
+    "page": 14
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 71,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "label": "Experiment DMP",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-02-03T15:23:58.665Z",
+    "uuid": "f08c9c42-e6a6-49ce-b3a1-3ba0a99ff847",
+    "user": [
+      "admin"
+    ],
+    "revision": 26,
+    "content_changed": true,
+    "deleted": false,
+    "page": 14
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 72,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "label": "Experiment DMP",
+    "action": "wagtail.view_restriction.create",
+    "data": {
+      "restriction": {
+        "type": "login",
+        "title": "Private, accessible to any logged-in users"
+      }
+    },
+    "timestamp": "2025-02-03T15:24:02.301Z",
+    "uuid": "803aeda4-0125-4d2f-a2f8-14115f798a53",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": false,
+    "deleted": false,
+    "page": 14
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 73,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "label": "Experiment DMP",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-02-03T15:24:04.405Z",
+    "uuid": "6d9ec829-054c-4fbb-bc8c-f5d2a3a7d1d9",
+    "user": [
+      "admin"
+    ],
+    "revision": 27,
+    "content_changed": true,
+    "deleted": false,
+    "page": 14
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 74,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "label": "Experiment DMP",
+    "action": "wagtail.publish",
+    "data": {},
+    "timestamp": "2025-02-03T15:24:04.418Z",
+    "uuid": "6d9ec829-054c-4fbb-bc8c-f5d2a3a7d1d9",
+    "user": [
+      "admin"
+    ],
+    "revision": 27,
+    "content_changed": false,
+    "deleted": false,
+    "page": 14
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 75,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "label": "Experiment DMP",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-02-03T15:25:07.740Z",
+    "uuid": "8afac2c3-24e7-4e70-8986-b84989af4cbf",
+    "user": [
+      "admin"
+    ],
+    "revision": 28,
+    "content_changed": true,
+    "deleted": false,
+    "page": 14
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 76,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "label": "Experiment DMP",
+    "action": "wagtail.publish",
+    "data": {},
+    "timestamp": "2025-02-03T15:25:07.764Z",
+    "uuid": "8afac2c3-24e7-4e70-8986-b84989af4cbf",
+    "user": [
+      "admin"
+    ],
+    "revision": 28,
+    "content_changed": true,
+    "deleted": false,
+    "page": 14
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 77,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "label": "Experiment DMP",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-02-03T15:25:29.994Z",
+    "uuid": "446fc8ff-66d3-4da5-a0f3-01b9ccb0c247",
+    "user": [
+      "admin"
+    ],
+    "revision": 29,
+    "content_changed": true,
+    "deleted": false,
+    "page": 14
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 78,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "label": "Experiment DMP",
+    "action": "wagtail.publish",
+    "data": {},
+    "timestamp": "2025-02-03T15:25:30.011Z",
+    "uuid": "446fc8ff-66d3-4da5-a0f3-01b9ccb0c247",
+    "user": [
+      "admin"
+    ],
+    "revision": 29,
+    "content_changed": false,
+    "deleted": false,
+    "page": 14
+  }
+},
+{
+  "model": "wagtailcore.pagelogentry",
+  "pk": 79,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "label": "Experiment DMP",
+    "action": "wagtail.move",
+    "data": {
+      "source": {
+        "id": 3,
+        "title": "easydmp home"
+      },
+      "destination": {
+        "id": 13,
+        "title": "Result List"
+      }
+    },
+    "timestamp": "2025-02-03T15:26:00.628Z",
+    "uuid": "d5134ca2-7e38-47cf-88b2-e2a9140f63f9",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": false,
+    "deleted": false,
+    "page": 14
+  }
+},
+{
   "model": "wagtailcore.groupapprovaltask",
   "pk": 1,
   "fields": {
@@ -1415,6 +2531,66 @@
     "restriction_type": "login",
     "password": "",
     "page": 8,
+    "groups": []
+  }
+},
+{
+  "model": "wagtailcore.pageviewrestriction",
+  "pk": 7,
+  "fields": {
+    "restriction_type": "login",
+    "password": "",
+    "page": 9,
+    "groups": []
+  }
+},
+{
+  "model": "wagtailcore.pageviewrestriction",
+  "pk": 8,
+  "fields": {
+    "restriction_type": "login",
+    "password": "",
+    "page": 10,
+    "groups": []
+  }
+},
+{
+  "model": "wagtailcore.pageviewrestriction",
+  "pk": 9,
+  "fields": {
+    "restriction_type": "login",
+    "password": "",
+    "page": 11,
+    "groups": []
+  }
+},
+{
+  "model": "wagtailcore.pageviewrestriction",
+  "pk": 10,
+  "fields": {
+    "restriction_type": "login",
+    "password": "",
+    "page": 12,
+    "groups": []
+  }
+},
+{
+  "model": "wagtailcore.pageviewrestriction",
+  "pk": 11,
+  "fields": {
+    "restriction_type": "login",
+    "password": "",
+    "page": 13,
+    "groups": []
+  }
+},
+{
+  "model": "wagtailcore.pageviewrestriction",
+  "pk": 12,
+  "fields": {
+    "restriction_type": "login",
+    "password": "",
+    "page": 14,
     "groups": []
   }
 },
@@ -2344,6 +3520,766 @@
   }
 },
 {
+  "model": "wagtailcore.revision",
+  "pk": 16,
+  "fields": {
+    "content_type": [
+      "home",
+      "instrumentspage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "9",
+    "created_at": "2025-01-20T14:00:15.003Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Add Instrument",
+    "content": {
+      "pk": 9,
+      "live": true,
+      "path": "000100010006",
+      "slug": "add-instrument",
+      "depth": 3,
+      "intro": "<p data-block-key=\"zbyd4\">Add a new instruments in your laboratory.</p>",
+      "owner": 1,
+      "title": "Add Instrument",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/add-instrument/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Add Instrument",
+      "content_type": 78,
+      "live_revision": null,
+      "show_in_menus": true,
+      "latest_revision": null,
+      "translation_key": "aea9d414-fb2e-42d6-8a2c-7e88b4151b76",
+      "last_published_at": null,
+      "first_published_at": null,
+      "search_description": "",
+      "thankyou_page_title": "Thank you!",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": false,
+      "latest_revision_created_at": null
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 17,
+  "fields": {
+    "content_type": [
+      "home",
+      "instrumentspage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "9",
+    "created_at": "2025-01-20T15:55:15.413Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Add Instrument",
+    "content": {
+      "pk": 9,
+      "live": true,
+      "path": "000100010006",
+      "slug": "add-instrument",
+      "depth": 3,
+      "intro": "<p data-block-key=\"zbyd4\">Add a new instruments in your laboratory.</p>",
+      "owner": 1,
+      "title": "Add Instrument",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/add-instrument/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Add Instrument",
+      "content_type": 78,
+      "live_revision": 16,
+      "show_in_menus": true,
+      "latest_revision": 16,
+      "translation_key": "aea9d414-fb2e-42d6-8a2c-7e88b4151b76",
+      "last_published_at": "2025-01-20T14:00:15.016Z",
+      "first_published_at": "2025-01-20T14:00:15.016Z",
+      "search_description": "",
+      "thankyou_page_title": "Thank you!",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": false,
+      "latest_revision_created_at": "2025-01-20T14:00:15.003Z"
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 18,
+  "fields": {
+    "content_type": [
+      "home",
+      "editsamplepage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "10",
+    "created_at": "2025-01-27T08:34:12.393Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Edit sample entry",
+    "content": {
+      "pk": 10,
+      "live": true,
+      "path": "000100010007",
+      "slug": "edit-sample-entry",
+      "depth": 3,
+      "intro": "<p data-block-key=\"kdjm4\">Please modify the fields</p>",
+      "owner": 1,
+      "title": "Edit sample entry",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/edit-sample-entry/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Edit sample entry",
+      "content_type": 79,
+      "live_revision": null,
+      "show_in_menus": false,
+      "latest_revision": null,
+      "translation_key": "b2cf8af5-14b2-4e41-a346-7485d7858773",
+      "last_published_at": null,
+      "first_published_at": null,
+      "search_description": "",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": false,
+      "latest_revision_created_at": null
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 19,
+  "fields": {
+    "content_type": [
+      "home",
+      "editsamplepage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "10",
+    "created_at": "2025-01-27T08:34:32.659Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Edit sample entry",
+    "content": {
+      "pk": 10,
+      "live": true,
+      "path": "000100010007",
+      "slug": "edit-sample-entry",
+      "depth": 3,
+      "intro": "<p data-block-key=\"kdjm4\">Please modify the fields</p>",
+      "owner": 1,
+      "title": "Edit sample entry",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/edit-sample-entry/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Edit sample entry",
+      "content_type": 79,
+      "live_revision": 18,
+      "show_in_menus": false,
+      "latest_revision": 18,
+      "translation_key": "b2cf8af5-14b2-4e41-a346-7485d7858773",
+      "last_published_at": "2025-01-27T08:34:12.404Z",
+      "first_published_at": "2025-01-27T08:34:12.404Z",
+      "search_description": "",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": false,
+      "latest_revision_created_at": "2025-01-27T08:34:12.393Z"
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 20,
+  "fields": {
+    "content_type": [
+      "home",
+      "pipelinespage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "11",
+    "created_at": "2025-01-28T13:04:27.352Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Pipelines",
+    "content": {
+      "pk": 11,
+      "live": false,
+      "path": "000100010008",
+      "slug": "pipelines",
+      "depth": 3,
+      "intro": "<p data-block-key=\"vew5g\">Here you can start pipelines from your data.</p>",
+      "owner": 1,
+      "title": "Pipelines",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/pipelines/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Pipelines",
+      "content_type": 80,
+      "live_revision": null,
+      "show_in_menus": false,
+      "latest_revision": null,
+      "translation_key": "ab7f8d49-5c07-4f30-bea4-36fc5a14c331",
+      "last_published_at": null,
+      "first_published_at": null,
+      "search_description": "",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": false,
+      "latest_revision_created_at": null
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 21,
+  "fields": {
+    "content_type": [
+      "home",
+      "pipelinespage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "11",
+    "created_at": "2025-01-28T13:04:34.415Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Pipelines",
+    "content": {
+      "pk": 11,
+      "live": false,
+      "path": "000100010008",
+      "slug": "pipelines",
+      "depth": 3,
+      "intro": "<p data-block-key=\"vew5g\">Here you can start pipelines from your data.</p>",
+      "owner": 1,
+      "title": "Pipelines",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/pipelines/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Pipelines",
+      "content_type": 80,
+      "live_revision": null,
+      "show_in_menus": false,
+      "latest_revision": 20,
+      "translation_key": "ab7f8d49-5c07-4f30-bea4-36fc5a14c331",
+      "last_published_at": null,
+      "first_published_at": null,
+      "search_description": "",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": true,
+      "latest_revision_created_at": "2025-01-28T13:04:27.352Z"
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 22,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultspage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "12",
+    "created_at": "2025-01-29T07:54:05.602Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Add result",
+    "content": {
+      "pk": 12,
+      "live": false,
+      "path": "000100010009",
+      "slug": "add-result",
+      "depth": 3,
+      "intro": "",
+      "owner": 1,
+      "title": "Add result",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/add-result/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Add result",
+      "content_type": 84,
+      "live_revision": null,
+      "show_in_menus": false,
+      "latest_revision": null,
+      "translation_key": "eae9dc82-b03b-45a2-9de6-1be726513b87",
+      "last_published_at": null,
+      "first_published_at": null,
+      "search_description": "",
+      "thankyou_page_title": "Thank you!",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": false,
+      "latest_revision_created_at": null
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 23,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultspage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "12",
+    "created_at": "2025-01-29T07:54:19.304Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Add result",
+    "content": {
+      "pk": 12,
+      "live": false,
+      "path": "000100010009",
+      "slug": "add-result",
+      "depth": 3,
+      "intro": "",
+      "owner": 1,
+      "title": "Add result",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/add-result/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Add result",
+      "content_type": 84,
+      "live_revision": null,
+      "show_in_menus": true,
+      "latest_revision": 22,
+      "translation_key": "eae9dc82-b03b-45a2-9de6-1be726513b87",
+      "last_published_at": null,
+      "first_published_at": null,
+      "search_description": "",
+      "thankyou_page_title": "Thank you!",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": true,
+      "latest_revision_created_at": "2025-01-29T07:54:05.602Z"
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 24,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultslistpage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "13",
+    "created_at": "2025-02-03T14:44:37.810Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Result List",
+    "content": {
+      "pk": 13,
+      "live": false,
+      "path": "00010001000A",
+      "slug": "result-list",
+      "depth": 3,
+      "intro": "",
+      "owner": 1,
+      "title": "Result List",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/result-list/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Result List",
+      "content_type": 86,
+      "live_revision": null,
+      "show_in_menus": false,
+      "latest_revision": null,
+      "translation_key": "67bcf1d3-6e7f-4d60-ad38-00dab6ea0a9f",
+      "last_published_at": null,
+      "first_published_at": null,
+      "search_description": "",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": false,
+      "latest_revision_created_at": null
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 25,
+  "fields": {
+    "content_type": [
+      "home",
+      "resultslistpage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "13",
+    "created_at": "2025-02-03T14:44:47.742Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Result List",
+    "content": {
+      "pk": 13,
+      "live": false,
+      "path": "00010001000A",
+      "slug": "result-list",
+      "depth": 3,
+      "intro": "",
+      "owner": 1,
+      "title": "Result List",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/result-list/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Result List",
+      "content_type": 86,
+      "live_revision": null,
+      "show_in_menus": true,
+      "latest_revision": 24,
+      "translation_key": "67bcf1d3-6e7f-4d60-ad38-00dab6ea0a9f",
+      "last_published_at": null,
+      "first_published_at": null,
+      "search_description": "",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": true,
+      "latest_revision_created_at": "2025-02-03T14:44:37.810Z"
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 26,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "14",
+    "created_at": "2025-02-03T15:23:58.658Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Experiment DMP",
+    "content": {
+      "pk": 14,
+      "live": false,
+      "path": "00010001000B",
+      "slug": "experiment-dmp",
+      "depth": 3,
+      "intro": "",
+      "owner": 1,
+      "title": "Experiment DMP",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/experiment-dmp/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Experiment DMP",
+      "content_type": 87,
+      "live_revision": null,
+      "show_in_menus": false,
+      "latest_revision": null,
+      "translation_key": "25244e38-fbc0-42a2-96b2-d7f7a4ce7cec",
+      "last_published_at": null,
+      "first_published_at": null,
+      "search_description": "",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": false,
+      "latest_revision_created_at": null
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 27,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "14",
+    "created_at": "2025-02-03T15:24:04.400Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Experiment DMP",
+    "content": {
+      "pk": 14,
+      "live": false,
+      "path": "00010001000B",
+      "slug": "experiment-dmp",
+      "depth": 3,
+      "intro": "",
+      "owner": 1,
+      "title": "Experiment DMP",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/experiment-dmp/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Experiment DMP",
+      "content_type": 87,
+      "live_revision": null,
+      "show_in_menus": false,
+      "latest_revision": 26,
+      "translation_key": "25244e38-fbc0-42a2-96b2-d7f7a4ce7cec",
+      "last_published_at": null,
+      "first_published_at": null,
+      "search_description": "",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": true,
+      "latest_revision_created_at": "2025-02-03T15:23:58.658Z"
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 28,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "14",
+    "created_at": "2025-02-03T15:25:07.728Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Experiment DMP",
+    "content": {
+      "pk": 14,
+      "live": true,
+      "path": "00010001000B",
+      "slug": "dmp",
+      "depth": 3,
+      "intro": "",
+      "owner": 1,
+      "title": "Experiment DMP",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/experiment-dmp/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Experiment DMP",
+      "content_type": 87,
+      "live_revision": 27,
+      "show_in_menus": false,
+      "latest_revision": 27,
+      "translation_key": "25244e38-fbc0-42a2-96b2-d7f7a4ce7cec",
+      "last_published_at": "2025-02-03T15:24:04.409Z",
+      "first_published_at": "2025-02-03T15:24:04.409Z",
+      "search_description": "",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": false,
+      "latest_revision_created_at": "2025-02-03T15:24:04.400Z"
+    },
+    "approved_go_live_at": null
+  }
+},
+{
+  "model": "wagtailcore.revision",
+  "pk": 29,
+  "fields": {
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "base_content_type": [
+      "wagtailcore",
+      "page"
+    ],
+    "object_id": "14",
+    "created_at": "2025-02-03T15:25:29.983Z",
+    "user": [
+      "admin"
+    ],
+    "object_str": "Experiment DMP",
+    "content": {
+      "pk": 14,
+      "live": true,
+      "path": "00010001000B",
+      "slug": "dmp",
+      "depth": 3,
+      "intro": "",
+      "owner": 1,
+      "title": "Experiment DMP",
+      "locale": 1,
+      "locked": false,
+      "expired": false,
+      "alias_of": null,
+      "numchild": 0,
+      "url_path": "/easydmp-home/dmp/",
+      "expire_at": null,
+      "locked_at": null,
+      "locked_by": null,
+      "seo_title": "",
+      "go_live_at": null,
+      "draft_title": "Experiment DMP",
+      "content_type": 87,
+      "live_revision": 28,
+      "show_in_menus": false,
+      "latest_revision": 28,
+      "translation_key": "25244e38-fbc0-42a2-96b2-d7f7a4ce7cec",
+      "last_published_at": "2025-02-03T15:25:07.745Z",
+      "first_published_at": "2025-02-03T15:24:04.409Z",
+      "search_description": "",
+      "wagtail_admin_comments": [],
+      "has_unpublished_changes": false,
+      "latest_revision_created_at": "2025-02-03T15:25:07.728Z"
+    },
+    "approved_go_live_at": null
+  }
+},
+{
   "model": "wagtailcore.page",
   "pk": 1,
   "fields": {
@@ -2386,7 +4322,7 @@
   "fields": {
     "path": "00010001",
     "depth": 2,
-    "numchild": 5,
+    "numchild": 10,
     "translation_key": "7b91540b-305b-442b-96b2-b92e2c3f48a9",
     "locale": 1,
     "latest_revision": 3,
@@ -2615,6 +4551,240 @@
   }
 },
 {
+  "model": "wagtailcore.page",
+  "pk": 9,
+  "fields": {
+    "path": "000100010006",
+    "depth": 3,
+    "numchild": 0,
+    "translation_key": "aea9d414-fb2e-42d6-8a2c-7e88b4151b76",
+    "locale": 1,
+    "latest_revision": 17,
+    "live": true,
+    "has_unpublished_changes": false,
+    "first_published_at": "2025-01-20T14:00:15.016Z",
+    "last_published_at": "2025-01-20T15:55:15.478Z",
+    "live_revision": 17,
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "title": "Add Instrument",
+    "draft_title": "Add Instrument",
+    "slug": "add-instrument",
+    "content_type": [
+      "home",
+      "instrumentspage"
+    ],
+    "url_path": "/easydmp-home/add-instrument/",
+    "owner": [
+      "admin"
+    ],
+    "seo_title": "",
+    "show_in_menus": true,
+    "search_description": "",
+    "latest_revision_created_at": "2025-01-20T15:55:15.413Z",
+    "alias_of": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 10,
+  "fields": {
+    "path": "000100010007",
+    "depth": 3,
+    "numchild": 0,
+    "translation_key": "b2cf8af5-14b2-4e41-a346-7485d7858773",
+    "locale": 1,
+    "latest_revision": 19,
+    "live": true,
+    "has_unpublished_changes": false,
+    "first_published_at": "2025-01-27T08:34:12.404Z",
+    "last_published_at": "2025-01-27T08:34:32.691Z",
+    "live_revision": 19,
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "title": "Edit sample entry",
+    "draft_title": "Edit sample entry",
+    "slug": "edit-sample-entry",
+    "content_type": [
+      "home",
+      "editsamplepage"
+    ],
+    "url_path": "/easydmp-home/edit-sample-entry/",
+    "owner": [
+      "admin"
+    ],
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "latest_revision_created_at": "2025-01-27T08:34:32.659Z",
+    "alias_of": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 11,
+  "fields": {
+    "path": "000100010008",
+    "depth": 3,
+    "numchild": 0,
+    "translation_key": "ab7f8d49-5c07-4f30-bea4-36fc5a14c331",
+    "locale": 1,
+    "latest_revision": 21,
+    "live": true,
+    "has_unpublished_changes": false,
+    "first_published_at": "2025-01-28T13:04:34.423Z",
+    "last_published_at": "2025-01-28T13:04:34.423Z",
+    "live_revision": 21,
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "title": "Pipelines",
+    "draft_title": "Pipelines",
+    "slug": "pipelines",
+    "content_type": [
+      "home",
+      "pipelinespage"
+    ],
+    "url_path": "/easydmp-home/pipelines/",
+    "owner": [
+      "admin"
+    ],
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "latest_revision_created_at": "2025-01-28T13:04:34.415Z",
+    "alias_of": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 12,
+  "fields": {
+    "path": "000100010009",
+    "depth": 3,
+    "numchild": 0,
+    "translation_key": "eae9dc82-b03b-45a2-9de6-1be726513b87",
+    "locale": 1,
+    "latest_revision": 23,
+    "live": true,
+    "has_unpublished_changes": false,
+    "first_published_at": "2025-01-29T07:54:19.314Z",
+    "last_published_at": "2025-01-29T07:54:19.314Z",
+    "live_revision": 23,
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "title": "Add result",
+    "draft_title": "Add result",
+    "slug": "add-result",
+    "content_type": [
+      "home",
+      "resultspage"
+    ],
+    "url_path": "/easydmp-home/add-result/",
+    "owner": [
+      "admin"
+    ],
+    "seo_title": "",
+    "show_in_menus": true,
+    "search_description": "",
+    "latest_revision_created_at": "2025-01-29T07:54:19.304Z",
+    "alias_of": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 13,
+  "fields": {
+    "path": "00010001000A",
+    "depth": 3,
+    "numchild": 1,
+    "translation_key": "67bcf1d3-6e7f-4d60-ad38-00dab6ea0a9f",
+    "locale": 1,
+    "latest_revision": 25,
+    "live": true,
+    "has_unpublished_changes": false,
+    "first_published_at": "2025-02-03T14:44:47.750Z",
+    "last_published_at": "2025-02-03T14:44:47.750Z",
+    "live_revision": 25,
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "title": "Result List",
+    "draft_title": "Result List",
+    "slug": "result-list",
+    "content_type": [
+      "home",
+      "resultslistpage"
+    ],
+    "url_path": "/easydmp-home/result-list/",
+    "owner": [
+      "admin"
+    ],
+    "seo_title": "",
+    "show_in_menus": true,
+    "search_description": "",
+    "latest_revision_created_at": "2025-02-03T14:44:47.742Z",
+    "alias_of": null
+  }
+},
+{
+  "model": "wagtailcore.page",
+  "pk": 14,
+  "fields": {
+    "path": "00010001000A0001",
+    "depth": 4,
+    "numchild": 0,
+    "translation_key": "25244e38-fbc0-42a2-96b2-d7f7a4ce7cec",
+    "locale": 1,
+    "latest_revision": 29,
+    "live": true,
+    "has_unpublished_changes": false,
+    "first_published_at": "2025-02-03T15:24:04.409Z",
+    "last_published_at": "2025-02-03T15:25:30.002Z",
+    "live_revision": 29,
+    "go_live_at": null,
+    "expire_at": null,
+    "expired": false,
+    "locked": false,
+    "locked_at": null,
+    "locked_by": null,
+    "title": "Experiment DMP",
+    "draft_title": "Experiment DMP",
+    "slug": "dmp",
+    "content_type": [
+      "home",
+      "experimentdmppage"
+    ],
+    "url_path": "/easydmp-home/result-list/dmp/",
+    "owner": [
+      "admin"
+    ],
+    "seo_title": "",
+    "show_in_menus": false,
+    "search_description": "",
+    "latest_revision_created_at": "2025-02-03T15:25:29.983Z",
+    "alias_of": null
+  }
+},
+{
   "model": "wagtailcore.groupcollectionpermission",
   "fields": {
     "group": [
@@ -2799,6 +4969,182 @@
   }
 },
 {
+  "model": "wagtailcore.modellogentry",
+  "pk": 3,
+  "fields": {
+    "content_type": [
+      "auth",
+      "group"
+    ],
+    "label": "LAGE",
+    "action": "wagtail.delete",
+    "data": {},
+    "timestamp": "2025-01-20T15:22:34.991Z",
+    "uuid": "40cae06c-d8ab-4c26-9159-69286c94cc95",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": false,
+    "deleted": false,
+    "object_id": "3"
+  }
+},
+{
+  "model": "wagtailcore.modellogentry",
+  "pk": 4,
+  "fields": {
+    "content_type": [
+      "auth",
+      "group"
+    ],
+    "label": "LAME",
+    "action": "wagtail.delete",
+    "data": {},
+    "timestamp": "2025-01-20T15:22:40.483Z",
+    "uuid": "4349368e-33b0-44d2-89b6-56ac8ba85c5d",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": false,
+    "deleted": false,
+    "object_id": "4"
+  }
+},
+{
+  "model": "wagtailcore.modellogentry",
+  "pk": 5,
+  "fields": {
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "label": "admin",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-01-21T09:43:58.180Z",
+    "uuid": "8e7dff10-4781-4209-aa48-a3d9c4f5723c",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": true,
+    "deleted": false,
+    "object_id": "1"
+  }
+},
+{
+  "model": "wagtailcore.modellogentry",
+  "pk": 6,
+  "fields": {
+    "content_type": [
+      "home",
+      "apisettings"
+    ],
+    "label": "api settings",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-01-28T09:43:04.776Z",
+    "uuid": "2cf0b5be-5456-42e3-9e0b-37eb9be1b17e",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": true,
+    "deleted": false,
+    "object_id": "1"
+  }
+},
+{
+  "model": "wagtailcore.modellogentry",
+  "pk": 7,
+  "fields": {
+    "content_type": [
+      "home",
+      "headersettings"
+    ],
+    "label": "header settings",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-02-03T09:38:02.217Z",
+    "uuid": "c048201f-365d-4048-a978-2b79cb61ca57",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": true,
+    "deleted": false,
+    "object_id": "1"
+  }
+},
+{
+  "model": "wagtailcore.modellogentry",
+  "pk": 8,
+  "fields": {
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "label": "admin",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-02-04T09:58:48.356Z",
+    "uuid": "f1864683-7fa2-45cd-b5e9-28a9cd3bee58",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": true,
+    "deleted": false,
+    "object_id": "1"
+  }
+},
+{
+  "model": "wagtailcore.modellogentry",
+  "pk": 9,
+  "fields": {
+    "content_type": [
+      "auth",
+      "user"
+    ],
+    "label": "admin",
+    "action": "wagtail.edit",
+    "data": {},
+    "timestamp": "2025-02-05T08:40:03.375Z",
+    "uuid": "408cc7b2-c43b-4696-adf4-b7d1492d0f0d",
+    "user": [
+      "admin"
+    ],
+    "revision": null,
+    "content_changed": true,
+    "deleted": false,
+    "object_id": "1"
+  }
+},
+{
+  "model": "wagtailimages.image",
+  "pk": 1,
+  "fields": {
+    "collection": 1,
+    "title": "logo_prp_pathogen_ri",
+    "file": "original_images/logo_prp_pathogen_ri_tzETPJY.png",
+    "description": "",
+    "width": 201,
+    "height": 70,
+    "created_at": "2025-02-03T09:37:49.172Z",
+    "uploaded_by_user": [
+      "admin"
+    ],
+    "focal_point_x": null,
+    "focal_point_y": null,
+    "focal_point_width": null,
+    "focal_point_height": null,
+    "file_size": 7905,
+    "file_hash": "fcd6b3e3c4dbb0e1cf29c1dda30040975c16b4cb"
+  }
+},
+{
   "model": "wagtailredirects.redirect",
   "pk": 1,
   "fields": {
@@ -2833,12 +5179,96 @@
   }
 },
 {
+  "model": "wagtailredirects.redirect",
+  "pk": 3,
+  "fields": {
+    "old_path": "/experiment-dmp",
+    "site": [
+      "easydmp.localhost",
+      8080
+    ],
+    "is_permanent": true,
+    "redirect_page": 14,
+    "redirect_page_route_path": "",
+    "redirect_link": "",
+    "automatically_created": true,
+    "created_at": "2025-02-03T15:25:07.760Z"
+  }
+},
+{
+  "model": "wagtailredirects.redirect",
+  "pk": 4,
+  "fields": {
+    "old_path": "/dmp",
+    "site": [
+      "easydmp.localhost",
+      8080
+    ],
+    "is_permanent": true,
+    "redirect_page": 14,
+    "redirect_page_route_path": "",
+    "redirect_link": "",
+    "automatically_created": true,
+    "created_at": "2025-02-03T15:26:00.626Z"
+  }
+},
+{
+  "model": "home.experimentdmppage",
+  "pk": 14,
+  "fields": {
+    "page_ptr": 14,
+    "intro": ""
+  }
+},
+{
+  "model": "home.resultslistpage",
+  "pk": 13,
+  "fields": {
+    "page_ptr": 13,
+    "intro": ""
+  }
+},
+{
+  "model": "home.resultspage",
+  "pk": 12,
+  "fields": {
+    "page_ptr": 12,
+    "intro": "",
+    "thankyou_page_title": "Thank you!"
+  }
+},
+{
+  "model": "home.instrumentspage",
+  "pk": 9,
+  "fields": {
+    "page_ptr": 9,
+    "intro": "<p data-block-key=\"zbyd4\">Add a new instruments in your laboratory.</p>",
+    "thankyou_page_title": "Thank you!"
+  }
+},
+{
   "model": "home.dmppage",
   "pk": 6,
   "fields": {
     "page_ptr": 6,
     "intro": "<p data-block-key=\"510rm\">This is the page to edit your core data management plan</p>",
     "thankyou_page_title": "Thank you!"
+  }
+},
+{
+  "model": "home.pipelinespage",
+  "pk": 11,
+  "fields": {
+    "page_ptr": 11,
+    "intro": "<p data-block-key=\"vew5g\">Here you can start pipelines from your data.</p>"
+  }
+},
+{
+  "model": "home.editsamplepage",
+  "pk": 10,
+  "fields": {
+    "page_ptr": 10,
+    "intro": "<p data-block-key=\"kdjm4\">Please modify the fields</p>"
   }
 },
 {

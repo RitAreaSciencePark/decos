@@ -4,11 +4,18 @@
   "pk": "admin",
   "fields": {
     "name_surname": "Marco Prenassi",
-    "email": "marco.prenassi@areasciencepark.it",
-    "affiliation": "Area Science Park, Trieste",
+    "email": "m.prenassi@gmail.com",
+    "affiliation": "Area science Park",
     "gender": "male",
     "legal_status": null,
     "research_role": "technician"
+  }
+},
+{
+  "model": "PRP_CDM_app.laboratories",
+  "pk": "LADE",
+  "fields": {
+    "description": "Laboratory of Data Engineering"
   }
 },
 {
@@ -23,6 +30,820 @@
   "pk": "LAME",
   "fields": {
     "description": "Laboratory of Electron Microscopy"
+  }
+},
+{
+  "model": "PRP_CDM_app.laboratories",
+  "pk": "LATE",
+  "fields": {
+    "description": "Yes I can"
+  }
+},
+{
+  "model": "PRP_CDM_app.api_tokens",
+  "pk": 1,
+  "fields": {
+    "user_id": "admin",
+    "laboratory": "LAGE",
+    "elab_token": "29-3cfb971528eb01a8f39bc6f9fde0a084cabf752f36302de8462650ebc207cfd32d55454f57090eea527c29",
+    "jenkins_token": "11b58752b47dc5d4d8a58bedbe740aed62"
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00001",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "Test Title 01",
+    "sample_description": "Test data New text 2",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": "s_internal_00001_bad_sample/"
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00002",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "Test Title 02",
+    "sample_description": "New test",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": "s_internal_00002/"
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00003",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "Test Title 03",
+    "sample_description": "Test 3",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": "s_internal_00003_waste02/"
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00004",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "Test Title 01",
+    "sample_description": "Test data",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": "s_internal_00004_old/"
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00005",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "Test Title 01",
+    "sample_description": "Test data New text",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": null
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00006",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "Test Title 04",
+    "sample_description": "Try harder",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": null
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00007",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "Test Title 05",
+    "sample_description": "Next trial",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": null
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00008",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "Test Title 06",
+    "sample_description": "See if this works",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": null
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00009",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "Test Title 02N",
+    "sample_description": "New titles",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": null
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00010",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "Test Summaries Pod5",
+    "sample_description": "Normal description",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": null
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00011",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAME",
+    "sample_short_description": "Test Title LAME",
+    "sample_description": "LAME Title",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": null
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00012",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "Test description of sample 01",
+    "sample_description": "This is a large field I am dizzy",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": null
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00013",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "dress rehearsal 0",
+    "sample_description": "This is it. Let's see if this works.",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": null
+  }
+},
+{
+  "model": "PRP_CDM_app.samples",
+  "pk": "s_internal_00014",
+  "fields": {
+    "sr_id": null,
+    "lab_id": "LAGE",
+    "sample_short_description": "Test Title 03",
+    "sample_description": "iuiuyyuy",
+    "sample_feasibility": "",
+    "sample_status": "Submitted",
+    "sample_location": null
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00001",
+  "fields": {
+    "samples_ptr": "s_internal_00001",
+    "type": "pellet",
+    "is_volume_in_ul": "Yes",
+    "is_buffer_used": "No: None",
+    "is_quality": "No: No it doesn't",
+    "sample_date_of_delivery": "2025-01-22",
+    "sample_back": false,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00002",
+  "fields": {
+    "samples_ptr": "s_internal_00002",
+    "type": "pellet",
+    "is_volume_in_ul": "Yes",
+    "is_buffer_used": "No: None",
+    "is_quality": "No:",
+    "sample_date_of_delivery": "2025-01-03",
+    "sample_back": false,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00003",
+  "fields": {
+    "samples_ptr": "s_internal_00003",
+    "type": "DNA",
+    "is_volume_in_ul": "Yes",
+    "is_buffer_used": "No: None",
+    "is_quality": "No:",
+    "sample_date_of_delivery": "2024-02-20",
+    "sample_back": false,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00004",
+  "fields": {
+    "samples_ptr": "s_internal_00004",
+    "type": "DNA",
+    "is_volume_in_ul": "Yes",
+    "is_buffer_used": "No: None",
+    "is_quality": "No: o",
+    "sample_date_of_delivery": "2025-01-22",
+    "sample_back": false,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00005",
+  "fields": {
+    "samples_ptr": "s_internal_00005",
+    "type": "DNA",
+    "is_volume_in_ul": "Yes",
+    "is_buffer_used": "No: None",
+    "is_quality": "No: No",
+    "sample_date_of_delivery": "2025-01-22",
+    "sample_back": false,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00006",
+  "fields": {
+    "samples_ptr": "s_internal_00006",
+    "type": "biopsy",
+    "is_volume_in_ul": "No: NO",
+    "is_buffer_used": "No: None",
+    "is_quality": "Yes",
+    "sample_date_of_delivery": "2025-01-22",
+    "sample_back": true,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00007",
+  "fields": {
+    "samples_ptr": "s_internal_00007",
+    "type": "DNA",
+    "is_volume_in_ul": "Yes",
+    "is_buffer_used": "No: None",
+    "is_quality": "Yes",
+    "sample_date_of_delivery": "2025-01-03",
+    "sample_back": false,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00008",
+  "fields": {
+    "samples_ptr": "s_internal_00008",
+    "type": "DNA",
+    "is_volume_in_ul": "No:",
+    "is_buffer_used": "No: None",
+    "is_quality": "Yes",
+    "sample_date_of_delivery": "2025-01-03",
+    "sample_back": false,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00009",
+  "fields": {
+    "samples_ptr": "s_internal_00009",
+    "type": "DNA",
+    "is_volume_in_ul": "Yes",
+    "is_buffer_used": "No: No",
+    "is_quality": "No: ciao",
+    "sample_date_of_delivery": "2024-10-10",
+    "sample_back": false,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "uploads/samples/LAGE/s_internal_00009/Screenshot_2025-01-27_at_08.59.44.png",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00010",
+  "fields": {
+    "samples_ptr": "s_internal_00010",
+    "type": "DNA",
+    "is_volume_in_ul": "No:",
+    "is_buffer_used": "Yes",
+    "is_quality": "No: No it doesn't",
+    "sample_date_of_delivery": "2025-01-03",
+    "sample_back": false,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00012",
+  "fields": {
+    "samples_ptr": "s_internal_00012",
+    "type": "pellet",
+    "is_volume_in_ul": "Yes",
+    "is_buffer_used": "No: Not used",
+    "is_quality": "No:",
+    "sample_date_of_delivery": "2025-01-22",
+    "sample_back": false,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00013",
+  "fields": {
+    "samples_ptr": "s_internal_00013",
+    "type": "biopsy",
+    "is_volume_in_ul": "Yes",
+    "is_buffer_used": "No: No I think not",
+    "is_quality": "Yes",
+    "sample_date_of_delivery": "2024-10-10",
+    "sample_back": false,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lagesamples",
+  "pk": "s_internal_00014",
+  "fields": {
+    "samples_ptr": "s_internal_00014",
+    "type": "DNA",
+    "is_volume_in_ul": "Yes",
+    "is_buffer_used": "No: uy",
+    "is_quality": "No:",
+    "sample_date_of_delivery": "2024-10-10",
+    "sample_back": false,
+    "reagents_provided_by_client": false,
+    "reagents_date_of_delivery": null,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.lamesamples",
+  "pk": "s_internal_00011",
+  "fields": {
+    "samples_ptr": "s_internal_00011",
+    "chemical_formula": "CHOO CHOOO",
+    "elements_list": "",
+    "sample_date_of_delivery": "2024-01-02",
+    "sample_back": true,
+    "sample_sheet_filename": "",
+    "additional_filename": ""
+  }
+},
+{
+  "model": "PRP_CDM_app.instruments",
+  "pk": "CryoEM_Thermofisher_6321",
+  "fields": {
+    "vendor": "Cryo-EM",
+    "model": "Thermofisher",
+    "description": "It's big"
+  }
+},
+{
+  "model": "PRP_CDM_app.instruments",
+  "pk": "Illumina_ActiveLASeRTrial123_1956",
+  "fields": {
+    "vendor": "Illumina",
+    "model": "Active LASeR Trial è123",
+    "description": "Yes I can"
+  }
+},
+{
+  "model": "PRP_CDM_app.instruments",
+  "pk": "Illumina_ActiveLASeRTrial123_4225",
+  "fields": {
+    "vendor": "Illumina",
+    "model": "Active LASeR Trial è123",
+    "description": "Yes I can"
+  }
+},
+{
+  "model": "PRP_CDM_app.instruments",
+  "pk": "Illumina_ActiveLASeRTrial123_5722",
+  "fields": {
+    "vendor": "Illumina",
+    "model": "Active LASeR Trial è123",
+    "description": "Yes I can"
+  }
+},
+{
+  "model": "PRP_CDM_app.instruments",
+  "pk": "Nanopore_MinKnow_5356",
+  "fields": {
+    "vendor": "Nanopore",
+    "model": "MinKnow",
+    "description": "Laboratory of Genetics and Epigen"
+  }
+},
+{
+  "model": "PRP_CDM_app.instruments",
+  "pk": "Nanopore_PromethIon_2123",
+  "fields": {
+    "vendor": "Nanopore",
+    "model": "PromethIon",
+    "description": "Laboratory of Genetics and Epigen"
+  }
+},
+{
+  "model": "PRP_CDM_app.instruments",
+  "pk": "Nanopore_PromethIon2_2205",
+  "fields": {
+    "vendor": "Nanopore",
+    "model": "PromethIon 2",
+    "description": "Laboratory of Genetics and Epigen"
+  }
+},
+{
+  "model": "PRP_CDM_app.instruments",
+  "pk": "Thermofisher_BigTEM_1733",
+  "fields": {
+    "vendor": "Thermofisher",
+    "model": "Big TEM",
+    "description": "Big electrons for big science"
+  }
+},
+{
+  "model": "PRP_CDM_app.labxinstrument",
+  "pk": 1,
+  "fields": {
+    "lab_id": "LAGE",
+    "instrument_id": "Illumina_ActiveLASeRTrial123_1956"
+  }
+},
+{
+  "model": "PRP_CDM_app.labxinstrument",
+  "pk": 2,
+  "fields": {
+    "lab_id": "LAGE",
+    "instrument_id": "Nanopore_PromethIon_2123"
+  }
+},
+{
+  "model": "PRP_CDM_app.labxinstrument",
+  "pk": 3,
+  "fields": {
+    "lab_id": "LAGE",
+    "instrument_id": "Nanopore_PromethIon2_2205"
+  }
+},
+{
+  "model": "PRP_CDM_app.labxinstrument",
+  "pk": 4,
+  "fields": {
+    "lab_id": "LAGE",
+    "instrument_id": "Nanopore_MinKnow_5356"
+  }
+},
+{
+  "model": "PRP_CDM_app.labxinstrument",
+  "pk": 5,
+  "fields": {
+    "lab_id": "LAME",
+    "instrument_id": "CryoEM_Thermofisher_6321"
+  }
+},
+{
+  "model": "PRP_CDM_app.labxinstrument",
+  "pk": 6,
+  "fields": {
+    "lab_id": "LAGE",
+    "instrument_id": "Thermofisher_BigTEM_1733"
+  }
+},
+{
+  "model": "PRP_CDM_app.labdmp",
+  "pk": "LAGE",
+  "fields": {
+    "user_id": "admin",
+    "instrument_metadata_collection": "Yes: Oxford Nanopore, Illumina Novaseq6000",
+    "additional_enotebook_open_collection": "Yes: elabFTW",
+    "sample_standard": "Yes: bam, fastq, pod5",
+    "metadata_schema_defined": "No",
+    "open_trusted_repo_published_data": false,
+    "open_data_licence": "Yes: CC-by",
+    "open_access_journal_publication": false,
+    "clear_data_provenance": false,
+    "related_data_open": false,
+    "licence_scientific_documents": true,
+    "raw_data_storage_location": "Orfeo datacenter",
+    "raw_data_storage_time_retention": "10 years for human sample, for other sample it depends on the users",
+    "backup_policy_published_data": "Long term storage for 1 month and tapestation after",
+    "backup_policy_unplublished_data": "Will be available for 10 years, and metadata forever"
+  }
+},
+{
+  "model": "PRP_CDM_app.results",
+  "pk": "055b2097-802a-4c5f-a408-ce444823e190",
+  "fields": {
+    "main_repository": "/s_200_200/",
+    "article_doi": "10.2196/51021"
+  }
+},
+{
+  "model": "PRP_CDM_app.results",
+  "pk": "495f306f-f775-4512-a496-af318d184ff2",
+  "fields": {
+    "main_repository": "/illumina_run/ORID9999",
+    "article_doi": "11.22030/1020"
+  }
+},
+{
+  "model": "PRP_CDM_app.results",
+  "pk": "5f4dd750-56c6-40ce-b5f2-4c5b62fb50ba",
+  "fields": {
+    "main_repository": "/s_200_200/",
+    "article_doi": "10.2196/51021"
+  }
+},
+{
+  "model": "PRP_CDM_app.results",
+  "pk": "6dc4d6e2-a2be-46c2-a660-13c72eb9b289",
+  "fields": {
+    "main_repository": "/dress_rehearsal/00",
+    "article_doi": "10.20202/2020"
+  }
+},
+{
+  "model": "PRP_CDM_app.results",
+  "pk": "71f83d95-6e45-45e5-83fa-39fe14fbd546",
+  "fields": {
+    "main_repository": "/multimodal_results/01",
+    "article_doi": "12.10202/123"
+  }
+},
+{
+  "model": "PRP_CDM_app.results",
+  "pk": "bd9592eb-a02b-4647-916b-a0bf4ceb17a0",
+  "fields": {
+    "main_repository": "/lame_01/folder_42",
+    "article_doi": "11.2325"
+  }
+},
+{
+  "model": "PRP_CDM_app.results",
+  "pk": "e8abc334-3dd1-4296-bba0-ec5eb7185c66",
+  "fields": {
+    "main_repository": "/lame_01/folder_42",
+    "article_doi": "10.2100/321"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxinstrument",
+  "pk": "40ce-b5f2-4c5b62fb50ba_x_nopore_PromethIon_2123",
+  "fields": {
+    "results": "5f4dd750-56c6-40ce-b5f2-4c5b62fb50ba",
+    "instruments": "Nanopore_PromethIon_2123"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxinstrument",
+  "pk": "40ce-b5f2-4c5b62fb50ba_x_tiveLASeRTrial123_1956",
+  "fields": {
+    "results": "5f4dd750-56c6-40ce-b5f2-4c5b62fb50ba",
+    "instruments": "Illumina_ActiveLASeRTrial123_1956"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxinstrument",
+  "pk": "4296-bba0-ec5eb7185c66_x_yoEM_Thermofisher_6321",
+  "fields": {
+    "results": "e8abc334-3dd1-4296-bba0-ec5eb7185c66",
+    "instruments": "CryoEM_Thermofisher_6321"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxinstrument",
+  "pk": "4512-a496-af318d184ff2_x_tiveLASeRTrial123_1956",
+  "fields": {
+    "results": "495f306f-f775-4512-a496-af318d184ff2",
+    "instruments": "Illumina_ActiveLASeRTrial123_1956"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxinstrument",
+  "pk": "45e5-83fa-39fe14fbd546_x_nopore_PromethIon_2123",
+  "fields": {
+    "results": "71f83d95-6e45-45e5-83fa-39fe14fbd546",
+    "instruments": "Nanopore_PromethIon_2123"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxinstrument",
+  "pk": "45e5-83fa-39fe14fbd546_x_yoEM_Thermofisher_6321",
+  "fields": {
+    "results": "71f83d95-6e45-45e5-83fa-39fe14fbd546",
+    "instruments": "CryoEM_Thermofisher_6321"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxinstrument",
+  "pk": "4647-916b-a0bf4ceb17a0_x_ermofisher_BigTEM_1733",
+  "fields": {
+    "results": "bd9592eb-a02b-4647-916b-a0bf4ceb17a0",
+    "instruments": "Thermofisher_BigTEM_1733"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxinstrument",
+  "pk": "4647-916b-a0bf4ceb17a0_x_opore_PromethIon2_2205",
+  "fields": {
+    "results": "bd9592eb-a02b-4647-916b-a0bf4ceb17a0",
+    "instruments": "Nanopore_PromethIon2_2205"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxinstrument",
+  "pk": "46c2-a660-13c72eb9b289_x_ermofisher_BigTEM_1733",
+  "fields": {
+    "results": "6dc4d6e2-a2be-46c2-a660-13c72eb9b289",
+    "instruments": "Thermofisher_BigTEM_1733"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxinstrument",
+  "pk": "4c5f-a408-ce444823e190_x_nopore_PromethIon_2123",
+  "fields": {
+    "results": "055b2097-802a-4c5f-a408-ce444823e190",
+    "instruments": "Nanopore_PromethIon_2123"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxinstrument",
+  "pk": "4c5f-a408-ce444823e190_x_tiveLASeRTrial123_1956",
+  "fields": {
+    "results": "055b2097-802a-4c5f-a408-ce444823e190",
+    "instruments": "Illumina_ActiveLASeRTrial123_1956"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxsample",
+  "pk": "40ce-b5f2-4c5b62fb50ba_x_s_internal_00002",
+  "fields": {
+    "results": "5f4dd750-56c6-40ce-b5f2-4c5b62fb50ba",
+    "samples": "s_internal_00002"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxsample",
+  "pk": "40ce-b5f2-4c5b62fb50ba_x_s_internal_00004",
+  "fields": {
+    "results": "5f4dd750-56c6-40ce-b5f2-4c5b62fb50ba",
+    "samples": "s_internal_00004"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxsample",
+  "pk": "4296-bba0-ec5eb7185c66_x_s_internal_00011",
+  "fields": {
+    "results": "e8abc334-3dd1-4296-bba0-ec5eb7185c66",
+    "samples": "s_internal_00011"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxsample",
+  "pk": "4512-a496-af318d184ff2_x_s_internal_00002",
+  "fields": {
+    "results": "495f306f-f775-4512-a496-af318d184ff2",
+    "samples": "s_internal_00002"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxsample",
+  "pk": "45e5-83fa-39fe14fbd546_x_s_internal_00003",
+  "fields": {
+    "results": "71f83d95-6e45-45e5-83fa-39fe14fbd546",
+    "samples": "s_internal_00003"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxsample",
+  "pk": "45e5-83fa-39fe14fbd546_x_s_internal_00011",
+  "fields": {
+    "results": "71f83d95-6e45-45e5-83fa-39fe14fbd546",
+    "samples": "s_internal_00011"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxsample",
+  "pk": "4647-916b-a0bf4ceb17a0_x_s_internal_00001",
+  "fields": {
+    "results": "bd9592eb-a02b-4647-916b-a0bf4ceb17a0",
+    "samples": "s_internal_00001"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxsample",
+  "pk": "4647-916b-a0bf4ceb17a0_x_s_internal_00014",
+  "fields": {
+    "results": "bd9592eb-a02b-4647-916b-a0bf4ceb17a0",
+    "samples": "s_internal_00014"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxsample",
+  "pk": "46c2-a660-13c72eb9b289_x_s_internal_00002",
+  "fields": {
+    "results": "6dc4d6e2-a2be-46c2-a660-13c72eb9b289",
+    "samples": "s_internal_00002"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxsample",
+  "pk": "46c2-a660-13c72eb9b289_x_s_internal_00013",
+  "fields": {
+    "results": "6dc4d6e2-a2be-46c2-a660-13c72eb9b289",
+    "samples": "s_internal_00013"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxsample",
+  "pk": "4c5f-a408-ce444823e190_x_s_internal_00002",
+  "fields": {
+    "results": "055b2097-802a-4c5f-a408-ce444823e190",
+    "samples": "s_internal_00002"
+  }
+},
+{
+  "model": "PRP_CDM_app.resultxsample",
+  "pk": "4c5f-a408-ce444823e190_x_s_internal_00004",
+  "fields": {
+    "results": "055b2097-802a-4c5f-a408-ce444823e190",
+    "samples": "s_internal_00004"
   }
 }
 ]
