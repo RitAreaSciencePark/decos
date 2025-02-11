@@ -3,7 +3,7 @@ from django.template.loader import render_to_string
 from PRP_CDM_app.models import LageSamples
 from django.forms.models import model_to_dict
 from APIs.decos_jenkins_API.decos_jenkins_API import Server
-from PRP_CDM_app.models import API_Tokens
+from .secrets_models import API_Tokens
 import re
 
 # TODO: harmonize API calls (init tokens and so on)

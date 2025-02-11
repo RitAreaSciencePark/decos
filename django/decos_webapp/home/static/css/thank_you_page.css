@@ -1,4 +1,70 @@
-main {
-    background-color: white;
-    padding: 5%;
-}
+/* thank_you_page.css */
+
+/* Overall background and typography for the thank you page */
+body.template-thankyou {
+    background: linear-gradient(135deg, #f9f9f9, #e0e0e0);
+    color: #333;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+  
+  /* Container styling for a card-like effect */
+  .template-thankyou .container {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    margin-top: 50px;
+  }
+  
+  /* Headings */
+  .template-thankyou h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #212529;
+    margin-bottom: 20px;
+  }
+  
+  /* Lead paragraph styling */
+  .template-thankyou p.lead,
+  .template-thankyou p {
+    font-size: 1.125rem;
+    color: #495057;
+  }
+  
+  /* Horizontal rule styling */
+  .template-thankyou hr {
+    border: 1px solid #dee2e6;
+    width: 60%;
+    margin: 1.5rem auto;
+  }
+  
+  /* Link styling */
+  .template-thankyou a {
+    color: #0d6efd;
+    text-decoration: none;
+    transition: color 0.3s ease;
+  }
+  
+  .template-thankyou a:hover {
+    color: #0b5ed7;
+    text-decoration: underline;
+  }
+  
+  /* Custom styling for Bootstrap primary button */
+  .template-thankyou .btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+    font-size: 1.125rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+  }
+  
+  .template-thankyou .btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+  }
+  

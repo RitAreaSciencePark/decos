@@ -2,6 +2,7 @@ from decos_secrets import minIO_secrets
 
 # modules implemented in the container! In case you see red
 from django.db import models, connections
+from .secrets_models import API_Tokens
 
 ### wagtail imports
 from wagtail.fields import RichTextField
@@ -25,7 +26,7 @@ from django.contrib.auth.models import User, Group
 
 from .forms import form_orchestrator, LabSwitchForm, DMPform, UserDataForm, APITokenForm, ProposalSubmissionForm, SRSubmissionForm, InstrumentsForm, ResultsForm #, LageSamplesForm, LameSamplesForm
 
-from PRP_CDM_app.models import labDMP, Users, Proposals, ServiceRequests, Laboratories, Samples, API_Tokens, Instruments, Results, ResultxSample, ResultxInstrument
+from PRP_CDM_app.models import labDMP, Users, Proposals, ServiceRequests, Laboratories, Samples, Instruments, Results, ResultxSample, ResultxInstrument
 from PRP_CDM_app.models import LabXInstrument, LageSamples
 
 from django.template.loader import render_to_string
@@ -59,7 +60,18 @@ from APIs.decos_minio_API.decos_minio_API import decos_minio
 
 # FIXME: the first character of the widget when recovered do not appear. Editsamples
 # FIXME: I frankly do not remember what does the next line does: so, good luck.
-Group.add_to_class('laboratory', models.BooleanField(default=False))   
+Group.add_to_class('laboratory', models.BooleanField(default=False))
+
+class API_Model(models.Model):
+        # TODO: manage this secret!!!!
+    user_id = models.ForeignKey(User, models.PROTECT)
+    laboratory = models.CharField(max_length=50)
+    elab_token = models.CharField(max_length=128, null=True, blank=True)
+    jenkins_token = models.CharField(max_length=128, null=True, blank=True)
+
+    class Meta:
+        db_table= 'API_tokens'.lower()
+        app_label = 'home'
 
 @register_setting # Settings in admin page
 class HeaderSettings(BaseGenericSetting):
@@ -204,7 +216,7 @@ class UserDataPage(Page):
                 #data.lab_id = request.session["lab_selected"]
                 data.user_id = username
                 data.save()
-            form_api_tokens = APITokenForm(data=request.POST)
+            form_api_tokens = APITokenForm(data=request.POST, username=username)
             try:
                 if form_api_tokens['laboratory'].data != '':
                     lab = form_api_tokens['laboratory'].data
@@ -213,15 +225,21 @@ class UserDataPage(Page):
                     data = form_api_tokens.save(commit=False)
                     # this block is to update only the fields actually written on, TODO: api token check? Low priority
                     if form_api_tokens.is_valid() and lab != '':
-                        api_token_queryset = API_Tokens.objects.filter(laboratory_id = Laboratories.objects.get(pk = lab), user_id = Users.objects.get(pk=username))
+                        debug = form_api_tokens["laboratory"].data
+
+                        lab = Laboratories.objects.get(pk=form_api_tokens["laboratory"].data)
+                        api_token_queryset = API_Tokens.objects.filter(laboratory = lab, user_id = User.objects.get(username=username))
+                        # api_token_queryset = API_Tokens.objects.all()
                         if api_token_queryset.values().count() > 0:
                             data.id = api_token_queryset.first().id
+                            debug = form_api_tokens['elab_token'].data
                             if form_api_tokens['elab_token'].data == '':
                                 data.elab_token = api_token_queryset.values('elab_token').first()['elab_token']
                             if form_api_tokens['jenkins_token'].data == '':
                                 data.jenkins_token = api_token_queryset.values('jenkins_token').first()['jenkins_token']
 
-                        data.user_id = Users.objects.get(pk=username)
+                        data.user_id = User.objects.get(username=username)
+        
                         data.save()
                         return render(request, 'home/utility_pages/user_data_page.html', {
                         'page': self,
@@ -234,7 +252,7 @@ class UserDataPage(Page):
                     'page': self,
                     # We pass the data to the thank you page, data.datavarchar and data.dataint!
                     'user_data': form_user,
-                    'api_token_data': APITokenForm(),
+                    'api_token_data': APITokenForm(username=username),
                 })
             except KeyError as e:
                 pass
@@ -246,7 +264,6 @@ class UserDataPage(Page):
                         # We pass the data to the thank you page, data.datavarchar and data.dataint!
                         'errors': form.errors, # TODO: improve this
                     })
-            
         else:
             #form = UserRegistrationForm()
             try:
@@ -257,13 +274,7 @@ class UserDataPage(Page):
             except Exception as e: # TODO Properly catch this
                 form_user = UserDataForm()
 
-            try:
-                if API_Tokens.objects.get(pk=username) is not None:
-                    form_api_tokens = APITokenForm(instance=Users.objects.get(pk=username))
-                else:
-                    form_api_tokens = APITokenForm()
-            except Exception as e: # TODO Properly catch this
-                form_api_tokens = APITokenForm()
+        form_api_tokens = APITokenForm(username=username)
 
         return render(request, 'home/utility_pages/user_data_page.html', {
                 'page': self,
@@ -446,8 +457,9 @@ class SampleListPage(Page): # EASYDMP
             elab_write = request.POST.get("elab_write",None)
             if elab_write:
                 # TODO: ElabWrite
-                tokens = API_Tokens.objects.filter(laboratory_id=lab.lab_id,user_id=Users.objects.get(pk = username))
+                tokens = API_Tokens.objects.filter(laboratory=lab.lab_id,user_id=User.objects.get(username = username))
                 token = tokens.first()
+                debug = ApiSettings.objects.get(pk = 1)
                 elab_api = Decos_Elab_API(ApiSettings.objects.get(pk = 1).elab_base_url,token.elab_token)
                 sample = Samples.objects.get(pk = request.POST['elab_write'])
 
@@ -1156,10 +1168,6 @@ class ExperimentDMPPage(Page):
             'lab_dmp': lab_dmp,
         })
 
-                
-
-
-
 class ProposalSubmissionPage(Page): # USER DATA DIMMT
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(
@@ -1342,4 +1350,3 @@ class ServiceRequestSubmissionPage(Page): # DIMMT
                 'data': form,
                 # keep the selection form open or not ("true" or "false")
             })
-

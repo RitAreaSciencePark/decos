@@ -62,16 +62,6 @@ class Laboratories(models.Model):
     class Meta:
         db_table= 'laboratories'.lower()
 
-class API_Tokens(models.Model):
-        # TODO: manage this secret!!!!
-    user_id = models.ForeignKey(Users, on_delete=models.PROTECT)
-    laboratory = models.ForeignKey(Laboratories, on_delete=models.PROTECT, blank=True)
-    elab_token = models.CharField(max_length=128, null=True, blank=True)
-    jenkins_token = models.CharField(max_length=128, null=True, blank=True)
-
-    class Meta:
-        db_table= 'API_tokens'.lower()
-
 class Proposals(models.Model):
     proposal_id = models.CharField(max_length=50, primary_key=True)
     user_id = models.ForeignKey(Users, on_delete=models.PROTECT)

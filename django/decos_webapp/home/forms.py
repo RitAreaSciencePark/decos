@@ -2,8 +2,12 @@ from django import forms
 # This import point to the external app schema!
 from PRP_CDM_app.forms import FormsDefinition
 from PRP_CDM_app.models import labDMP
-from PRP_CDM_app.models import Users, Proposals, ServiceRequests, Laboratories, Samples, API_Tokens, Instruments, Results
+from PRP_CDM_app.models import Users, Proposals, ServiceRequests, Laboratories, Samples, Instruments, Results
 from PRP_CDM_app.fields import BooleanIfWhat, MultiChoicheAndOtherWidget
+
+
+from django.contrib.auth.models import User, Group
+
 
 class LabSwitchForm(forms.Form): 
     user_labs = []
@@ -94,16 +98,6 @@ class UserDataForm(forms.ModelForm):
                        }'''
             exclude = ['user_id']
 
-class APITokenForm(forms.ModelForm):
-     class Meta:
-        model = API_Tokens
-        widgets = {
-            'laboratories' : forms.MultipleChoiceField(),
-            'elab_token' : forms.PasswordInput(),
-            'jenkins_token' : forms.PasswordInput(),
-        }
-        exclude = ['user_id']
-
 class InstrumentsForm(forms.ModelForm):
 
         # see https://docs.djangoproject.com/en/1.9/topics/forms/ for more complex example.
@@ -182,6 +176,30 @@ class SRForSampleForm(forms.ModelForm):
             # Filtra i sr_id basati su questi proposal_id
             self.fields['sr_id'].queryset = ServiceRequests.objects.filter(proposal_id__in=user_proposals)
 
+
+
+class APITokenForm(forms.ModelForm):
+
+    def __init__(self, username, *args, **kwargs):
+        super(APITokenForm, self).__init__(*args, **kwargs)
+        user = User.objects.filter(username=username).first()
+        qset=Group.objects.filter(user = user)
+        lab_list = []
+        for group in qset:
+             lab_list.append(Laboratories.objects.get(lab_id=group.name).lab_id)
+        qset = Laboratories.objects.filter(lab_id__in = lab_list)
+        self.fields['laboratory'] = forms.ModelChoiceField(queryset=qset)
+        
+
+    class Meta:
+        from .secrets_models import API_Tokens
+        model = API_Tokens
+
+        widgets = {
+            'elab_token' : forms.PasswordInput(),
+            'jenkins_token' : forms.PasswordInput(),
+        }
+        exclude = ['user_id']
 '''class LageSamplesForm(forms.ModelForm):
     class Meta:
         model = LageSamples
