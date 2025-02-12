@@ -183,7 +183,7 @@ class APITokenForm(forms.ModelForm):
     def __init__(self, username, *args, **kwargs):
         super(APITokenForm, self).__init__(*args, **kwargs)
         user = User.objects.filter(username=username).first()
-        qset=Group.objects.filter(user = user)
+        qset=Group.objects.filter(user = user, laboratory = True)
         lab_list = []
         for group in qset:
              lab_list.append(Laboratories.objects.get(lab_id=group.name).lab_id)

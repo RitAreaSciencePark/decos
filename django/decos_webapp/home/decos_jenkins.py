@@ -18,7 +18,7 @@ class Decos_Jenkins_API(Server):
         jenkins_token = API_Tokens.objects.filter(user_id=user_id, laboratory= lab).values("jenkins_token").first()['jenkins_token']
         credentials = (username, jenkins_token)
         # 'http://localhost:9000/' or jenkins-test
-        # TODO: SOFTCODE HOST:
+        # FIXME: SOFTCODE HOST and catch the exception (need refactor...)
         host = 'http://jenkins-test:8080/'
         super().__init__(host, credentials)
 

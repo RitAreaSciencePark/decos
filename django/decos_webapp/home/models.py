@@ -1,3 +1,4 @@
+# FIXME: put this into the API_TOKENS
 from decos_secrets import minIO_secrets
 
 # modules implemented in the container! In case you see red
@@ -62,16 +63,8 @@ from APIs.decos_minio_API.decos_minio_API import decos_minio
 # FIXME: I frankly do not remember what does the next line does: so, good luck.
 Group.add_to_class('laboratory', models.BooleanField(default=False))
 
-class API_Model(models.Model):
-        # TODO: manage this secret!!!!
-    user_id = models.ForeignKey(User, models.PROTECT)
-    laboratory = models.CharField(max_length=50)
-    elab_token = models.CharField(max_length=128, null=True, blank=True)
-    jenkins_token = models.CharField(max_length=128, null=True, blank=True)
+from django.core.exceptions import ObjectDoesNotExist
 
-    class Meta:
-        db_table= 'API_tokens'.lower()
-        app_label = 'home'
 
 @register_setting # Settings in admin page
 class HeaderSettings(BaseGenericSetting):
@@ -457,10 +450,16 @@ class SampleListPage(Page): # EASYDMP
             elab_write = request.POST.get("elab_write",None)
             if elab_write:
                 # TODO: ElabWrite
-                tokens = API_Tokens.objects.filter(laboratory=lab.lab_id,user_id=User.objects.get(username = username))
-                token = tokens.first()
-                debug = ApiSettings.objects.get(pk = 1)
-                elab_api = Decos_Elab_API(ApiSettings.objects.get(pk = 1).elab_base_url,token.elab_token)
+                try:
+                    tokens = API_Tokens.objects.filter(laboratory=lab.lab_id,user_id=User.objects.get(username = username))
+                    token = tokens.first()
+
+                    elab_api = Decos_Elab_API(ApiSettings.objects.get(pk = 1).elab_base_url,token.elab_token)
+                except ObjectDoesNotExist as e:
+                    return render(request, 'home/error_page.html', {
+                        'page': self,
+                        'errors': e, # TODO: improve this
+                    })
                 sample = Samples.objects.get(pk = request.POST['elab_write'])
 
                 try:
@@ -507,7 +506,7 @@ class SampleListPage(Page): # EASYDMP
                     except Samples.DoesNotExist as e:
                         print("Debug: {e}") # TODO: properly manage this, TODO: implement a log library?
                         ''' #TODO: IMPLEMENT ME NOW!
-            except Exception as e: # TODO: catch
+            except Exception as e: # FIXME: properly catch
                 print(f"debug: {e}")
         
         data = Samples.objects.filter(lab_id=request.session.get('lab_selected'))
@@ -1266,6 +1265,8 @@ class ProposalListPage(Page): # DIMMT
         })
 
 class ServiceRequestSubmissionPage(Page): # DIMMT
+
+
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(
         max_length=255, help_text="Title text to use for the 'thank you' page")
@@ -1283,6 +1284,7 @@ class ServiceRequestSubmissionPage(Page): # DIMMT
     ]
 
     def serve(self,request):
+
         if request.user.is_authenticated:
             username = request.user.username
 
@@ -1344,9 +1346,11 @@ class ServiceRequestSubmissionPage(Page): # DIMMT
 
 
         return render(request, 'home/sr_submission_page.html', {
+
                 'page': self,
                 'table': table,
                 # We pass the data to the thank you page, data.datavarchar and data.dataint!
                 'data': form,
                 # keep the selection form open or not ("true" or "false")
             })
+    
