@@ -152,7 +152,7 @@ class SwitchLabPage(Page):
 
         if request.method == 'POST':
             # If the method is POST, validate the data and perform a save() == INSERT VALUE INTO
-            form = LabSwitchForm(data=request.POST, user_labs=request.user.groups.all())
+            form = LabSwitchForm(data=request.POST, user_labs=request.user.groups.filter(laboratory=True))
             if form.is_valid():
                 # BEWARE: This is a modelForm and not a object/model, "save" do not have some arguments of the same method, like using=db_tag
                 # to work with a normal django object insert a line: data = form.save(commit=False) and then data is a basic model: e.g., you can use data.save(using=external_generic_db)
@@ -175,7 +175,7 @@ class SwitchLabPage(Page):
                 'page': self,
                 'errors': {"No assigned laboratory":"The User has no assigned laboratory, contact the administrator."}, # TODO: improve this
                 })
-            form = LabSwitchForm(user_labs=request.user.groups.all())
+            form = LabSwitchForm(user_labs=request.user.groups.filter(laboratory=True))
         debug = form
         renderPage = render(request, 'switch_lab.html', {
                 'page': self,

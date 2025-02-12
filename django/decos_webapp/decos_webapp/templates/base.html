@@ -47,7 +47,11 @@
         {% include "includes/header.html" %}
         
         <main>
-            {% block content %}{% endblock %}
+            <div class="main_content">
+            {% block content %}
+            
+            {% endblock %}
+            </div>
         </main>
 
         {% include "includes/footer.html" %}

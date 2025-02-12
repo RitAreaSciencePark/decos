@@ -9,6 +9,8 @@ import json
 import os
 from pathlib import Path
 
+# FIXME: IMPORTANT, REFACTOR THE SCHEMA WITH BETTER columns NAMES! (e.g. remove [..]_id_id for fk...)
+
 # NOTE: For "multiple choices + free text fields"
 # in this version they must be declared like this:
 #    test_choices = (

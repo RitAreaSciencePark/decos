@@ -5,14 +5,17 @@ from django.forms.models import model_to_dict
 from APIs.decos_jenkins_API.decos_jenkins_API import Server
 from .secrets_models import API_Tokens
 import re
+from django.contrib.auth.models import User, Group
+
+
 
 # TODO: harmonize API calls (init tokens and so on)
 class Decos_Jenkins_API(Server):
     
     def __init__(self, username, lab):
-        user_id = username, 
+        user_id = User.objects.get(username=username) 
         laboratory_id = lab
-        jenkins_token = API_Tokens.objects.filter(user_id=username, laboratory_id = lab).values("jenkins_token").first()['jenkins_token']
+        jenkins_token = API_Tokens.objects.filter(user_id=user_id, laboratory= lab).values("jenkins_token").first()['jenkins_token']
         credentials = (username, jenkins_token)
         # 'http://localhost:9000/' or jenkins-test
         # TODO: SOFTCODE HOST:
