@@ -5,7 +5,8 @@ from django.contrib import admin
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
-from PRP_CDM_app.views import listDMPView
+
+from home.views import switch_lab_view
 
 from search import views as search_views
 
@@ -28,7 +29,7 @@ if settings.DEBUG:
 urlpatterns = urlpatterns + [
     # url(r'^accounts/', include('allauth.urls')), # Creates urls like yourwebsite.com/accounts/login/
     path(r'', include('allauth.urls')), # Creates urls like yourwebsite.com/login/
-    path("listdmpview/", listDMPView, name="customdata"),
+    path('', include('home.urls', namespace='home')),  # Include app URLs with namespace
 
     # For anything not caught by a more specific rule above, hand over to
     # Wagtail's page serving mechanism. This should be the last pattern in

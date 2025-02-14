@@ -4,8 +4,6 @@ from PRP_CDM_app.forms import FormsDefinition
 from PRP_CDM_app.models import labDMP
 from PRP_CDM_app.models import Users, Proposals, ServiceRequests, Laboratories, Samples, Instruments, Results
 from PRP_CDM_app.fields import BooleanIfWhat, MultiChoicheAndOtherWidget
-
-
 from django.contrib.auth.models import User, Group
 
 

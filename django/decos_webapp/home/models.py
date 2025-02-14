@@ -1,520 +1,347 @@
-# FIXME: put this into the API_TOKENS
-from decos_secrets import minIO_secrets
+# Standard Library Imports
+import json  # For handling JSON data
+import logging  # For logging errors, warnings, and info
+from os import listdir  # For listing files in a directory
+from os.path import dirname, isfile, join  # For file path manipulations
 
-# modules implemented in the container! In case you see red
-from django.db import models, connections
-from .secrets_models import API_Tokens
+# Third-party Imports (Django & Wagtail)
+from django import forms  # For form handling
+from django.conf import settings  # For accessing Django settings
+from django.contrib.auth.models import Group, User  # User and Group models
+from django.core.exceptions import ObjectDoesNotExist  # For handling non-existing objects
+from django.db import connections, models  # ORM models and DB connections
+from django.forms.models import model_to_dict  # For converting model instances to dictionaries
+from django.shortcuts import redirect, render  # For rendering templates and handling redirects
+from django.template.loader import render_to_string  # For rendering templates to strings
+from django_tables2.config import RequestConfig  # For configuring table display
 
-### wagtail imports
-from wagtail.fields import RichTextField
-from wagtail.models import Page
-from wagtail.admin.panels import (
-    FieldPanel,
+from wagtail.admin.panels import (  # For Wagtail admin panel configurations 
+    FieldPanel, 
     MultiFieldPanel,
 )
-from wagtail.contrib.settings.models import (
-    BaseGenericSetting,
-    register_setting,
+from wagtail.contrib.settings.models import (  # For Wagtail settings models
+    BaseGenericSetting, 
+    register_setting
 )
-### end wagtail imports
+from wagtail.fields import RichTextField  # For rich text fields in Wagtail models
+from wagtail.models import Page  # Base Page model in Wagtail CMS
 
-### django forms imports with PRP_CMD
-from django.conf import settings
-from django.shortcuts import render, redirect
-from django import forms
-from django.forms.models import model_to_dict
-from django.contrib.auth.models import User, Group
+# Local Application Imports (Project-specific)
+from decos_secrets import minIO_secrets  # Secrets configuration for minIO storage
 
-from .forms import form_orchestrator, LabSwitchForm, DMPform, UserDataForm, APITokenForm, ProposalSubmissionForm, SRSubmissionForm, InstrumentsForm, ResultsForm #, LageSamplesForm, LameSamplesForm
+from .decos_elab import Decos_Elab_API  # Integration with Decos Elab API
+from .decos_jenkins import Decos_Jenkins_API  # Integration with Decos Jenkins API
 
-from PRP_CDM_app.models import labDMP, Users, Proposals, ServiceRequests, Laboratories, Samples, Instruments, Results, ResultxSample, ResultxInstrument
-from PRP_CDM_app.models import LabXInstrument, LageSamples
+from .forms import (  # Project-specific forms
+    APITokenForm,
+    DMPform,
+    InstrumentsForm,
+    LabSwitchForm,
+    ResultsForm,
+    SRSubmissionForm,
+    UserDataForm,
+    ProposalSubmissionForm,
+    form_orchestrator,  # Orchestrates form handling
+)
 
-from django.template.loader import render_to_string
-# TODO: use it or not, decide: from PRP_CDM_app.reports import ReportDefinition 
-### end django forms imports with PRP_CDM
+from .secrets_models import API_Tokens  # Model for API tokens
 
-### file system import, mainly for file attachments
-from os import listdir
-from os.path import isfile,join,dirname
-###
+from .tables import (  # Django-tables2 configurations for displaying data tables
+    InstrumentsForResultsTable,
+    ProposalsTable,
+    ResultsTable,
+    SamplesForResultsTable,
+    SamplesTable,
+    ServiceRequestTable,
+)
 
-### Id generators
-# FIXME: is this used? from uuid import uuid4
-from PRP_CDM_app.code_generation import sr_id_generation, proposal_id_generation, sample_id_generation, instrument_id_generation, result_id_generation, xid_code_generation
-### end Id generators
+from PRP_CDM_app.code_generation import (  # ID code generators for various entities
+    instrument_id_generation,
+    proposal_id_generation,
+    result_id_generation,
+    sample_id_generation,
+    sr_id_generation,
+    xid_code_generation,
+)
 
-### dynamic tables for reporting 
-from .tables import ProposalsTable,ServiceRequestTable,SamplesTable, SamplesForResultsTable, InstrumentsForResultsTable, ResultsTable
-from django_tables2.config import RequestConfig
-### end dynamic tables for reporting 
+from PRP_CDM_app.models import (  # Models related to samples, instruments, results, etc.
+    LageSamples,
+    LabXInstrument,
+    Laboratories,
+    Proposals,
+    ResultxInstrument,
+    ResultxSample,
+    Results,
+    Samples,
+    ServiceRequests,
+    Users,
+    Instruments,
+)
 
-import json
+from APIs.decos_minio_API.decos_minio_API import decos_minio  # MinIO API integration
 
-### APIs
-from .decos_elab import Decos_Elab_API
-from .decos_jenkins import Decos_Jenkins_API
-from APIs.decos_minio_API.decos_minio_API import decos_minio
-### end APIs
-
-# TODO: MAYBE ABC? implement Abstract classes and methods could be useful in this page.
-
-# FIXME: the first character of the widget when recovered do not appear. Editsamples
-# FIXME: I frankly do not remember what does the next line does: so, good luck.
 Group.add_to_class('laboratory', models.BooleanField(default=False))
 
-from django.core.exceptions import ObjectDoesNotExist
+logger = logging.getLogger(__name__)
 
-
-@register_setting # Settings in admin page
+# HeaderSettings allows customization of the website's header section, enabling
+# administrators to set a custom text and upload an icon via the Wagtail admin interface.
+@register_setting
 class HeaderSettings(BaseGenericSetting):
-    header_text = RichTextField(blank=True)
+    header_text = RichTextField(blank=True, verbose_name="Header Text", help_text="Text displayed in the website header")
     prp_icon = models.ForeignKey(
         'wagtailimages.Image',
         null=True,
         blank=True,
         on_delete=models.SET_NULL,
-        related_name='+'
+        related_name='+',
+        verbose_name="Header Icon",
+        help_text="Icon displayed in the header"
     )
 
-    panels = [
-        MultiFieldPanel(
-            [
-                FieldPanel("prp_icon"),
-                FieldPanel("header_text"),
-            ],
-            "Header Static",
-        )
-    ]
-
+# FooterSettings provides customization options for the website's footer section,
+# allowing administrators to configure footer text with room for future enhancements.
 @register_setting
 class FooterSettings(BaseGenericSetting):
+    footer_text = models.TextField(blank=True, verbose_name="Footer Text", help_text="Text displayed in the website footer")
+    # TODO: Add fields for copyright notice and social media links in the future
 
-    footer_text = RichTextField(blank=True)
-    github_url = models.URLField(verbose_name="GitHub URL", blank=True)
-    github_icon = models.ForeignKey(
-        'wagtailimages.Image',
-        null=True,
+# ApiSettings creates a configuration menu in the admin panel to specify API URLs
+# for external services (eLab, Jenkins), with potential future support for MinIO integration.
+@register_setting
+class ApiSettings(BaseGenericSetting):
+    elab_base_url = models.URLField(
+        verbose_name="eLab Base URL",
         blank=True,
-        on_delete=models.SET_NULL,
-        related_name='+'
+        help_text="Base URL for the eLab API"
+    )
+    jenkins_base_url = models.URLField(
+        verbose_name="Jenkins Base URL",
+        blank=True,
+        help_text="Base URL for the Jenkins API"
+    )
+    api_token = models.CharField(
+        max_length=255,
+        blank=True,
+        verbose_name="API Token",
+        help_text="Optional token for authenticating API requests"
     )
 
-    panels = [
-        FieldPanel("footer_text"),
-        MultiFieldPanel(
-            [
-                FieldPanel("github_url"),
-                FieldPanel("github_icon"),
-            ],
-            "Footer Links",
-        )
-    ]
-
-@register_setting
-class ApiSettings(BaseGenericSetting): # TODO: Implement this, it is now hardcoded!
-    # FIXME: FIX FOR MULTIPLE LABS!  
-    elab_base_url = models.URLField(verbose_name = "elab url", blank=True)
-    jenkins_base_url = models.URLField(verbose_name="jenkins url", blank = True)
-    
-    panels = [
-        FieldPanel("elab_base_url"),
-        FieldPanel("jenkins_base_url"),
-    ]
-
 # template: file://./templates/home/home_page.html
+# HomePage is a customizable home page model for Wagtail CMS.
+# It allows content editors to set an introductory text and rich body content.
 class HomePage(Page):
-    intro = models.CharField(max_length=250, default="")
-    body = RichTextField(blank=True)
+    # A short introductory text displayed on the home page.
+    intro = models.CharField(
+        max_length=250,
+        default="",
+        help_text="Short introductory text displayed on the home page."
+    )
+
+    # Main body content of the home page, supports rich text formatting.
+    body = RichTextField(
+        blank=True,
+        help_text="Main body content of the home page, supports rich text formatting."
+    )
+
+    # Defines the fields displayed in the Wagtail admin interface.
     content_panels = [
-    FieldPanel("title"),
-    FieldPanel("intro"),
-    FieldPanel("body"),
+        FieldPanel("title"),  # Built-in title field from Wagtail Page model
+        FieldPanel("intro"),  # Introductory text panel
+        FieldPanel("body"),   # Rich text content panel
     ]
 
-# template: file://./templates/home/home_page.html
-class SwitchLabPage(Page):
-    intro = RichTextField(blank=True)
-    content_panels = Page.content_panels + [
-        FieldPanel('intro', classname="full")
-    ]
+# Retrieves the selected laboratory from session data
+class SessionHandlerMixin:
+    def get_lab_from_session(self, request):
+        lab_id = request.session.get('lab_selected')
+        if not lab_id:
+            return None
 
-    def serve(self, request):
-        if request.user.is_authenticated:
-            username = request.user.username
-
-        if request.method == 'POST':
-            # If the method is POST, validate the data and perform a save() == INSERT VALUE INTO
-            form = LabSwitchForm(data=request.POST, user_labs=request.user.groups.filter(laboratory=True))
-            if form.is_valid():
-                # BEWARE: This is a modelForm and not a object/model, "save" do not have some arguments of the same method, like using=db_tag
-                # to work with a normal django object insert a line: data = form.save(commit=False) and then data is a basic model: e.g., you can use data.save(using=external_generic_db)
-                # In our example the routing takes care of the external db save
-                laboratory = form.cleaned_data.get('lab_selected')
-                request.session["lab_selected"] = laboratory
-                try:
-                    return redirect(request.session["return_page"])  # FIXME: Not working as intended
-                except:
-                    return redirect('/')
-        else:
-            try:
-                request.session["return_page"] = request.META['HTTP_REFERER']
-            except KeyError:
-                request.session["return_page"] = "/"
-            
-            debug = request.user.groups.all()
-            if not request.user.groups.all():
-                return render(request, 'home/error_page.html', {
-                'page': self,
-                'errors': {"No assigned laboratory":"The User has no assigned laboratory, contact the administrator."}, # TODO: improve this
-                })
-            form = LabSwitchForm(user_labs=request.user.groups.filter(laboratory=True))
-        debug = form
-        renderPage = render(request, 'switch_lab.html', {
-                'page': self,
-                # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                'data': form,
-            })
-        return renderPage
-
-class UserDataPage(Page):
-    intro = RichTextField(blank=True)
-    thankyou_page_title = models.CharField(
-        max_length=255, help_text="Title text to use for the 'thank you' page")
-    # Note that there's nothing here for specifying the actual form fields -
-    # those are still defined in forms.py. There's no benefit to making these
-    # editable within the Wagtail admin, since you'd need to make changes to
-    # the code to make them work anyway.
-    # regardless, a little bit of customization for the page, as title and intros,
-    # are a good thing
-
-    content_panels = Page.content_panels + [
-        FieldPanel('intro', classname="full"),
-        FieldPanel('thankyou_page_title'),
-    ]
-
-    def serve(self,request):
-        if request.user.is_authenticated:
-            username = request.user.username
-
-        if request.method == 'POST':
-            # If the method is POST, validate the data and perform a save() == INSERT VALUE INTO
-            debug = request.POST
-            form_user = UserDataForm(data=request.POST)
-            if form_user.is_valid():
-                # BEWARE: This is a modelForm and not a object/model, "save" do not have some arguments of the same method, like using=db_tag
-                # to work with a normal django object insert a line: data = form.save(commit=False) and then data is a basic model: e.g., you can use data.save(using=external_generic_db)
-                # In our example the routing takes care of the external db save
-                data = form_user.save(commit=False)
-                #data.lab_id = request.session["lab_selected"]
-                data.user_id = username
-                data.save()
-            form_api_tokens = APITokenForm(data=request.POST, username=username)
-            try:
-                if form_api_tokens['laboratory'].data != '':
-                    lab = form_api_tokens['laboratory'].data
-                    # elab_token = form_api_tokens['elab_token'].data
-                    # jenkins_token = form_api_tokens['jenkins_token'].data
-                    data = form_api_tokens.save(commit=False)
-                    # this block is to update only the fields actually written on, TODO: api token check? Low priority
-                    if form_api_tokens.is_valid() and lab != '':
-                        debug = form_api_tokens["laboratory"].data
-
-                        lab = Laboratories.objects.get(pk=form_api_tokens["laboratory"].data)
-                        api_token_queryset = API_Tokens.objects.filter(laboratory = lab, user_id = User.objects.get(username=username))
-                        # api_token_queryset = API_Tokens.objects.all()
-                        if api_token_queryset.values().count() > 0:
-                            data.id = api_token_queryset.first().id
-                            debug = form_api_tokens['elab_token'].data
-                            if form_api_tokens['elab_token'].data == '':
-                                data.elab_token = api_token_queryset.values('elab_token').first()['elab_token']
-                            if form_api_tokens['jenkins_token'].data == '':
-                                data.jenkins_token = api_token_queryset.values('jenkins_token').first()['jenkins_token']
-
-                        data.user_id = User.objects.get(username=username)
-        
-                        data.save()
-                        return render(request, 'home/utility_pages/user_data_page.html', {
-                        'page': self,
-                        # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                        'user_data': form_user,
-                        'api_token_data': form_api_tokens,
-                    })
-                else:
-                    return render(request, 'home/utility_pages/user_data_page.html', {
-                    'page': self,
-                    # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                    'user_data': form_user,
-                    'api_token_data': APITokenForm(username=username),
-                })
-            except KeyError as e:
-                pass
-                
-            
-            else:
-                return render(request, 'home/error_page.html', {
-                        'page': self,
-                        # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                        'errors': form.errors, # TODO: improve this
-                    })
-        else:
-            #form = UserRegistrationForm()
-            try:
-                if Users.objects.get(pk=username) is not None:
-                    form_user = UserDataForm(instance=Users.objects.get(pk=username))
-                else:
-                    form_user = UserDataForm()
-            except Exception as e: # TODO Properly catch this
-                form_user = UserDataForm()
-
-        form_api_tokens = APITokenForm(username=username)
-
-        return render(request, 'home/utility_pages/user_data_page.html', {
-                'page': self,
-                # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                'user_data': form_user,
-                'api_token_data': form_api_tokens,
-            })
-
-class SamplePage(Page): # EASYDMP / DIMMT?
-    # Just a little bit of customization
-    intro = RichTextField(blank=True)
-    thankyou_page_title = models.CharField(
-    max_length=255, help_text="Title text to use for the 'thank you' page")
-       
-    content_panels = Page.content_panels + [
-        FieldPanel('intro', classname="full"),
-        FieldPanel('thankyou_page_title'),
-        ]
-    # Real page forms is served here:
-    def serve(self, request):
-
-        if request.user.is_authenticated:
-            username = request.user.username
-        
-        # first service request selection dropdown ->
-        if "filter" in request.GET:
-            filter = request.GET.get("filter","")
-        else:
-            filter = ""
-            request.GET = request.GET.copy()
-            request.GET["filter"]= ""
-
-        if request.method == 'POST': #???
-            filter = request.POST.get("filter","")
-            request.GET = request.GET.copy()
-            request.GET["filter"] = request.POST.get("filter","")
-        
-        if(request.GET.get("sr_id") and request.GET.get("sr_id") != "internal"):
-           sr_id = request.GET.get("sr_id")
-           sr = ServiceRequests.objects.get(sr_id = sr_id)
-        else:
-            sr_id = "internal"
-            sr = None
-        # <- end selection here
-
-        # lab selected is retrieved from session
         try:
-            if(request.session['lab_selected'] is None):
-                request.session["return_page"] = request.META['HTTP_REFERER']
-                next = request.POST.get("next", "/switch-laboratory")
-                return redirect(next)
-            else:
-                lab = Laboratories.objects.get(pk = request.session['lab_selected'])
-        except KeyError:
-            request.session["return_page"] = request.META['HTTP_REFERER']
-            next = request.POST.get("next", "/switch-laboratory")
-            return redirect(next)
-        
+            return Laboratories.objects.get(pk=lab_id)
+        except Laboratories.DoesNotExist:
+            return None
+
+# SamplePage handles sample data entry for laboratories, extending the 'Samples' model.
+# It integrates with lab models from 'decos_metadata_db' from 'PRP_CDM_app'.
+class SamplePage(Page, SessionHandlerMixin):
+    # Introductory text field
+    intro = RichTextField(blank=True)
+    # Title text for the thank-you page
+    thankyou_page_title = RichTextField(blank=True)
+
+    # Wagtail admin interface panels
+    content_panels = Page.content_panels + [
+        FieldPanel('intro'),
+        FieldPanel('thankyou_page_title'),
+    ]
+
+    # Creates and saves a Sample object from form data
+    def _create_sample_from_form(self, form, lab, request):
+        data = form.save(commit=False)
+        sr_id_hidden = request.POST.get("sr_id_hidden")
+
+        if sr_id_hidden and sr_id_hidden != 'internal':
+            try:
+                data.sr_id = ServiceRequests.objects.get(pk=sr_id_hidden)
+            except ObjectDoesNotExist:
+                raise ValueError(f"ServiceRequest with id {sr_id_hidden} does not exist.")
+
+        data.sample_id = sample_id_generation(data.sr_id)
+        data.lab_id = lab
+        data.sample_status = 'Submitted'
+
+        try:
+            data.save()
+            return data
+        except Exception as e:
+            logger.error(f"Failed to save sample: {e}")
+            raise
+
+    # Handles form submissions and creates samples
+    def _handle_submission(self, request, lab):
+        forms = form_orchestrator(
+            user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, getInstance=False
+        )
+
+        saved_objects = []
+        for form in forms:
+            if not form.is_valid():
+                return False, form.errors, forms
+
+            sample = self._create_sample_from_form(form, lab, request)
+            saved_objects.append(sample)
+
+        return True, saved_objects, forms
+
+    # Handles GET and POST requests for this page
+    def serve(self, request):
+        # Fetch lab from session; redirect if not set
+        lab = self.get_lab_from_session(request)
+        if not lab:
+            request.session['return_page'] = request.get_full_path()
+            return redirect('/switch-laboratory')
+
+        sr_id = request.GET.get("sr_id", "internal")
+        filter_term = request.GET.get("filter", "")
 
         if request.method == 'POST':
-            # Dynamic form orchestrator (func that returns a factory that return the class form, why, 'cause django)
-            # Check PRP_CDM_App form and models
-            forms = form_orchestrator(user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, getInstance=False)
-
-            for form in forms:
-                if not form.is_valid():
-                    return render(request, 'home/error_page.html', {
-                        'page': self,
-                        'errors': form.errors, # TODO: improve this
-                    })
-                else:
-                    # Data is saved to db here
-                    data = form.save(commit=False) # form data inserted here
-                    # other info not in the form are inserted here ->
-                    if(request.POST.get("sr_id_hidden") and (request.POST.get("sr_id_hidden") != 'internal')):
-                        data.sr_id = ServiceRequests.objects.get(pk=request.POST.get("sr_id_hidden"))
-                    data.sample_id = sample_id_generation(data.sr_id)
-                    data.lab_id = lab
-                    data.sample_status = 'Submitted'
-                    # final "TRUE" commit on db
-                    data.save()
-                    # Experiment created in elab, TODO: insert this in a better designed workflow
-
-            # Return thank you page html rendered page        
-            return render(request, 'home/thank_you_page.html', {
-                'page': self,
-                # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                'data': data,
-                })
+            success, result, forms = self._handle_submission(request, lab)
+            if success:
+                return render(request, 'home/thank_you_page.html', {'page': self, 'data': result})
+            else:
+                sr_id = request.POST.get("sr_id_hidden", "internal")
         else:
             forms = form_orchestrator(user_lab=lab.lab_id, request=None, filerequest=None, getInstance=False)
-        
-        # Dropdown for service requests --> 
-        # check the service request in the dropdown
-        dataQuery = ServiceRequests.objects.filter(lab_id=lab.lab_id)
-        dataQuery = dataQuery.filter(sr_id__contains = filter)
-        table = ServiceRequestTable(dataQuery)
-        RequestConfig(request).configure(table)
-        table.paginate(page=request.GET.get("page",1), per_page=5) # TODO: implement dynamic per page settings?
+
+        # Fetch Service Requests filtered by lab and search term
+        sr_query = ServiceRequests.objects.filter(lab_id=lab.lab_id)
+        if filter_term:
+            sr_query = sr_query.filter(sr_id__icontains=filter_term)
+
+        sr_table = ServiceRequestTable(sr_query)
+        RequestConfig(request).configure(sr_table)
+
         pageDict = {
             'page': self,
+            'forms': forms,
             'lab': lab.lab_id,
             'sr_id': sr_id,
-            'table': table,
-            }
-        
-        # every form could be created by multiple PRP_CDM_App tables, so we use "multiple forms"
-        # one for every table, we put them in a list and visualize them in a linear layout (vertical)
+            'table': sr_table,
+        }
+
         for form in forms:
             pageDict[form.Meta.model.__name__] = form
         pageDict['forms'] = forms
-        formlist =[]
-        # return the form page, with the form as data.
-        # TODO: while using settings is correct, create/find another softcoded var!!
+
+        # Attempt to load a lab-specific form template
         try:
             home_path = settings.BASE_DIR
-            abs_path = join(home_path,"home/templates/home/forms/")
+            abs_path = join(home_path, 'home/templates/home/forms/')
             formlist = [f for f in listdir(abs_path)]
         except Exception as e:
-            e # TODO: properly catch this
+            logger.error(f"Error loading form templates: {e}")
+            formlist = []
 
-        # Serve the form template in ./home/forms/ if present, if not, return render
         for formTemplate in formlist:
-            if pageDict['lab'].lower() in formTemplate:
-                return render(request, 'home/forms/' + formTemplate, pageDict)
+            if lab.lab_id.lower() in formTemplate.lower():
+                return render(request, f'home/forms/{formTemplate}', pageDict)
+
+        # Fallback to generic form template
         return render(request, 'home/forms/generic_form_page.html', pageDict)
 
-class SampleListPage(Page): # EASYDMP 
     
+# Displays and manages a paginated list of samples for a selected laboratory,
+# integrating eLab submissions and MinIO for data synchronization.
+class SampleListPage(Page, SessionHandlerMixin):
     intro = RichTextField(blank=True)
+
     content_panels = Page.content_panels + [
         FieldPanel('intro', classname="full"),
     ]
 
-    def serve(self,request):
-        if request.user.is_authenticated:
-            username = request.user.username
-        
+    def _get_lab_or_redirect(self, request):
+        # Retrieves lab from session or redirects to lab selection.
+        lab = self.get_lab_from_session(request)
+        if not lab:
+            request.session['return_page'] = request.get_full_path()
+            return None, redirect('/switch-laboratory')
+        return lab, None
+
+    def _handle_elab_submission(self, request, lab, username):
+        # Submits sample data to the external eLab system.
+        sample_id = request.POST.get('elab_write')
+        if not sample_id:
+            return
+
         try:
-            if(request.session['lab_selected'] is None):
-                request.session["return_page"] = request.META['HTTP_REFERER']
-                next = request.POST.get("next", "/switch-laboratory")
-                return redirect(next)
-            else:
-                lab = Laboratories.objects.get(pk = request.session['lab_selected'])
-        except KeyError:
-            request.session["return_page"] = request.META['HTTP_REFERER']
-            next = request.POST.get("next", "/switch-laboratory")
-            return redirect(next)
+            token = API_Tokens.objects.filter(laboratory=lab.lab_id, user_id=User.objects.get(username=username)).first()
+            elab_api = Decos_Elab_API(ApiSettings.objects.get(pk=1).elab_base_url, token.elab_token)
+            sample = Samples.objects.get(pk=sample_id)
+            elab_api.create_new_decos_experiment(lab=lab, username=username, experiment_info=sample)
+        except (ObjectDoesNotExist, UnboundLocalError) as e:
+            logger.error(f"Elab submission failed: {e}")
 
-            # JENKINS
-            # TODO: Add a callback or a initial timer
-        '''
+    def _refresh_minio_samples(self, request, lab):
+        # Updates sample locations from MinIO storage if requested.
+        if request.POST.get('refresh') != 'true':
+            return ""
+
         try:
-            jenkins_api = Decos_Jenkins_API(username=username, lab=lab)
-            if jenkins_filelist_status is None:
-                jenkins_filelist_status = 'Waiting'
-            else:
-                if request.POST['list_folders'] == 'true':
-                    jenkins_filelist_status = jenkins_api.get_latest_build(f"test_Folder/job/folderList")['result']
-                    jenkins_api.build_job(job_path= f"test_Folder/job/folderList", secret_token="folderList_SECRET_TOKEN")
-                    jenkins_filelist_status = 'Sent'
+            client = decos_minio(endpoint=minIO_secrets.endpoint, access_key=minIO_secrets.access_key, secret_key=minIO_secrets.secret_key)
+            data_locations = client.get_sample_list(lab=lab)
+        except Exception as e:
+            logger.error(f"MinIO data refresh failed: {e}")
+            return f"Error on MinIO: {e}"
 
-        except Exception as e: # TODO: catch and manage this
-            print(f"error on jenkins_api: {e}") 
-        '''
-        if "filter" in request.GET:
-            filter = request.GET.get("filter","")
-        else:
-            filter = ""
-            request.GET = request.GET.copy()
-            request.GET["filter"]= ""
+        samples = Samples.objects.filter(lab_id=lab.lab_id)
+        for sample in samples:
+            location = next((loc.object_name for sample_id, loc in data_locations if sample.pk == sample_id), None)
+            sample.sample_location = location
+            sample.save()
 
+        return "minIO buckets read correctly"
+
+    def serve(self, request):
+        # Handles sample list display and optional form actions (filtering, eLab submission, MinIO refresh).
+        lab, redirect_response = self._get_lab_or_redirect(request)
+        if redirect_response:
+            return redirect_response
+
+        filter_term = request.POST.get('filter') or request.GET.get('filter', '')
         minIO_status = ""
 
         if request.method == 'POST':
-            filter = request.POST.get("filter","")
-            request.GET = request.GET.copy()
-            request.GET["filter"] = request.POST.get("filter","")
-            elab_write = request.POST.get("elab_write",None)
-            if elab_write:
-                # TODO: ElabWrite
-                try:
-                    tokens = API_Tokens.objects.filter(laboratory=lab.lab_id,user_id=User.objects.get(username = username))
-                    token = tokens.first()
+            username = request.user.username if request.user.is_authenticated else ""
+            self._handle_elab_submission(request, lab, username)
+            minIO_status = self._refresh_minio_samples(request, lab)
 
-                    elab_api = Decos_Elab_API(ApiSettings.objects.get(pk = 1).elab_base_url,token.elab_token)
-                except ObjectDoesNotExist as e:
-                    return render(request, 'home/error_page.html', {
-                        'page': self,
-                        'errors': e, # TODO: improve this
-                    })
-                sample = Samples.objects.get(pk = request.POST['elab_write'])
-
-                try:
-                    elab_api.create_new_decos_experiment(lab=lab,username=username,experiment_info=sample)
-                except UnboundLocalError as e:
-                    pass
-                    print( " Elab api ") # TODO: catch this better!
-
-            try: # TODO: MAKE IT NOT HARDCODED!
-                # MINIO
-                debug = request.POST.get("refresh")
-                if request.POST.get("refresh","false") == "true":
-                    try:
-                        client = decos_minio(endpoint=minIO_secrets.endpoint, access_key=minIO_secrets.access_key,
-                                            secret_key=minIO_secrets.secret_key)
-                        data_locations = client.get_sample_list(lab=lab)
-                        minIO_status = "minIO buckets read correctly"
-                    except Exception as e:
-                        # TODO properly catch this and manage logging/debugging verbosity
-                        minIO_status = f"Error on MinIO: {e}"
-
-                    samples = Samples.objects.filter(lab_id = request.session['lab_selected'])
-
-
-                    for sample in samples:
-                        try:
-                            sample = Samples.objects.get(pk = sample.sample_id)
-                            for sample_id, sample_location in data_locations:
-                                if sample.pk == sample_id:
-                                    sample.sample_location = sample_location.object_name
-                                    break
-                                else:
-                                    sample.sample_location = None
-                            sample.save()
-                        except Samples.DoesNotExist as e:
-                            print("Debug: {e}") # TODO: properly manage this, TODO: implement a log library?
-                       
-                '''sample_list = []
-                for sample_id, sample_location in data_locations:
-                    try:
-                        sample = (Samples.objects.get(pk = sample_id))
-                        sample.sample_location = "/"+sample_location
-                        sample.save()
-                    except Samples.DoesNotExist as e:
-                        print("Debug: {e}") # TODO: properly manage this, TODO: implement a log library?
-                        ''' #TODO: IMPLEMENT ME NOW!
-            except Exception as e: # FIXME: properly catch
-                print(f"debug: {e}")
-        
-        data = Samples.objects.filter(lab_id=request.session.get('lab_selected'))
-        data = data.filter(sample_id__contains = filter)
-        table = SamplesTable(data)
+        samples = Samples.objects.filter(lab_id=lab.lab_id, sample_id__icontains=filter_term)
+        table = SamplesTable(samples)
         RequestConfig(request).configure(table)
+        table.paginate(page=request.GET.get('page', 1), per_page=5)
 
-        table.paginate(page=request.GET.get("page",1), per_page=5) # TODO: softcode paginate settings
         return render(request, 'home/sample_pages/sample_list.html', {
             'page': self,
             'table': table,
@@ -637,7 +464,7 @@ class PipelinesPage(Page): # EASYDMP
             'sample_id': request.GET.get("pipelines",None),
         })
 
-class DMPPage(Page): # EASYDMP
+class DMPPage(Page, SessionHandlerMixin): # EASYDMP
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(
         max_length=255, help_text="Title text to use for the 'thank you' page")
@@ -680,7 +507,7 @@ class DMPPage(Page): # EASYDMP
                     'page': self,
                     # We pass the data to the thank you page, data.datavarchar and data.dataint!
                     'data': form,
-                    'lab': request.session['lab_selected'],
+                    'lab': self.get_lab_from_session(request),
                 })
             else:
                 return render(request, 'home/error_page.html', {
@@ -709,76 +536,9 @@ class DMPSearchPage(Page): # EASYDMP
     pass
 
 class DMPViewPage(Page): #EASYDMP # TODO: implement this page
-    intro = RichTextField(blank=True)
-    content_panels = Page.content_panels + [
-        FieldPanel('intro', classname="full"),
-    ]
+    pass
 
-    def serve(self,request):
-        if request.user.is_authenticated:
-            username = request.user.username
-        
-        try: # TODO: optimize this
-            if(request.session['lab_selected'] is None):
-                request.session["return_page"] = request.META['HTTP_REFERER']
-                next = request.POST.get("next", "/switch-laboratory")
-                return redirect(next)
-        except KeyError: # FIXME: Fix the HTTP_REFERER Not present! 
-            request.session["return_page"] = request.META['HTTP_REFERER']
-            next = request.POST.get("next", "/switch-laboratory")
-            return redirect(next)
-        
-        def pkSelection(modelTable, pk):
-            return modelTable.objects.get(pk=pk)
-        
-        def reportOrchestrator(user_lab):
-        # lablist = [labform for labform in dir(FORMS()) if not labform.startswith("__")]
-            if user_lab is None:
-                return None # TODO manage this
-            else:
-                # this block checks the class names into FormsDefinition to create the forms
-                reportClass = getattr(ReportDefinition,user_lab.title() + "Report")
-                return reportClass.content
-        
-        reportList = []
-        if request.method == 'POST':
-            for report in reportOrchestrator(user_lab=request.session['lab_selected']):
-                reportList.append(pkSelection(modelTable=report, pk=request.POST.get('sr_id')))
-                pass
-        else:
-            try:
-                for report in reportOrchestrator(user_lab=request.session['lab_selected']):
-                    reportList.append(pkSelection(modelTable=report, pk=request.session["sr_id"]))
-            except:
-                return redirect('/')
-
-        pageDict = {
-            'page': self,
-            'lab': request.session['lab_selected'],
-            }
-
-        reports = {}
-        for fields in reportList:
-            pageDict[type(fields).__name__] = (model_to_dict(fields))
-            reports[type(fields).__name__] = (model_to_dict(fields))
-        
-        pageDict['reports'] = reports
-
-        # return the form page, with the form as data.
-        # TODO: while using settings is correct, create/find another softcoded var!!
-        try:
-            home_path = settings.BASE_DIR
-            abs_path = join(home_path,"home/templates/home/reports/")
-            reportlist = [f for f in listdir(abs_path)]
-        except Exception as e:
-            e # TODO: properly catch this
-
-        for reportTemplate in reportlist:
-            if pageDict['lab'].lower() in reportTemplate:
-                return render(request, 'home/reports/' + reportTemplate, pageDict)
-        return render(request, 'home/generic_dmp_view.html', pageDict)
-
-class InstrumentsPage(Page): # EASYDMP
+class InstrumentsPage(Page): # EASYDMP STUB! EPIRO WILL TAKE THIS FUNCTIONALITY
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(
         max_length=255, help_text="Title text to use for the 'thank you' page")
@@ -845,7 +605,7 @@ class InstrumentsPage(Page): # EASYDMP
                 'lab': request.session['lab_selected'],
             })
 
-class ResultsPage(Page):
+class ResultsPage(Page, SessionHandlerMixin):
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(
         max_length=255, help_text="Title text to use for the 'thank you' page")
@@ -864,7 +624,7 @@ class ResultsPage(Page):
             username = request.user.username
         
         try:
-            if(request.session['lab_selected'] is None):
+            if(self.get_lab_from_session(request) is None):
                 request.session["return_page"] = request.META['HTTP_REFERER']
                 next = request.POST.get("next", "/switch-laboratory")
                 return redirect(next)
