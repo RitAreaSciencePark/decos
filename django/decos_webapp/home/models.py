@@ -3,6 +3,8 @@ import json  # For handling JSON data
 import logging  # For logging errors, warnings, and info
 from os import listdir  # For listing files in a directory
 from os.path import dirname, isfile, join  # For file path manipulations
+from django.http import HttpResponseRedirect # Required for checking redirect responses when validating lab session
+
 
 # Third-party Imports (Django & Wagtail)
 from django import forms  # For form handling
@@ -30,7 +32,7 @@ from wagtail.models import Page  # Base Page model in Wagtail CMS
 from decos_secrets import minIO_secrets  # Secrets configuration for minIO storage
 
 from .decos_elab import Decos_Elab_API  # Integration with Decos Elab API
-from .decos_jenkins import Decos_Jenkins_API  # Integration with Decos Jenkins API
+from .decos_jenkins import DecosJenkinsAPI  # Integration with Decos Jenkins API
 
 from .forms import (  # Project-specific forms
     APITokenForm,
@@ -76,6 +78,7 @@ from PRP_CDM_app.models import (  # Models related to samples, instruments, resu
     ServiceRequests,
     Users,
     Instruments,
+    labDMP,
 )
 
 from APIs.decos_minio_API.decos_minio_API import decos_minio  # MinIO API integration
@@ -163,61 +166,106 @@ class SessionHandlerMixin:
         except Laboratories.DoesNotExist:
             return None
 
-# SamplePage handles sample data entry for laboratories, extending the 'Samples' model.
-# It integrates with lab models from 'decos_metadata_db' from 'PRP_CDM_app'.
-class SamplePage(Page, SessionHandlerMixin):
-    # Introductory text field
+# Provides common utilities for handling sample data, service request linking, and selecting laboratory-specific form templates.
+class SampleFormHandlerMixin:
+    # Retrieves the Sample object and its associated laboratory based on the provided sample ID
+    def get_sample_and_lab(self, sample_id):
+        sample = Samples.objects.get(pk=sample_id)
+        return sample, sample.lab_id
+    
+    # Assigns a ServiceRequest object to the data if a valid service request ID is provided
+    def assign_service_request(self, data, sr_id):
+        if sr_id and sr_id != 'internal':
+            data.sr_id = ServiceRequests.objects.get(pk=sr_id)
+
+    # Validates and saves data from multiple forms, linking to sample, lab, and optionally generating sample ID
+    def process_forms(self, forms, sample=None, lab=None, request=None, generate_sample_id=False):
+        saved_objects = []
+        for form in forms:
+            if not form.is_valid():
+                return False, form.errors
+
+            data = form.save(commit=False)
+
+            if request:
+                self.assign_service_request(data, request.POST.get("sr_id_hidden"))
+
+            if sample:
+                data.sample_id = sample.sample_id
+                data.sample_location = sample.sample_location
+            elif generate_sample_id:
+                data.sample_id = sample_id_generation(data.sr_id)
+
+            data.lab_id = lab
+            data.sample_status = 'Submitted'
+            data.save()
+            saved_objects.append(data)
+
+        return True, saved_objects
+
+    # Determines the appropriate form template for a given laboratory, falling back to a generic template if not found
+    def get_form_template(self, lab_id):
+        try:
+            abs_path = join(settings.BASE_DIR, 'home/templates/home/forms/')
+            formlist = [f for f in listdir(abs_path)]
+        except Exception as e:
+            return 'home/forms/generic_form_page.html'
+
+        for template in formlist:
+            if lab_id.lower() in template.lower():
+                return f'home/forms/{template}'
+
+        return 'home/forms/generic_form_page.html'
+
+# Manages the lifecycle of updating existing sample data, integrating dynamic form initialization and submission validation.
+class EditSamplePage(Page, SampleFormHandlerMixin):
     intro = RichTextField(blank=True)
-    # Title text for the thank-you page
+
+    content_panels = Page.content_panels + [
+        FieldPanel('intro', classname="full"),
+    ]
+    # Handles the HTTP request lifecycle for editing an existing sample's data
+    def serve(self, request):
+        if request.method == 'POST':
+            sample, lab = self.get_sample_and_lab(request.POST['sample_id_hidden'])
+            forms = form_orchestrator(user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, getInstance=False)
+
+            success, result = self.process_forms(forms, sample=sample, lab=lab, request=request)
+
+            if success:
+                return render(request, 'home/thank_you_page.html', {'page': self, 'data': result})
+            
+            # Reinitialize forms with existing sample data upon validation failure
+            forms = form_orchestrator(user_lab=lab.lab_id, request=request, filerequest=None, getInstance=True)
+            context = {'page': self, 'lab': lab.lab_id, 'sr_id': sample.sr_id, 'sample_id': sample.sample_id, 'forms': forms, 'errors': result}
+            for form in forms:
+                context[form.Meta.model.__name__] = form
+
+            template = self.get_form_template(lab.lab_id)
+            return render(request, template, context)
+
+        sample, lab = self.get_sample_and_lab(request.GET['sample_id'])
+        forms = form_orchestrator(user_lab=lab.lab_id, request=request, filerequest=None, getInstance=True)
+
+        context = {'page': self, 'lab': lab.lab_id, 'sr_id': sample.sr_id, 'sample_id': sample.sample_id, 'forms': forms}
+        for form in forms:
+            context[form.Meta.model.__name__] = form
+
+        template = self.get_form_template(lab.lab_id)
+        return render(request, template, context)
+
+# Add new samples, supporting service request linking and laboratory-specific forms within a session-based workflow.
+class SamplePage(Page, SessionHandlerMixin, SampleFormHandlerMixin):
+    intro = RichTextField(blank=True)
     thankyou_page_title = RichTextField(blank=True)
 
-    # Wagtail admin interface panels
     content_panels = Page.content_panels + [
         FieldPanel('intro'),
         FieldPanel('thankyou_page_title'),
     ]
-
-    # Creates and saves a Sample object from form data
-    def _create_sample_from_form(self, form, lab, request):
-        data = form.save(commit=False)
-        sr_id_hidden = request.POST.get("sr_id_hidden")
-
-        if sr_id_hidden and sr_id_hidden != 'internal':
-            try:
-                data.sr_id = ServiceRequests.objects.get(pk=sr_id_hidden)
-            except ObjectDoesNotExist:
-                raise ValueError(f"ServiceRequest with id {sr_id_hidden} does not exist.")
-
-        data.sample_id = sample_id_generation(data.sr_id)
-        data.lab_id = lab
-        data.sample_status = 'Submitted'
-
-        try:
-            data.save()
-            return data
-        except Exception as e:
-            logger.error(f"Failed to save sample: {e}")
-            raise
-
-    # Handles form submissions and creates samples
-    def _handle_submission(self, request, lab):
-        forms = form_orchestrator(
-            user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, getInstance=False
-        )
-
-        saved_objects = []
-        for form in forms:
-            if not form.is_valid():
-                return False, form.errors, forms
-
-            sample = self._create_sample_from_form(form, lab, request)
-            saved_objects.append(sample)
-
-        return True, saved_objects, forms
-
-    # Handles GET and POST requests for this page
+    
+    # Handles the HTTP request lifecycle for creating a new sample
     def serve(self, request):
-        # Fetch lab from session; redirect if not set
         lab = self.get_lab_from_session(request)
         if not lab:
             request.session['return_page'] = request.get_full_path()
@@ -227,51 +275,32 @@ class SamplePage(Page, SessionHandlerMixin):
         filter_term = request.GET.get("filter", "")
 
         if request.method == 'POST':
-            success, result, forms = self._handle_submission(request, lab)
+            forms = form_orchestrator(user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, getInstance=False)
+            success, result = self.process_forms(forms, lab=lab, request=request, generate_sample_id=True)
+
             if success:
                 return render(request, 'home/thank_you_page.html', {'page': self, 'data': result})
-            else:
-                sr_id = request.POST.get("sr_id_hidden", "internal")
+            
+            # Retains selected service request ID and displays errors upon validation failure
+            sr_id = request.POST.get("sr_id_hidden", "internal")
+            context = {'page': self, 'forms': forms, 'lab': lab.lab_id, 'sr_id': sr_id, 'table': None, 'errors': result}
         else:
             forms = form_orchestrator(user_lab=lab.lab_id, request=None, filerequest=None, getInstance=False)
+            sr_query = ServiceRequests.objects.filter(lab_id=lab.lab_id)
+            if filter_term:
+                sr_query = sr_query.filter(sr_id__icontains=filter_term)
 
-        # Fetch Service Requests filtered by lab and search term
-        sr_query = ServiceRequests.objects.filter(lab_id=lab.lab_id)
-        if filter_term:
-            sr_query = sr_query.filter(sr_id__icontains=filter_term)
+            sr_table = ServiceRequestTable(sr_query)
+            RequestConfig(request).configure(sr_table)
 
-        sr_table = ServiceRequestTable(sr_query)
-        RequestConfig(request).configure(sr_table)
-
-        pageDict = {
-            'page': self,
-            'forms': forms,
-            'lab': lab.lab_id,
-            'sr_id': sr_id,
-            'table': sr_table,
-        }
+            context = {'page': self, 'forms': forms, 'lab': lab.lab_id, 'sr_id': sr_id, 'table': sr_table}
 
         for form in forms:
-            pageDict[form.Meta.model.__name__] = form
-        pageDict['forms'] = forms
+            context[form.Meta.model.__name__] = form
 
-        # Attempt to load a lab-specific form template
-        try:
-            home_path = settings.BASE_DIR
-            abs_path = join(home_path, 'home/templates/home/forms/')
-            formlist = [f for f in listdir(abs_path)]
-        except Exception as e:
-            logger.error(f"Error loading form templates: {e}")
-            formlist = []
+        template = self.get_form_template(lab.lab_id)
+        return render(request, template, context)
 
-        for formTemplate in formlist:
-            if lab.lab_id.lower() in formTemplate.lower():
-                return render(request, f'home/forms/{formTemplate}', pageDict)
-
-        # Fallback to generic form template
-        return render(request, 'home/forms/generic_form_page.html', pageDict)
-
-    
 # Displays and manages a paginated list of samples for a selected laboratory,
 # integrating eLab submissions and MinIO for data synchronization.
 class SampleListPage(Page, SessionHandlerMixin):
@@ -348,196 +377,127 @@ class SampleListPage(Page, SessionHandlerMixin):
             'minio_filelist_status': minIO_status,
         })
 
-class EditSamplePage(Page): # EASYDMP
-    intro = RichTextField(blank=True)
-    content_panels = Page.content_panels + [
-        FieldPanel('intro', classname="full"),
-    ]
-
-    def serve(self,request):
-        if request.user.is_authenticated:
-            username = request.user.username
-        
-        if request.method == 'POST':
-            sample = Samples.objects.get(pk = request.POST['sample_id_hidden'])
-            lab = sample.lab_id
-            # Dynamic form orchestrator (func that returns a factory that return the class form, why, 'cause django)
-            # Check PRP_CDM_App form and models
-            forms = form_orchestrator(user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, getInstance=False)
-
-            for form in forms:
-                if not form.is_valid():
-                    return render(request, 'home/error_page.html', {
-                        'page': self,
-                        'errors': form.errors, # TODO: improve this
-                    })
-                else:
-                    # Data is saved to db here
-                    data = form.save(commit=False) # form data inserted here
-                    # other info not in the form are inserted here ->
-                    if(request.POST.get("sr_id_hidden") and (request.POST.get("sr_id_hidden") != 'internal')):
-                        data.sr_id = ServiceRequests.objects.get(pk=request.POST.get("sr_id_hidden"))
-                    data.sample_id = sample.sample_id
-                    data.sample_location = sample.sample_location
-                    data.lab_id = lab
-                    data.sample_status = 'Submitted'
-                    # final "TRUE" commit on db
-                    data.save()
-                    # Experiment created in elab, TODO: insert this in a better designed workflow
-                    # TODO: Manage elab edits
-            # Return thank you page html rendered page        
-            return render(request, 'home/thank_you_page.html', {
-                'page': self,
-                # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                'data': data,
-                })
-        
-
-        sample = Samples.objects.get(pk = request.GET['sample_id'])
-        lab = sample.lab_id
-        forms = form_orchestrator(user_lab=lab.lab_id, request=request, filerequest=None, getInstance=True)
-            
-
-        pageDict = {
-            'page': self,
-            'lab': lab.lab_id,
-            'sr_id': sample.sr_id,
-            'table': None,
-            'sample_id': sample.sample_id
-            }
-        
-        # every form could be created by multiple PRP_CDM_App tables, so we use "multiple forms"
-        # one for every table, we put them in a list and visualize them in a linear layout (vertical)
-        for form in forms:
-            pageDict[form.Meta.model.__name__] = form
-        pageDict['forms'] = forms
-        formlist =[]
-        # return the form page, with the form as data.
-        # TODO: while using settings is correct, create/find another softcoded var!!
-        try:
-            home_path = settings.BASE_DIR
-            abs_path = join(home_path,"home/templates/home/forms/")
-            formlist = [f for f in listdir(abs_path)]
-        except Exception as e:
-            e # TODO: properly catch this
-
-        for formTemplate in formlist:
-            if pageDict['lab'].lower() in formTemplate:
-                return render(request, 'home/forms/' + formTemplate, pageDict)
-        else:
-            return render(request, 'home/forms/generic_form_page.html', pageDict)
-
+# Display and trigger post-processing pipelines via Jenkins - STUB
 class PipelinesPage(Page): # EASYDMP
+    # Intro text field for the page
     intro = RichTextField(blank=True)
+    # Define the content panels displayed in the admin interface
     content_panels = Page.content_panels + [
         FieldPanel('intro', classname="full"),
     ]
 
     def serve(self, request):
-
-        # TEST
+        # Pipeline identifier hardcoded for now
         pipeline_name = "test_pipeline_with_parameters"
+        # Secret token required to trigger the pipeline
         secret_token = "parameter_test_pipeline_SECRET_TOKEN"
 
-        #
+        # Check if the user is authenticated before proceeding
         if request.user.is_authenticated:
+            # Get the logged-in user's username
             username = request.user.username
-        # TODO: try me
-        jenkins_client = Decos_Jenkins_API(username=username, lab=request.session.get('lab_selected'))
+            # Retrieve the selected lab from the user's session
+            lab = request.session.get('lab_selected')
+            # Initialize the Jenkins API handler with user context
+            jenkins_api = DecosJenkinsAPI(username=username, lab=lab)
 
-        if request.method == 'POST':
-            sample_id = request.POST.get("pipelines",None)
-            data = {"data0": sample_id,"data1": "DATA001"}
-                # TODO: move JENKINS entrypoint to a dedicated page
-            if sample_id:
-                jenkins_client.start(sample_id=None, pipeline_name=pipeline_name, secret_token=secret_token, data=data)
+            # Handle POST request to trigger the pipeline
+            if request.method == 'POST':
+                # Retrieve sample ID from the form submission
+                sample_id = request.POST.get("pipelines", None)
+                # Prepare data payload including sample ID (used in pipeline execution)
+                data = {"data0": sample_id, "data1": "DATA001"}
 
-        output = jenkins_client.get_pipeline_output(pipeline_name=pipeline_name)
-        if request.GET.get("output", None):
-            return render(request, 'home/sample_pages/pipelines_page.html', {
-            'page': self,
-            'sample_id': request.GET.get("pipelines",None),
-            'console_output': output
-        })
+                # Start the pipeline if a sample ID was provided
+                if sample_id:
+                    jenkins_api.start_pipeline(pipeline_name=pipeline_name, secret_token=secret_token, data=data)
+
+            # Fetch console output from Jenkins for the pipeline execution
+            output = jenkins_api.get_pipeline_output(pipeline_name=pipeline_name)
+
+            # Check if output is requested via GET parameter
+            if request.GET.get("output", None):
+                # Render the page with console output and sample ID
+                return render(request, 'home/sample_pages/pipelines_page.html', {
+                    'page': self,
+                    'sample_id': request.GET.get("pipelines", None),
+                    'console_output': output
+                })
+
+        # Render the page without console output (initial state or non-authenticated users)
         return render(request, 'home/sample_pages/pipelines_page.html', {
             'page': self,
-            'sample_id': request.GET.get("pipelines",None),
+            'sample_id': request.GET.get("pipelines", None),
         })
 
-class DMPPage(Page, SessionHandlerMixin): # EASYDMP
+# Model handling of the core Data Management Plan (DMP) submissions for life science laboratories, ensuring lab context via session and supporting form-based data entry.
+class DMPPage(Page, SessionHandlerMixin):
+    # Wagtail Page model for managing Data Management Plans (DMP) per laboratory
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(
-        max_length=255, help_text="Title text to use for the 'thank you' page")
-    # Note that there's nothing here for specifying the actual form fields -
-    # those are still defined in forms.py. There's no benefit to making these
-    # editable within the Wagtail admin, since you'd need to make changes to
-    # the code to make them work anyway.
+        max_length=255, help_text="Title text displayed after DMP submission")
 
     content_panels = Page.content_panels + [
         FieldPanel('intro', classname="full"),
         FieldPanel('thankyou_page_title'),
     ]
 
-    def serve(self,request):
-        if request.user.is_authenticated:
-            username = request.user.username
-        
-        try:
-            if(request.session['lab_selected'] is None):
-                request.session["return_page"] = request.META['HTTP_REFERER']
-                next = request.POST.get("next", "/switch-laboratory")
-                return redirect(next)
-        except KeyError:
-            request.session["return_page"] = request.META['HTTP_REFERER']
-            next = request.POST.get("next", "/switch-laboratory")
-            return redirect(next)
+    def serve(self, request):
+        # Ensure a laboratory context is set in the session
+        if not self.is_lab_selected(request):
+            return self.redirect_to_lab_selection(request)
 
+        # Route request to the appropriate handler based on HTTP method
         if request.method == 'POST':
-            # If the method is POST, validate the data and perform a save() == INSERT VALUE INTO
-            form = DMPform(data=request.POST)
-            if form.is_valid():
-                # BEWARE: This is a modelForm and not a object/model, "save" do not have some arguments of the same method, like using=db_tag
-                # to work with a normal django object insert a line: data = form.save(commit=False) and then data is a basic model: e.g., you can use data.save(using=external_generic_db)
-                # In our example the routing takes care of the external db save
-                data = form.save(commit=False)
-                data.lab_id = request.session["lab_selected"]
-                data.user_id = username
-                data.save()
-                return render(request, 'home/dmp_pages/labdmp_page.html', {
-                    'page': self,
-                    # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                    'data': form,
-                    'lab': self.get_lab_from_session(request),
-                })
-            else:
-                return render(request, 'home/error_page.html', {
-                        'page': self,
-                        # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                        'errors': form.errors, # TODO: improve this
-                    })
+            return self.handle_post(request)
+        return self.handle_get(request)
 
-        else:
-            try:
-                if labDMP.objects.get(pk=request.session["lab_selected"]) is not None:
-                    form = DMPform(instance=labDMP.objects.get(pk=request.session["lab_selected"]))
-                else:
-                    form = DMPform()
-            except Exception as e: # TODO Properly catch this
-                form = DMPform()
+    def is_lab_selected(self, request):
+        # Check if the session contains a valid laboratory context
+        return 'lab_selected' in request.session and request.session['lab_selected'] is not None
 
-        return render(request, 'home/dmp_pages/labdmp_page.html', {
+    def redirect_to_lab_selection(self, request):
+        # Store the current page as return point, then redirect to lab selection page
+        request.session['return_page'] = request.META.get('HTTP_REFERER', '/')
+        return redirect(request.POST.get('next', '/switch-laboratory'))
+
+    def handle_post(self, request):
+        # Handle DMP submission; validate and save form data
+        form = DMPform(data=request.POST)
+        if form.is_valid():
+            data = form.save(commit=False)
+            data.lab_id = request.session['lab_selected']
+            data.user_id = request.user.username
+            data.save()
+
+            return render(request, 'home/dmp_pages/labdmp_page.html', {
                 'page': self,
-                # We pass the data to the thank you page, data.datavarchar and data.dataint!
                 'data': form,
-                'lab': request.session['lab_selected'],
+                'lab': self.get_lab_from_session(request),
             })
 
-class DMPSearchPage(Page): # EASYDMP
-    pass
+        # Render error page if form validation fails
+        return render(request, 'home/error_page.html', {
+            'page': self,
+            'form': form,  # Pass form object to display field-specific errors
+        })
 
-class DMPViewPage(Page): #EASYDMP # TODO: implement this page
-    pass
+    def handle_get(self, request):
+        # Retrieve existing DMP for selected lab or initialize empty form
+        lab_selected = request.session['lab_selected']
+        try:
+            lab_instance = labDMP.objects.get(pk=lab_selected)
+            form = DMPform(instance=lab_instance)
+        except labDMP.DoesNotExist:
+            form = DMPform()
 
+        return render(request, 'home/dmp_pages/labdmp_page.html', {
+            'page': self,
+            'data': form,
+            'lab': lab_selected,
+        })
+
+# Test page to insert instruments
 class InstrumentsPage(Page): # EASYDMP STUB! EPIRO WILL TAKE THIS FUNCTIONALITY
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(
@@ -605,321 +565,225 @@ class InstrumentsPage(Page): # EASYDMP STUB! EPIRO WILL TAKE THIS FUNCTIONALITY
                 'lab': request.session['lab_selected'],
             })
 
+# This page adds research result information to create the metadata catalog, linking samples, instruments, and core data management plan.
 class ResultsPage(Page, SessionHandlerMixin):
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(
         max_length=255, help_text="Title text to use for the 'thank you' page")
-    # Note that there's nothing here for specifying the actual form fields -
-    # those are still defined in forms.py. There's no benefit to making these
-    # editable within the Wagtail admin, since you'd need to make changes to
-    # the code to make them work anyway.
 
     content_panels = Page.content_panels + [
         FieldPanel('intro', classname="full"),
         FieldPanel('thankyou_page_title'),
     ]
 
-    def serve(self,request):
-        if request.user.is_authenticated:
-            username = request.user.username
-        
+    # Utility method to extract list values from GET parameters
+    def get_list_from_request(self, request, list_key, id_key):
+        items = []
+        if list_key in request.GET:
+            items = json.loads(request.GET.get(list_key, '[]'))
+        if id_key in request.GET:
+            item_id = request.GET.get(id_key)
+            if item_id:
+                items.append(item_id)
+        return items
+
+    # Utility method to determine if a filter dropdown should be open
+    def is_filter_open(self, request, filter_key):
+        return "open " if request.GET.get(filter_key, "") else " "
+
+    # Checks for lab session or redirects to lab switch page
+    def get_lab_from_session_or_redirect(self, request):
         try:
-            if(self.get_lab_from_session(request) is None):
-                request.session["return_page"] = request.META['HTTP_REFERER']
-                next = request.POST.get("next", "/switch-laboratory")
-                return redirect(next)
+            if self.get_lab_from_session(request) is None:
+                request.session["return_page"] = request.META.get('HTTP_REFERER', '/')
+                return redirect("/switch-laboratory")
         except KeyError:
-            request.session["return_page"] = request.META['HTTP_REFERER']
-            next = request.POST.get("next", "/switch-laboratory")
-            return redirect(next)
-        
-        lab = request.session['lab_selected']
+            request.session["return_page"] = request.META.get('HTTP_REFERER', '/')
+            return redirect("/switch-laboratory")
+        return request.session['lab_selected']
 
-        sample_list = []
-        if "sample_list" in request.GET:
-            sample_list =request.GET.get('sample_list','')
-            if sample_list != "":
-                sample_list = json.loads(sample_list)
-        if "sample_id" in request.GET:
-            sample_id = request.GET.get("sample_id","")
-            if sample_id != "" and sample_id != 'public':
-                    sample_list.append(sample_id)
+    # Handles POST form submission for creating Results and linking related objects
+    def handle_form_submission(self, request, sample_list, instrument_list, software_list):
+        form = ResultsForm(data=request.POST)
+        if form.is_valid():
+            data = form.save(commit=False)
+            result_id = result_id_generation(data)
+            data.result_id = result_id
+            data.save()
 
-        public_dataset_list = []
-        if "public_dataset_list" in request.GET:
-            public_dataset_list =request.GET.get('public_dataset_list','')
-            if public_dataset_list != "[]":
-                public_dataset_list = json.loads(public_dataset_list)
-            else:
-                public_dataset_list = []
-        if "public_dataset_location" in request.GET:
-            public_dataset_location = request.GET.get("public_dataset_location","")
-            if public_dataset_location != "":
-                public_dataset_list.append(public_dataset_location)
+            result = data
 
+            # Bulk-fetch samples to reduce database hits
+            samples = Samples.objects.filter(sample_id__in=sample_list)
+            for sample in samples:
+                ResultxSample.objects.get_or_create(
+                    x_id=xid_code_generation(result_id, sample.sample_id),
+                    results=result, samples=sample
+                )
 
-        instrument_list = []
-        if "instrument_list" in request.GET:
-            instrument_list =request.GET.get('instrument_list','')
-            if instrument_list != "":
-                instrument_list = json.loads(instrument_list)
-        if "instrument_id" in request.GET:
-            instrument_id = request.GET.get("instrument_id","")
-            if instrument_id != "":
-                instrument_list.append(instrument_id)
+            # Bulk-fetch instruments to reduce database hits
+            instruments = Instruments.objects.filter(instrument_id__in=instrument_list)
+            for instrument in instruments:
+                ResultxInstrument.objects.get_or_create(
+                    x_id=xid_code_generation(result_id, instrument.instrument_id),
+                    results=result, instruments=instrument
+                )
 
-        software_list = []
-        if "software_list" in request.GET:
-            software_list =request.GET.get('software_list','')
-            if software_list != "":
-                software_list = json.loads(software_list)
-        if "software_id" in request.GET:
-            software_id = request.GET.get("software_id","")
-            if software_id != "":
-                software_list.append(software_id)
+            return render(request, 'home/thank_you_page.html', {'page': self, 'data': data})
+        else:
+            return render(request, 'home/error_page.html', {'page': self, 'errors': form.errors})
 
+    def serve(self, request):
+        # Validate lab session or redirect
+        lab = self.get_lab_from_session_or_redirect(request)
+        if isinstance(lab, HttpResponseRedirect):
+            return lab
 
+        # Extract lists for samples, datasets, instruments, and software
+        sample_list = self.get_list_from_request(request, 'sample_list', 'sample_id')
+        public_dataset_list = self.get_list_from_request(request, 'public_dataset_list', 'public_dataset_location')
+        instrument_list = self.get_list_from_request(request, 'instrument_list', 'instrument_id')
+        software_list = self.get_list_from_request(request, 'software_list', 'software_id')
+
+        # Handle form submission
         if request.method == 'POST':
-            # If the method is POST, validate the data and perform a save() == INSERT VALUE INTO
-            form = ResultsForm(data=request.POST)
-            if form.is_valid():
-                # BEWARE: This is a modelForm and not a object/model, "save" do not have some arguments of the same method, like using=db_tag
-                # to work with a normal django object insert a line: data = form.save(commit=False) and then data is a basic model: e.g., you can use data.save(using=external_generic_db)
-                # In our example the routing takes care of the external db save
-                data = form.save(commit=False)
-                result_id = result_id_generation(data) # NOTE: for now it is a UUID
-                data.result_id = result_id
-                data.save()
-            # TODO: check uniqueness on doi, and so on
-                result = Results.objects.get(pk = result_id)
-                for sample in sample_list:
-                    sample = Samples.objects.get(pk = sample)
-                    ResultxSample.objects.get_or_create(x_id = xid_code_generation(result_id,sample.sample_id), results = result, samples = sample)
+            return self.handle_form_submission(request, sample_list, instrument_list, software_list)
 
-                
-                for instrument in instrument_list:
-                    instrument = Instruments.objects.get(pk = instrument)
-                    ResultxInstrument.objects.get_or_create(x_id = xid_code_generation(result_id,instrument.instrument_id), results = result, instruments = instrument)
+        # Open/close dropdown filter indicators
+        sample_filter_set = self.is_filter_open(request, "sample_filter")
+        instrument_filter_set = self.is_filter_open(request, "instrument_filter")
 
-                
-                # data.save()
-                # data.lab_id = request.session["lab_selected"]
-                # data.user_id = username
-                # data.save()
-                return render(request, 'home/thank_you_page.html', {
-                'page': self,
-                # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                'data': data,
-                })
-            else:
-                return render(request, 'home/error_page.html', {
-                        'page': self,
-                        # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                        'errors': form.errors, # TODO: improve this
-                    })
+        # Filters and additional GET params
+        sample_filter = request.GET.get("sample_filter", "")
+        instrument_filter = request.GET.get("instrument_filter", "")
+        article_doi = request.GET.get("article_doi", "")
+        main_repository = request.GET.get("main_repository", "")
 
-                # first sample filter selection dropdown ->
-        if "sample_filter" in request.GET:
-            sample_filter = request.GET.get("sample_filter","")
-            if sample_filter != "" :
-                sample_filter_set = "open "
-            else:
-                sample_filter_set = " "
-        else:
-            sample_filter = ""
-            request.GET = request.GET.copy()
-            request.GET["sample_filter"]= ""
-            sample_filter_set = " "
-
-
-
-                # first sample filter selection dropdown ->
-        if "instrument_filter" in request.GET:
-            instrument_filter = request.GET.get("instrument_filter","")
-            if instrument_filter != "" :
-                instrument_filter_set = "open "
-            else:
-                instrument_filter_set = " "
-        else:
-            instrument_filter = ""
-            request.GET = request.GET.copy()
-            request.GET["instrument_filter"]= ""
-            instrument_filter_set = " "
-
-
-        # REPORTS
-        article_doi = request.GET.get("article_doi","")
-        main_repository = request.GET.get("main_repository","")
-    
-        # SAMPLES
-        # Dropdown for Samples requests --> 
-        # check the Samples request in the dropdown
-        dataQuery = Samples.objects.filter(lab_id=lab)
-        dataQuery = dataQuery.filter(sample_id__contains = sample_filter)
-        sample_table = SamplesForResultsTable(dataQuery,prefix="sample_")
+        # Query samples for the table display
+        sample_query = Samples.objects.filter(lab_id=lab)
+        if sample_filter:
+            sample_query = sample_query.filter(sample_id__contains=sample_filter)
+        sample_table = SamplesForResultsTable(sample_query, prefix="sample_")
         RequestConfig(request).configure(sample_table)
-        sample_table.paginate(page=request.GET.get("sample_page",1), per_page=5) # TODO: implement dynamic per page settings?
-        
-        if "sample_page" in request.GET:
-            sample_page = request.GET.get("sample_page","")
-            if sample_page != "" :
-                sample_filter_set = "open "
-            else:
-                sample_filter_set = " "
+        sample_table.paginate(page=request.GET.get("sample_page", 1), per_page=5)
 
-        # INSTRUMENTS
-        # Dropdown for Instruments requests --> 
-        # check the Instruments request in the dropdown
-        # dataQuery = Instruments.objects.filter(lab_id=lab)
-        dataQuery = Instruments.objects.filter(instrument_id__contains = instrument_filter)
-        instrument_table = InstrumentsForResultsTable(dataQuery,prefix="inst_")
+        # Query instruments for the table display
+        instrument_query = Instruments.objects.all()
+        if instrument_filter:
+            instrument_query = instrument_query.filter(instrument_id__contains=instrument_filter)
+        instrument_table = InstrumentsForResultsTable(instrument_query, prefix="inst_")
         RequestConfig(request).configure(instrument_table)
-        instrument_table.paginate(page=request.GET.get("inst_page",1), per_page=5) # TODO: implement dynamic per page settings?
-        
-        if "inst_page" in request.GET:
-            inst_page = request.GET.get("inst_page","")
-            if inst_page != "" :
-                instrument_filter_set = "open "
-            else:
-                instrument_filter_set = " "
+        instrument_table.paginate(page=request.GET.get("inst_page", 1), per_page=5)
 
-        pageDict = {
+        # Prepare data for template
+        return render(request, 'home/lab_management_pages/results_page.html', {
             'page': self,
             'lab': lab,
             'article_doi': article_doi,
-            'main_repository': main_repository,            
+            'main_repository': main_repository,
             'sample_table': sample_table,
-            'sample_filter' : sample_filter_set,
-            'instrument_filter' : instrument_filter_set,
-            'sample_list' : json.dumps(sample_list),
-            'sample_list_view' : sample_list,
-            'public_dataset_list' : json.dumps(public_dataset_list),
-            'public_dataset_list_view' : public_dataset_list,
-            'instruments_table' : instrument_table,
-            'instrument_list' : json.dumps(instrument_list),
-            'instrument_list_view' : instrument_list,
-            'software_list' : json.dumps(software_list),
-            'software_list_view' : software_list,
-            }
+            'sample_filter': sample_filter_set,
+            'instrument_filter': instrument_filter_set,
+            'sample_list': json.dumps(sample_list),
+            'sample_list_view': sample_list,
+            'public_dataset_list': json.dumps(public_dataset_list),
+            'public_dataset_list_view': public_dataset_list,
+            'instruments_table': instrument_table,
+            'instrument_list': json.dumps(instrument_list),
+            'instrument_list_view': instrument_list,
+            'software_list': json.dumps(software_list),
+            'software_list_view': software_list,
+        })
 
-        
-
-
-        return render(request, 'home/lab_management_pages/results_page.html', pageDict)
-
-class ResultsListPage(Page): # EASYDMP 
-    
+# This page displays a list of research results, filtered by lab and result ID, with pagination support.
+class ResultsListPage(Page):
     intro = RichTextField(blank=True)
+
     content_panels = Page.content_panels + [
         FieldPanel('intro', classname="full"),
     ]
 
-    def serve(self,request):
-        if request.user.is_authenticated:
-            username = request.user.username
-        
+    # Retrieves lab from session; redirects if not set or invalid
+    def get_lab_from_session_or_redirect(self, request):
+        lab_id = request.session.get('lab_selected')
+        if not lab_id:
+            request.session["return_page"] = request.META.get('HTTP_REFERER', '/')
+            return redirect("/switch-laboratory")
         try:
-            if(request.session['lab_selected'] is None):
-                request.session["return_page"] = request.META['HTTP_REFERER']
-                next = request.POST.get("next", "/switch-laboratory")
-                return redirect(next)
-            else:
-                lab = Laboratories.objects.get(pk = request.session['lab_selected'])
-        except KeyError:
-            request.session["return_page"] = request.META['HTTP_REFERER']
-            next = request.POST.get("next", "/switch-laboratory")
-            return redirect(next)
+            return Laboratories.objects.get(pk=lab_id)
+        except Laboratories.DoesNotExist:
+            return redirect("/switch-laboratory")
 
-            # JENKINS
-            # TODO: Add a callback or a initial timer
-        '''
-        try:
-            jenkins_api = Decos_Jenkins_API(username=username, lab=lab)
-            if jenkins_filelist_status is None:
-                jenkins_filelist_status = 'Waiting'
-            else:
-                if request.POST['list_folders'] == 'true':
-                    jenkins_filelist_status = jenkins_api.get_latest_build(f"test_Folder/job/folderList")['result']
-                    jenkins_api.build_job(job_path= f"test_Folder/job/folderList", secret_token="folderList_SECRET_TOKEN")
-                    jenkins_filelist_status = 'Sent'
+    def serve(self, request):
+        lab = self.get_lab_from_session_or_redirect(request)
+        if isinstance(lab, HttpResponseRedirect):
+            return lab
 
-        except Exception as e: # TODO: catch and manage this
-            print(f"error on jenkins_api: {e}") 
-        '''
-        if "filter" in request.GET:
-            filter = request.GET.get("filter","")
-        else:
-            filter = ""
-            request.GET = request.GET.copy()
-            request.GET["filter"]= ""
+        filter_value = request.GET.get('filter', '') or request.POST.get('filter', '')
 
-        if request.method == 'POST':
-            filter = request.POST.get("filter","")
-            request.GET = request.GET.copy()
-            request.GET["filter"] = request.POST.get("filter","")
-
-        # FIXME: put a lab_id in the model or something else!
-        # data = Results.objects.filter(lab_id=request.session.get('lab_selected'))
+        # TODO: manage lab view only or something else
         data = Results.objects.all()
-        data = data.filter(result_id__contains = filter)
+
+        if filter_value:
+            # Filters results by partial match on result_id
+            data = data.filter(result_id__icontains=filter_value)
+
+        # Configures results table with pagination
         table = ResultsTable(data)
         RequestConfig(request).configure(table)
+        table.paginate(page=request.GET.get("page", 1), per_page=5)
 
-        table.paginate(page=request.GET.get("page",1), per_page=5) # TODO: softcode paginate settings
         return render(request, 'home/lab_management_pages/results_list_page.html', {
             'page': self,
             'table': table,
+            'filter_value': filter_value,
         })
 
-class ExperimentDMPPage(Page):
+# This page displays detailed information about a selected research result, including associated samples, instruments, and the lab's data management plan (DMP).
+class ExperimentMetadataReportPage(Page):
     intro = RichTextField(blank=True)
+
     content_panels = Page.content_panels + [
         FieldPanel('intro', classname="full"),
     ]
 
-    def serve(self,request):
-        if request.user.is_authenticated:
-            username = request.user.username
-        
+    # Retrieves lab from session; redirects if not set or invalid
+    def get_lab_from_session_or_redirect(self, request):
+        lab_id = request.session.get('lab_selected')
+        if not lab_id:
+            request.session["return_page"] = request.META.get('HTTP_REFERER', '/')
+            return redirect("/switch-laboratory")
         try:
-            if(request.session['lab_selected'] is None):
-                request.session["return_page"] = request.META['HTTP_REFERER']
-                next = request.POST.get("next", "/switch-laboratory")
-                return redirect(next)
-            else:
-                lab = Laboratories.objects.get(pk = request.session['lab_selected'])
-        except KeyError:
-            request.session["return_page"] = request.META['HTTP_REFERER']
-            next = request.POST.get("next", "/switch-laboratory")
-            return redirect(next)
-        
-        result_id = request.GET.get("result_id","")
-        if result_id != "":
-            data = Results.objects.get(pk = result_id)
-            sample_x_list = ResultxSample.objects.filter(results = data)
-            sample_list = []
-            for sample in sample_x_list:
-                sample = Samples.objects.get(pk = sample.samples_id)
-                # TODO: dynamic this -> hasattr and so on and match
-                if(sample.lab_id.lab_id == 'LAGE'):
-                    sample = LageSamples.objects.get(pk = sample.sample_id)
-                else:
-                    pass # TODO: implement other labs
-                sample_list.append(sample)
-            instrument_x_list = ResultxInstrument.objects.filter(results = data)
-            instrument_list = []
-            for instrument in instrument_x_list:
-                instrument = Instruments.objects.get(pk = instrument.instruments.instrument_id)
-                instrument_list.append(instrument)
+            return Laboratories.objects.get(pk=lab_id)
+        except Laboratories.DoesNotExist:
+            return redirect("/switch-laboratory")
 
-            try:
-                lab_dmp = labDMP.objects.get(pk = request.session['lab_selected'])
-            except labDMP.DoesNotExist as e:
-                lab_dmp = None
+    def serve(self, request):
+        lab = self.get_lab_from_session_or_redirect(request)
+        if isinstance(lab, HttpResponseRedirect):
+            return lab
 
+        result_id = request.GET.get("result_id", "")
+        data = Results.objects.filter(pk=result_id).first()
+        if not data:
+            return render(request, 'home/error_page.html', {'error': 'Result not found'})
 
-        
-        return render(request, 'home/lab_management_pages/dmp_page.html', {
+        # Retrieve sample IDs 
+        sample_ids = ResultxSample.objects.filter(results=data).values_list('samples_id', flat=True)
+        samples = Samples.objects.filter(pk__in=sample_ids)
+
+        # Handle LAGE samples dynamically
+        lage_samples = LageSamples.objects.filter(pk__in=[s.sample_id for s in samples if s.lab_id.lab_id == 'LAGE'])
+        sample_list = list(samples) + list(lage_samples)
+
+        # Retrieve instruments 
+        instrument_ids = ResultxInstrument.objects.filter(results=data).values_list('instruments__instrument_id', flat=True)
+        instrument_list = list(Instruments.objects.filter(pk__in=instrument_ids))
+
+        # Get lab DMP (handling missing case properly)
+        lab_dmp = labDMP.objects.filter(pk=lab.lab_id).first()
+
+        return render(request, 'home/lab_management_pages/experiment_metadata_report_page.html', {
             'page': self,
             'data': data,
             'sample_list': sample_list,
@@ -927,6 +791,15 @@ class ExperimentDMPPage(Page):
             'lab_dmp': lab_dmp,
         })
 
+# EASYDMP STUB TODO: dmp search page
+class DMPSearchPage(Page): 
+    pass
+
+# EASYDMP STUB TODO: dmp view page
+class DMPViewPage(Page): 
+    pass
+
+### THIS ARE STUB PAGES, MADE TO INTEGRATE INTO EPIRO. RIGHT NOW IGNORE THEM
 class ProposalSubmissionPage(Page): # USER DATA DIMMT
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(
