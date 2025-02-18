@@ -1,3 +1,9 @@
+DECOS is licensed under the MIT license; see the file LICENSE for details.
+
+DECOS includes code from the Django project, which is licensed under the three-clause BSD license,
+a permissive open source license. The copyright and license
+is included below for compliance with Django's terms.
+
 Copyright (c) Django Software Foundation and individual contributors.
 All rights reserved.
 

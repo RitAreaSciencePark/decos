@@ -1,0 +1,43 @@
+DECOS is licensed under the MIT license; The copyright and license
+is included below.
+
+DECOS includes code from the Django project, which is licensed under the three-clause BSD license,
+a permissive open source license. The copyright and license
+is included in the file LICENSE.django for compliance with Django's terms.
+
+DECOS includes code from the Python standard library, which is licensed under
+the Python license, a permissive open source license. The copyright and license
+is included in the LICENSE.python file.
+
+In addition DECOS includes these modules which are licensed under a permissive open source license;
+Gunicorn: MIT License | location: decos/LICENSES/LICENSE.gunicorn
+Debugpy: MIT License | location: decos/LICENSES/LICENSE.debugpy
+psycopg2-binary: LGPL License | location: decos/LICENSES/LICENSE.psycopg2
+django-allauth: MIT License | location: decos/LICENSES/LICENSE.allauth
+django-tables2: Simplified BSD License | location: decos/LICENSES/LICENSE.django-tables2
+django-filter: MIT License | location: decos/LICENSES/LICENSE.django-filter
+Minio: Apache License 2.0 | location: decos/LICENSES/LICENSE.minio
+
+DECOS MIT license:
+
+Copyright (c) 2025 Marco Prenassi, Cecilia Zagni,
+Laboratory of Data Engineering, Istituto di ricerca per l'innovazione tecnologica (RIT),
+Area Science Park, Trieste, Italy.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
