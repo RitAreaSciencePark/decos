@@ -65,6 +65,7 @@ def form_orchestrator(user_lab, request, filerequest, get_instance):
         exclude, widgets_list = get_exclude_and_widgets(form_class, form_model)
 
         instance = form_model.objects.get(pk=request.GET['sample_id']) if get_instance else None
+<<<<<<< HEAD
         request = request if not get_instance else None
         form_list.append(
             form_factory(
@@ -74,6 +75,17 @@ def form_orchestrator(user_lab, request, filerequest, get_instance):
         )
     return form_list
 
+=======
+
+        form_list.append(
+            form_factory(
+                form_model, widgets_list, request=request, filerequest=filerequest,
+                exclude_list=exclude, instance=instance
+            )
+        )
+    return form_list
+
+>>>>>>> 7ba91e444ffe63cfd5e63a511123d609b24f16f1
 # Helper function to get exclusion list and widget configuration for a model
 
 def get_exclude_and_widgets(form_class, form_model):
