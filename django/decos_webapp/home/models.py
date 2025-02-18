@@ -1,3 +1,24 @@
+# Copyright (c) 2025 Marco Prenassi, Cecilia Zagni,
+# Laboratory of Data Engineering, Istituto di ricerca per l'innovazione tecnologica (RIT),
+# Area Science Park, Trieste, Italy.
+# Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
+# Author: Marco Prenassi, Cecilia Zagni
+# Date: 2025-02-17
+# Description: This models.py file is part of a Django Wagtail project that supports the development of 
+# an experiment metadata catalog for life sciences laboratories, this page models are contained in the 
+# decos_webapp_db, while the metadata catalog is referenced into PRP_CDM_App and decos_metadata_db.
+# It defines custom Wagtail pages and data management components to handle samples, instruments, 
+# research results, data management plans and related metadata. 
+# The pages facilitate data entry, editing, and catalog visualization, enabling lab-specific 
+# contextualization and linking of experimental data.
+# NOTE: this page migrates to the default db.
+
+# Decos Webapp - Home App
+# Relative Path: 
+
+
+##
 # Standard Library Imports
 import json  # For handling JSON data
 import logging  # For logging errors, warnings, and info
@@ -228,7 +249,7 @@ class EditSamplePage(Page, SampleFormHandlerMixin):
     def serve(self, request):
         if request.method == 'POST':
             sample, lab = self.get_sample_and_lab(request.POST['sample_id_hidden'])
-            forms = form_orchestrator(user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, getInstance=False)
+            forms = form_orchestrator(user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, get_instance=False)
 
             success, result = self.process_forms(forms, sample=sample, lab=lab, request=request)
 
@@ -236,7 +257,7 @@ class EditSamplePage(Page, SampleFormHandlerMixin):
                 return render(request, 'home/thank_you_page.html', {'page': self, 'data': result})
             
             # Reinitialize forms with existing sample data upon validation failure
-            forms = form_orchestrator(user_lab=lab.lab_id, request=request, filerequest=None, getInstance=True)
+            forms = form_orchestrator(user_lab=lab.lab_id, request=request, filerequest=None, get_instance=True)
             context = {'page': self, 'lab': lab.lab_id, 'sr_id': sample.sr_id, 'sample_id': sample.sample_id, 'forms': forms, 'errors': result}
             for form in forms:
                 context[form.Meta.model.__name__] = form
@@ -245,7 +266,7 @@ class EditSamplePage(Page, SampleFormHandlerMixin):
             return render(request, template, context)
 
         sample, lab = self.get_sample_and_lab(request.GET['sample_id'])
-        forms = form_orchestrator(user_lab=lab.lab_id, request=request, filerequest=None, getInstance=True)
+        forms = form_orchestrator(user_lab=lab.lab_id, request=request, filerequest=None, get_instance=True)
 
         context = {'page': self, 'lab': lab.lab_id, 'sr_id': sample.sr_id, 'sample_id': sample.sample_id, 'forms': forms}
         for form in forms:
@@ -275,7 +296,7 @@ class SamplePage(Page, SessionHandlerMixin, SampleFormHandlerMixin):
         filter_term = request.GET.get("filter", "")
 
         if request.method == 'POST':
-            forms = form_orchestrator(user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, getInstance=False)
+            forms = form_orchestrator(user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, get_instance=False)
             success, result = self.process_forms(forms, lab=lab, request=request, generate_sample_id=True)
 
             if success:
@@ -285,7 +306,7 @@ class SamplePage(Page, SessionHandlerMixin, SampleFormHandlerMixin):
             sr_id = request.POST.get("sr_id_hidden", "internal")
             context = {'page': self, 'forms': forms, 'lab': lab.lab_id, 'sr_id': sr_id, 'table': None, 'errors': result}
         else:
-            forms = form_orchestrator(user_lab=lab.lab_id, request=None, filerequest=None, getInstance=False)
+            forms = form_orchestrator(user_lab=lab.lab_id, request=None, filerequest=None, get_instance=False)
             sr_query = ServiceRequests.objects.filter(lab_id=lab.lab_id)
             if filter_term:
                 sr_query = sr_query.filter(sr_id__icontains=filter_term)
