@@ -14,10 +14,7 @@ from django_tables2 import tables, Column, TemplateColumn
 from PRP_CDM_app.models import Proposals, ServiceRequests, Samples, Instruments, Results
 
 # Utility function to generate JavaScript click handler for row selection
-<<<<<<< HEAD
 # TODO: Implement it (and integrate it in ResultsSamples)
-=======
->>>>>>> 7ba91e444ffe63cfd5e63a511123d609b24f16f1
 def generate_row_click_handler(input_id: str, record_id: str, form_id: str) -> str:
     return f"handleRowClick('{input_id}', '{record_id}', '{form_id}')"
 
@@ -94,18 +91,11 @@ class InstrumentsForResultsTable(BaseInteractiveTable):
         fields = ("instrument_id", "model", "vendor")
 
 # Table for displaying Results supporting row selection
-<<<<<<< HEAD
 class ResultsTable(tables.Table):
-=======
-class ResultsTable(BaseInteractiveTable):
->>>>>>> 7ba91e444ffe63cfd5e63a511123d609b24f16f1
     class Meta:
         model = Results
         template_name = "django_tables2/bootstrap-responsive.html"
         fields = ("result_id", "main_repository", "article_doi")
-<<<<<<< HEAD
         row_attrs = {
             "onClick": lambda record: f"document.getElementById('result_id_hidden').value = '{record.result_id}'; document.getElementById('result_selection').submit();"
         }
-=======
->>>>>>> 7ba91e444ffe63cfd5e63a511123d609b24f16f1
