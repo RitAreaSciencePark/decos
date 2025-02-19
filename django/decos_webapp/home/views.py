@@ -1,3 +1,12 @@
+# Copyright (c) 2025 Marco Prenassi,
+# Laboratory of Data Engineering, Istituto di ricerca per l'innovazione tecnologica (RIT),
+# Area Science Park, Trieste, Italy.
+# Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
+# Author: Marco Prenassi
+# Date: 2025-02-17
+# Description: View functions for the Home app, enabling laboratory switching and user data management, including API token handling, within the DECOS experiment metadata catalog system.
+
 from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from .forms import (
@@ -15,31 +24,40 @@ from .secrets_models import API_Tokens
 # Functional view for switching between laboratories.
 @login_required
 def switch_lab_view(request):
+    # Ensure the user is authenticated before proceeding
     if request.user.is_authenticated:
         username = request.user.username
 
     if request.method == 'POST':
+        # Handle form submission for laboratory selection
         form = LabSwitchForm(data=request.POST, user_labs=request.user.groups.filter(laboratory=True))
         if form.is_valid():
+            # Store the selected laboratory in the session
             laboratory = form.cleaned_data.get('lab_selected')
             request.session["lab_selected"] = laboratory
             try:
+                # Redirect the user to the previously stored page
                 return redirect(request.session["return_page"])
             except KeyError:
+                # Fallback to the homepage if no return page is available
                 return redirect('/')
     else:
+        # Store the referring page to enable returning to it after switching
         try:
             request.session["return_page"] = request.META['HTTP_REFERER']
         except KeyError:
             request.session["return_page"] = "/"
 
+        # Verify if the user is assigned to any laboratory
         if not request.user.groups.all():
             return render(request, 'home/error_page.html', {
                 'errors': {"No assigned laboratory": "Contact the administrator."},
             })
 
+        # Instantiate the form with the user's assigned laboratories
         form = LabSwitchForm(user_labs=request.user.groups.filter(laboratory=True))
 
+    # Render the laboratory switch page with the form
     return render(request, 'switch_lab.html', {
         'data': form,
     })

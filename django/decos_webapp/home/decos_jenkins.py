@@ -1,11 +1,25 @@
-from APIs.decos_elabftw_API.decos_elabftw_API import ElabFTWAPI
-from django.template.loader import render_to_string
-from PRP_CDM_app.models import LageSamples
+# Copyright (c) 2025 Marco Prenassi,
+# Laboratory of Data Engineering, Istituto di ricerca per l'innovazione tecnologica (RIT),
+# Area Science Park, Trieste, Italy.
+# Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
+# Author: Marco Prenassi
+# Date: 2025-02-17
+# Description: Jenkins API interaction and pipeline management utilities for the DECOS system, enabling the execution and monitoring of laboratory workflows.
+
+from django.contrib.auth.models import Group, User
 from django.forms.models import model_to_dict
+from django.template.loader import render_to_string
+
+from PRP_CDM_app.models import LageSamples
+
+from APIs.decos_elabftw_API.decos_elabftw_API import ElabFTWAPI
 from APIs.decos_jenkins_API.decos_jenkins_API import Server
+
 from .secrets_models import API_Tokens
+
 import re
-from django.contrib.auth.models import User, Group
+
 
 # Custom exception to handle errors related to Jenkins configuration
 class JenkinsConfigurationError(Exception):

@@ -52,7 +52,7 @@ from wagtail.models import Page  # Base Page model in Wagtail CMS
 # Local Application Imports (Project-specific)
 from decos_secrets import minIO_secrets  # Secrets configuration for minIO storage
 
-from .decos_elab import Decos_Elab_API  # Integration with Decos Elab API
+from .decos_elab import DecosElabAPI  # Integration with Decos Elab API
 from .decos_jenkins import DecosJenkinsAPI  # Integration with Decos Jenkins API
 
 from .forms import (  # Project-specific forms
@@ -347,7 +347,7 @@ class SampleListPage(Page, SessionHandlerMixin):
 
         try:
             token = API_Tokens.objects.filter(laboratory=lab.lab_id, user_id=User.objects.get(username=username)).first()
-            elab_api = Decos_Elab_API(ApiSettings.objects.get(pk=1).elab_base_url, token.elab_token)
+            elab_api = DecosElabAPI(ApiSettings.objects.get(pk=1).elab_base_url, token.elab_token)
             sample = Samples.objects.get(pk=sample_id)
             elab_api.create_new_decos_experiment(lab=lab, username=username, experiment_info=sample)
         except (ObjectDoesNotExist, UnboundLocalError) as e:
