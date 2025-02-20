@@ -88,6 +88,9 @@ class SamplesForResultsTable(BaseInteractiveTable):
         model = Samples
         template_name = "django_tables2/bootstrap-responsive.html"
         fields = ("sample_id", "sample_short_description")
+        row_attrs = {
+        "onClick": lambda record: f"document.getElementById('sample_id_hidden').value = '{record.sample_id}'; document.getElementById('sample_selection').submit();"
+        }
 
 # Table for selecting Instruments when assigning Results
 class InstrumentsForResultsTable(BaseInteractiveTable):
@@ -95,6 +98,10 @@ class InstrumentsForResultsTable(BaseInteractiveTable):
         model = Instruments
         template_name = "django_tables2/bootstrap-responsive.html"
         fields = ("instrument_id", "model", "vendor")
+        row_attrs = {
+        "onClick": lambda record: f"document.getElementById('instrument_id_hidden').value = '{record.instrument_id}'; document.getElementById('instrument_selection').submit();"
+        # "onClick": lambda record: f'alert("I am an alert box!")',
+        }
 
 # Table for displaying Results supporting row selection
 class ResultsTable(tables.Table):
