@@ -13,7 +13,7 @@ from datetime import datetime
 from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
 
-from PRP_CDM_app.models import LageSamples
+from PRP_CDM_app.models.laboratory_models.lage import LageSamples
 from APIs.decos_elabftw_API.decos_elabftw_API import ElabFTWAPI
 
 logger = logging.getLogger(__name__)

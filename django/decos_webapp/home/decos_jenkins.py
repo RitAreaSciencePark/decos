@@ -11,7 +11,7 @@ from django.contrib.auth.models import Group, User
 from django.forms.models import model_to_dict
 from django.template.loader import render_to_string
 
-from PRP_CDM_app.models import LageSamples
+from PRP_CDM_app.models.laboratory_models.lage import LageSamples
 
 from APIs.decos_elabftw_API.decos_elabftw_API import ElabFTWAPI
 from APIs.decos_jenkins_API.decos_jenkins_API import Server

@@ -1,4 +1,4 @@
-from PRP_CDM_app.models import *
+from django.decos_webapp.PRP_CDM_app.ontology.common_data_model import *
 
 class ReportDefinition:
 

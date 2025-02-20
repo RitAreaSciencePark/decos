@@ -8,7 +8,7 @@
 # Description: Custom user authentication and registration forms for the DECOS system, integrating user data validation and persistence within the PRP_CDM_app ecosystem.
 
 from allauth.account.forms import SignupForm, LoginForm
-from PRP_CDM_app.models import Users
+from django.decos_webapp.PRP_CDM_app.ontology.common_data_model import Users
 from django.core.exceptions import ObjectDoesNotExist
 import logging
 

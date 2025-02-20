@@ -14,7 +14,7 @@ from .forms import (
     UserDataForm,
     APITokenForm,
 )
-from PRP_CDM_app.models import (
+from PRP_CDM_app.models.common_data_model import (
     Users,
     Laboratories,
 )

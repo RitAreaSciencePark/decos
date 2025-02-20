@@ -6,7 +6,7 @@ from django.utils import timezone
 from .forms import AddNewLabForm, ModifyLabForm
 from django.contrib.auth.models import Group
 from django.db.models import Model
-from PRP_CDM_app.models import Laboratories
+from PRP_CDM_app.models.common_data_model import Laboratories
 
 
 def AddLabView(request):

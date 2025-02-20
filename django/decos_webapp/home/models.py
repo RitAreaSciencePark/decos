@@ -87,8 +87,7 @@ from PRP_CDM_app.code_generation import (  # ID code generators for various enti
     xid_code_generation,
 )
 
-from PRP_CDM_app.models import (  # Models related to samples, instruments, results, etc.
-    LageSamples,
+from PRP_CDM_app.models.common_data_model import (  # Models related to samples, instruments, results, etc.
     LabXInstrument,
     Laboratories,
     Proposals,
@@ -101,6 +100,8 @@ from PRP_CDM_app.models import (  # Models related to samples, instruments, resu
     Instruments,
     labDMP,
 )
+
+from PRP_CDM_app.models.laboratory_models.lage import LageSamples
 
 from APIs.decos_minio_API.decos_minio_API import decos_minio  # MinIO API integration
 

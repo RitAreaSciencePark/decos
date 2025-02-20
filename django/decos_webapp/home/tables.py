@@ -11,7 +11,13 @@
 # The tables support interactive row selection and custom rendering where necessary.
 
 from django_tables2 import tables, Column, TemplateColumn
-from PRP_CDM_app.models import Proposals, ServiceRequests, Samples, Instruments, Results
+from PRP_CDM_app.models.common_data_model import (
+    Proposals, 
+    ServiceRequests, 
+    Samples, 
+    Instruments, 
+    Results
+)
 
 # Utility function to generate JavaScript click handler for row selection
 # TODO: Implement it (and integrate it in ResultsSamples)

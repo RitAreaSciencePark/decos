@@ -3,11 +3,13 @@ from django.db import models
 # through django ORM
 from django import forms
 from uuid import uuid4
-from .fields import MultiChoicheAndOtherWidget, BooleanIfWhat
+from PRP_CDM_app.fields import MultiChoicheAndOtherWidget, BooleanIfWhat
 import datetime
 import json
 import os
 from pathlib import Path
+
+from PRP_CDM_app.utility import choices, tupleConvert
 
 # FIXME: IMPORTANT, REFACTOR THE SCHEMA WITH BETTER columns NAMES! (e.g. remove [..]_id_id for fk...)
 
@@ -22,19 +24,6 @@ from pathlib import Path
 # NOTE: If multiple choices without free text field, use:
 #     test = models.CharField(choices=test_choices)
 
-def initChoices():
-    path = Path(__file__).parent / "choices.json"
-    with path.open() as f:
-        d = json.load(f)            
-        return d
-    
-choices = initChoices()
-
-def tupleConvert(shortList):
-    outlist = []
-    for item in shortList:
-        outlist.append((item[0],item[1]))
-    return outlist
 
 class Users(models.Model):
     user_id = models.CharField(max_length=50, primary_key=True)
@@ -83,6 +72,7 @@ class Proposals(models.Model):
     class Meta:
         db_table= 'proposals'.lower()
 
+
 class ServiceRequests(models.Model):
     sr_id = models.CharField(max_length=50, primary_key=True)
     proposal_id = models.ForeignKey(Proposals, on_delete=models.PROTECT)
@@ -112,55 +102,6 @@ class Samples(models.Model):
     # give the name of the table, lowercase for postgres (I've put a "lower() to remember")
     class Meta:
         db_table= 'samples'.lower()
-
-class LageSamples(Samples):
-    widgets = {}
-    lagesamples_choices = choices["LageSamples"]
-    type_choices = tupleConvert(lagesamples_choices["type_choices"])
-    type = models.CharField(blank=True)
-    widgets["type"] = MultiChoicheAndOtherWidget(choices=type_choices)
-    #sample_id = models.CharField(max_length=50, primary_key=True) # also FK table samples
-    is_volume_in_ul = models.CharField(blank=True)
-    widgets["is_volume_in_ul"] = BooleanIfWhat(yes_or_no=False)
-    is_buffer_used = models.CharField(blank=True)
-    widgets["is_buffer_used"] = BooleanIfWhat(yes_or_no=False)
-    is_quality = models.CharField(blank=True)
-    widgets["is_quality"] = BooleanIfWhat(yes_or_no=False)
-    sample_date_of_delivery = models.DateField(blank=False)
-    sample_back = models.BooleanField()
-    reagents_provided_by_client = models.BooleanField()
-    reagents_date_of_delivery = models.DateField(blank=True, null=True)
-    
-    def user_directory_path(instance, filename):
-        # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-        if(instance.sr_id):
-            return 'uploads/samples/{0}/{1}/{2}'.format(instance.sr_id.sr_id, instance.sample_id, filename)
-        else:
-            return 'uploads/samples/{0}/{1}/{2}'.format(instance.lab_id, instance.sample_id, filename)
-
-    sample_sheet_filename = models.FileField(blank=True, upload_to=user_directory_path)
-    additional_filename = models.FileField(blank=True, upload_to=user_directory_path)
-
-    # give the name of the table, lowercase for postgres (I've put a "lower() to remember")
-    class Meta:
-        db_table= 'lage_samples'.lower()
-
-class LameSamples(Samples):
-    chemical_formula = models.CharField(blank=True)
-    elements_list = models.CharField(blank=True)
-    sample_date_of_delivery = models.DateField()
-    sample_back = models.BooleanField()
-    
-    def user_directory_path(instance, filename):
-        # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-        return 'uploads/samples/{0}/{1}/{2}'.format(instance.sr_id.sr_id, instance.sample_id, filename)
-
-    sample_sheet_filename = models.FileField(blank=True, upload_to=user_directory_path)
-    additional_filename = models.FileField(blank=True, upload_to=user_directory_path)
-
-    # give the name of the table, lowercase for postgres (I've put a "lower() to remember")
-    class Meta:
-        db_table= 'lame_samples'.lower()
 
 class Instruments(models.Model):
     # TODO: put lab_id or put this in Laboratories
@@ -377,3 +318,5 @@ class ResultxLab(models.Model):
     # give the name of the table, lowercase for postgres (I've put a "lower() to remember")
     class Meta:
         db_table= 'result_x_lab'.lower()
+
+

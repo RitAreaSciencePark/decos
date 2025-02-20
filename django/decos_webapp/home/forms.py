@@ -24,7 +24,7 @@ from PRP_CDM_app.fields import BooleanIfWhat, MultiChoicheAndOtherWidget
 
 # This import points to the external app schema!
 from PRP_CDM_app.forms import FormsDefinition
-from PRP_CDM_app.models import (
+from PRP_CDM_app.models.common_data_model import (
     Users, 
     Proposals, 
     ServiceRequests, 

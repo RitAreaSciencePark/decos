@@ -1,4 +1,6 @@
-from PRP_CDM_app.models import *
+from PRP_CDM_app.models.common_data_model import *
+from PRP_CDM_app.models.laboratory_models.lage import LageSamples
+from PRP_CDM_app.models.laboratory_models.lame import LameSamples
 
 class FormsDefinition:
     

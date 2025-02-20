@@ -1,6 +1,6 @@
 from uuid import uuid4
 
-from PRP_CDM_app.models import Proposals, ServiceRequests, Samples
+from PRP_CDM_app.models.common_data_model import Proposals, ServiceRequests, Samples
 
 from datetime import datetime
 import re

@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import Administration
+from .ontology.common_data_model import Administration
 
 def listDMPView(request):
     data = Administration.objects.all()
