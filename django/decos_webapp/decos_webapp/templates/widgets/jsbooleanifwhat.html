@@ -1,36 +1,43 @@
+<!--
+    Copyright (c) 2025 Marco Prenassi
+    Laboratory of Data Engineering, Istituto di ricerca per l'innovazione tecnologica (RIT),
+    Area Science Park, Trieste, Italy.
+    Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
+    Author: Marco Prenassi
+    Date: 2025-02-17
+    Description:
+    This template defines the front-end logic for the BooleanIfWhat widget, 
+    which displays a checkbox with an optional text field for users to specify a reason when selecting 'No' or 'Yes'.
+    The script ensures the correct visibility behavior and input validation.
+-->
+
 {% for widget in widget.subwidgets %}
-{% include widget.template_name %}
+    {% include widget.template_name %}
 {% endfor %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-    function makevisible(sel,textb, yn) {
-        if((sel.checked && yn == "True")||(!sel.checked && yn == "False"))
-        {
-            textb.style.visibility = "visible";
-        }   
-        else
-        {
-            textb.style.visibility = "hidden";
+    $(document).ready(function() {
+        let checkbox = $("#id_{{ widget.subwidgets.0.name }}");
+        let textbox = $("#id_{{ widget.subwidgets.1.name }}");
+        let yesOrNo = "{{ widget.attrs.yes_or_no }}" === "True"; // Ensuring correct boolean handling
+
+        function toggleTextbox() {
+            let textValue = textbox.val().trim();
+            
+            if (textValue === "Yes") {
+                checkbox.prop("checked", true);
+                textbox.css("visibility", "hidden").prop("disabled", true);
+            } else if ((checkbox.is(":checked") && yesOrNo) || (!checkbox.is(":checked") && !yesOrNo)) {
+                textbox.css("visibility", "visible").prop("disabled", false);
+            } else {
+                textbox.css("visibility", "hidden").prop("disabled", true).val("");
+            }
         }
-        
-    }
 
-    function othervisible() {
-        var selection = document.getElementById("id_{{ widget.subwidgets.0.name }}");
-        var textbox = document.getElementById("id_{{ widget.subwidgets.1.name }}");
-        var yes_or_no = "{{ widget.attrs.yes_or_no }}"
-        if(yes_or_no == "True")
-            textbox.style.visibility = "hidden";
-        else
-            textbox.style.visibility = "visible";
-        
-        makevisible(selection,textbox,yes_or_no);
-
-
-        selection.addEventListener("change", function() {
-            makevisible(selection,textbox,yes_or_no);
-            });
-        };
-
-    
-    othervisible();
+        toggleTextbox(); // Initialize visibility state
+        checkbox.on("change", toggleTextbox);
+        textbox.on("input", toggleTextbox);
+    });
 </script>
