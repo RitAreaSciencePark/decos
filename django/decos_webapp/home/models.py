@@ -26,7 +26,6 @@ from os import listdir  # For listing files in a directory
 from os.path import dirname, isfile, join  # For file path manipulations
 from django.http import HttpResponseRedirect # Required for checking redirect responses when validating lab session
 
-
 # Third-party Imports (Django & Wagtail)
 from django import forms  # For form handling
 from django.conf import settings  # For accessing Django settings
@@ -34,9 +33,10 @@ from django.contrib.auth.models import Group, User  # User and Group models
 from django.core.exceptions import ObjectDoesNotExist  # For handling non-existing objects
 from django.db import connections, models  # ORM models and DB connections
 from django.forms.models import model_to_dict  # For converting model instances to dictionaries
-from django.shortcuts import redirect, render  # For rendering templates and handling redirects
+from django.shortcuts import redirect, render, get_object_or_404  # For rendering templates and handling redirects
 from django.template.loader import render_to_string  # For rendering templates to strings
 from django_tables2.config import RequestConfig  # For configuring table display
+from django.apps import apps
 
 from wagtail.admin.panels import (  # For Wagtail admin panel configurations 
     FieldPanel, 
@@ -251,9 +251,7 @@ class EditSamplePage(Page, SampleFormHandlerMixin):
         if request.method == 'POST':
             sample, lab = self.get_sample_and_lab(request.POST['sample_id_hidden'])
             forms = form_orchestrator(user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, get_instance=False)
-
             success, result = self.process_forms(forms, sample=sample, lab=lab, request=request)
-
             if success:
                 return render(request, 'home/thank_you_page.html', {'page': self, 'data': result})
             
@@ -775,31 +773,40 @@ class ExperimentMetadataReportPage(Page):
         if not lab_id:
             request.session["return_page"] = request.META.get('HTTP_REFERER', '/')
             return redirect("/switch-laboratory")
-        try:
-            return Laboratories.objects.get(pk=lab_id)
-        except Laboratories.DoesNotExist:
-            return redirect("/switch-laboratory")
+        return get_object_or_404(Laboratories, pk=lab_id)
 
     def serve(self, request):
         lab = self.get_lab_from_session_or_redirect(request)
         if isinstance(lab, HttpResponseRedirect):
             return lab
 
-        result_id = request.GET.get("result_id", "")
-        data = Results.objects.filter(pk=result_id).first()
-        if not data:
-            return render(request, 'home/error_page.html', {'error': 'Result not found'})
+        result_id = request.GET.get("result_id")
+        data = get_object_or_404(Results, pk=result_id)
 
-        # Retrieve sample IDs 
+        # Retrieve sample IDs related to the result
         sample_ids = ResultxSample.objects.filter(results=data).values_list('samples_id', flat=True)
-        samples = Samples.objects.filter(pk__in=sample_ids)
 
-        # Handle LAGE samples dynamically
-        lage_samples = LageSamples.objects.filter(pk__in=[s.sample_id for s in samples if s.lab_id.lab_id == 'LAGE'])
-        sample_list = list(samples) + list(lage_samples)
+        # Fetch all samples including their possible specializations
+        samples = Samples.objects.filter(pk__in=sample_ids).select_related('lab_id')
 
-        # Retrieve instruments 
-        instrument_ids = ResultxInstrument.objects.filter(results=data).values_list('instruments__instrument_id', flat=True)
+        # Dynamically determine and replace specialized sample models
+        specialized_samples = []
+        for sample in samples:
+            lab_name = sample.lab_id.lab_id.capitalize() # LAGE -> Lage or sissa -> Sissa
+            specialized_sample_model_name = f"{lab_name}Samples" # Lage -> LageSamples ...
+            SpecializedSamplesModel = apps.get_model('PRP_CDM_app', specialized_sample_model_name) if apps.is_installed('PRP_CDM_app') else None
+
+            if SpecializedSamplesModel:
+                specialized_sample = SpecializedSamplesModel.objects.filter(pk=sample.pk).first()
+                if specialized_sample:
+                    specialized_samples.append(specialized_sample)
+                else:
+                    specialized_samples.append(sample)
+            else:
+                specialized_samples.append(sample)
+
+        # Retrieve instruments efficiently
+        instrument_ids = ResultxInstrument.objects.filter(results=data).values_list('instruments_id', flat=True)
         instrument_list = list(Instruments.objects.filter(pk__in=instrument_ids))
 
         # Get lab DMP (handling missing case properly)
@@ -808,11 +815,11 @@ class ExperimentMetadataReportPage(Page):
         return render(request, 'home/lab_management_pages/experiment_metadata_report_page.html', {
             'page': self,
             'data': data,
-            'sample_list': sample_list,
-            'instrument_list': instrument_list,
-            'lab_dmp': lab_dmp,
+            'sample_list': specialized_samples if specialized_samples else None,
+            'instrument_list': instrument_list if instrument_list else None,
+            'lab_dmp': lab_dmp if lab_dmp else None,
         })
-
+    
 # EASYDMP STUB TODO: dmp search page
 class DMPSearchPage(Page): 
     pass

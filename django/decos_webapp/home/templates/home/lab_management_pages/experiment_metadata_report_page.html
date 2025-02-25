@@ -48,7 +48,7 @@
     {% if "LAGE" in sample.lab_id.lab_id %}
     {% include "./includes/ngs_include.html" %}
     {% elif "LAME" in sample.lab_id.lab_id %}
-    - TO BE IMPLEMENTED
+    {% include "./includes/material_include.html" %}
     {% else %}
     - TO BE IMPLEMENTED
     {% endif %}
