@@ -25,8 +25,9 @@
 #   to Django’s default behavior.
 # - This router isolates PRP_CDM_app’s schema to improve database performance and integrity 
 #   within the multi-database architecture.
+#
+# WHY 2 databases? It ensures that the operations are directed
 
-# WHY 2 databases? It ensures that the operations are directed 
 # to the external common data model database while maintaining separation from web application service tables.
 class ExternalDbRouter:
 

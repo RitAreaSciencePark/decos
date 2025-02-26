@@ -85,7 +85,10 @@ class BooleanIfWhat(forms.MultiWidget):
         if bool(value1) == self.yes_or_no:
             return '{}: {}'.format('Yes' if self.yes_or_no else 'No', html.escape(value2.strip()))
         else:
-            return 'No: {}'.format(html.escape(value2.strip())) if self.yes_or_no else 'Yes: {}'.format(html.escape(value2.strip()))
+            if value2 is None:
+                return "No"
+            else:
+                return 'No: {}'.format(html.escape(value2.strip())) if self.yes_or_no else 'Yes: {}'.format(html.escape(value2.strip()))
 
     def subwidgets(self, name, value, attrs=None):
         # Retrieves subwidgets for rendering

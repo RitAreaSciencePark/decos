@@ -1,4 +1,0 @@
-*
-!.gitignore
-!db_dump_easydmp_restore_clean.sql
-!db_dump_easydmp_restore_clean_decos_metadata_db.json

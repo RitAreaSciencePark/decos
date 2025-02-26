@@ -1,3 +1,15 @@
+# Copyright (c) 2025 Marco Prenassi
+# Laboratory of Data Engineering, Istituto di ricerca per l'innovazione tecnologica (RIT),
+# Area Science Park, Trieste, Italy.
+# Licensed under the MIT License. See LICENSE file in the project root for full license information.
+
+# Author: Marco Prenassi
+# Date: 2025-02-17
+# Description:
+# URL configuration for the Home App in the DECOS Web Application.
+# This module defines url routing for Django's admin interface, Wagtail's CMS, authentication via Allauth,
+# document handling, and search functionality. .
+
 from django.conf import settings
 from django.urls import include, path
 from django.contrib import admin
@@ -7,38 +19,40 @@ from wagtail import urls as wagtail_urls
 from wagtail.documents import urls as wagtaildocs_urls
 
 from home.views import switch_lab_view
-
 from search import views as search_views
 
 urlpatterns = [
+    # Django admin panel
     path("django-admin/", admin.site.urls),
+
+    # Wagtail admin interface
     path("admin/", include(wagtailadmin_urls)),
+
+    # Wagtail document serving
     path("documents/", include(wagtaildocs_urls)),
+
+    # Custom search view
     path("search/", search_views.search, name="search"),
 ]
 
-
+# Serve static and media files in development mode
 if settings.DEBUG:
     from django.conf.urls.static import static
     from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 
-    # Serve static and media files from development server
     urlpatterns += staticfiles_urlpatterns()
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-urlpatterns = urlpatterns + [
-    # url(r'^accounts/', include('allauth.urls')), # Creates urls like yourwebsite.com/accounts/login/
-    path(r'', include('allauth.urls')), # Creates urls like yourwebsite.com/login/
-    path('', include('home.urls', namespace='home')),  # Include app URLs with namespace
+urlpatterns += [
+    # Django Allauth authentication URLs
+    path("", include("allauth.urls")),
 
-    # For anything not caught by a more specific rule above, hand over to
-    # Wagtail's page serving mechanism. This should be the last pattern in
-    # the list:
+    # Include URLs from the home app with a namespace for proper URL resolution
+    path("", include("home.urls", namespace="home")),
+
+    # Catch-all routing for Wagtail pages, ensuring uncaptured paths are handled by Wagtail
     path("", include(wagtail_urls)),
-    # Alternatively, if you want Wagtail pages to be served from a subpath
-    # of your site, rather than the site root:
-    #    path("pages/", include(wagtail_urls)),
 
-
+    # Alternative: If Wagtail pages should be served from a subpath instead of the root
+    # path("pages/", include(wagtail_urls)),
 ]
-
