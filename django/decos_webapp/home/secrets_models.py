@@ -29,8 +29,10 @@ class API_Tokens(models.Model):
     # This field is optional (null and blank allowed).
     jenkins_token = models.CharField(max_length=128, null=True, blank=True)
 
-    # FIXME: Add MINIO tokens for object storage access.
+    # MINIO tokens for object storage access.
     # FIXME: Implement security measures for handling sensitive tokens.
+    minio_acces_key = models.CharField(max_length=128, null=True, blank=True)
+    minio_secret_key = models.CharField(max_length=128, null=True, blank=True)
 
     class Meta:
         # Specifies the name of the database table as 'api_tokens'.

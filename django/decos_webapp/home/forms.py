@@ -178,6 +178,8 @@ class APITokenForm(forms.ModelForm):
         widgets = {
             'elab_token' : forms.PasswordInput(),
             'jenkins_token' : forms.PasswordInput(),
+            'minio_acces_key' : forms.PasswordInput(),
+            'minio_secret_key' : forms.PasswordInput(),
         }
         exclude = ['user_id']
 

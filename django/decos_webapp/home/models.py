@@ -50,7 +50,6 @@ from wagtail.fields import RichTextField  # For rich text fields in Wagtail mode
 from wagtail.models import Page  # Base Page model in Wagtail CMS
 
 # Local Application Imports (Project-specific)
-from decos_secrets import minIO_secrets  # Secrets configuration for minIO storage
 
 from .decos_elab import DecosElabAPI  # Integration with Decos Elab API
 from .decos_jenkins import DecosJenkinsAPI  # Integration with Decos Jenkins API
@@ -145,11 +144,11 @@ class ApiSettings(BaseGenericSetting):
         blank=True,
         help_text="Base URL for the Jenkins API"
     )
-    api_token = models.CharField(
+    minio_base_url = models.CharField(
         max_length=255,
         blank=True,
-        verbose_name="API Token",
-        help_text="Optional token for authenticating API requests"
+        verbose_name="MinIo Endpoint",
+        help_text="Minio endpoint"
     )
 
 # template: file://./templates/home/home_page.html
@@ -352,13 +351,14 @@ class SampleListPage(Page, SessionHandlerMixin):
         except (ObjectDoesNotExist, UnboundLocalError) as e:
             logger.error(f"Elab submission failed: {e}")
 
-    def _refresh_minio_samples(self, request, lab):
+    def _refresh_minio_samples(self, request, lab, username):
         # Updates sample locations from MinIO storage if requested.
         if request.POST.get('refresh') != 'true':
             return ""
 
         try:
-            client = decos_minio(endpoint=minIO_secrets.endpoint, access_key=minIO_secrets.access_key, secret_key=minIO_secrets.secret_key)
+            tokens = API_Tokens.objects.filter(laboratory=lab.lab_id, user_id=User.objects.get(username=username)).first()
+            client = decos_minio(endpoint=ApiSettings.objects.get(pk=1).minio_base_url, access_key=tokens.minio_acces_key, secret_key=tokens.minio_secret_key)
             data_locations = client.get_sample_list(lab=lab)
         except Exception as e:
             logger.error(f"MinIO data refresh failed: {e}")
@@ -929,6 +929,7 @@ class ProposalListPage(Page): # DIMMT
 class ServiceRequestSubmissionPage(Page): # DIMMT
 
 
+
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(
         max_length=255, help_text="Title text to use for the 'thank you' page")
@@ -1016,3 +1017,8 @@ class ServiceRequestSubmissionPage(Page): # DIMMT
                 # keep the selection form open or not ("true" or "false")
             })
     
+class NewTestPage(Page): # Test
+    intro = RichTextField(blank=True)
+    content_panels = Page.content_panels + [
+        FieldPanel('intro', classname="full"),
+    ]

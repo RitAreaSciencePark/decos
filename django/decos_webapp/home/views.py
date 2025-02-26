@@ -94,6 +94,8 @@ def user_data_view(request):
                 api_token.id = existing_token.id
                 api_token.elab_token = api_token.elab_token or existing_token.elab_token
                 api_token.jenkins_token = api_token.jenkins_token or existing_token.jenkins_token
+                api_token.minio_acces_key = api_token.minio_acces_key or existing_token.minio_acces_key
+                api_token.minio_secret_key = api_token.minio_secret_key or existing_token.minio_secret_key
 
             api_token.user_id = user.username
             api_token.save()
