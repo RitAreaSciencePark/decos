@@ -65,6 +65,132 @@ Additionally, the system integrates external services for **data storage, metada
 
 ---
 
+## **4. Installation Guide**
+
+To set up the **DECOS Webapp** in **debug mode**, follow these steps:
+
+### **Prerequisites**
+Before proceeding with the installation, ensure you have the following software installed on your system:
+
+1. **[Visual Studio Code (VS Code)](https://code.visualstudio.com/)**  
+   - Install the **Dev Containers** extension to enable remote debugging.  
+   - Open VS Code, go to **Extensions** (`Ctrl+Shift+X`), and search for **Dev Containers** to install it.
+
+2. **[Docker](https://www.docker.com/products/docker-desktop/)**  
+   - Install **Docker Desktop** and ensure it is running.  
+   - Verify the installation by running:  
+     ```bash
+     docker --version
+     ```
+
+3. **Git** (for cloning the repository)  
+   - Install Git if you haven't already.  
+   - Verify by running:  
+     ```bash
+     git --version
+     ```
+
+---
+
+### **Step-by-Step Installation**
+#### **1. Clone the Repository**
+Open a terminal and run:
+```bash
+git clone https://github.com/RitAreaSciencePark/decos.git
+cd decos
+```
+
+#### **2. Start the Development Environment**
+The development environment relies on **Docker volumes**, meaning the project files on your machine are automatically synced with the running container.
+
+- **You do not need to open the project inside a Dev Container.** Instead, open the local project folder in **VS Code**:
+  1. Open **VS Code**.
+  2. Click **File** → **Open Folder...** and select the `decos` directory.
+
+#### **3. Run the Installation Script (for a Clean Start)**
+The installation script **should only be used to wipe databases and start fresh**.  
+If you want a **clean setup**, run:
+```bash
+sh install_clean_debug_mode.sh
+```
+
+This script will:
+- Stop and remove existing containers.
+- Rebuild and start fresh containers for the web application and database.
+- Set up the PostgreSQL database and apply all necessary Django and Wagtail migrations.
+- Create the required Wagtail pages and an admin superuser.
+
+#### **4. Start Debugging**
+After the script finishes:
+1. Open **VS Code**.
+2. Go to **Run and Debug** (`Ctrl+Shift+D`).
+3. Click on **Python Debugger: Remote Attach** to start **debugpy** and run the server.
+
+The server is **running** if you see this message in the **Debug Console** (MainThread of the Call Stack):
+```
+Starting development server at http://0.0.0.0:8080/
+Quit the server with CONTROL-C.
+```
+
+#### **5. Access the Web Application**
+The application will be available at:
+```
+http://easydmp.localhost:8080
+```
+You can log in using the superuser credentials defined in the setup script.
+
+---
+
+### **Managing the Development Environment**
+#### **Starting the Environment (Without Resetting Databases)**
+To start the environment **without wiping the databases**, use **VS Code's command interface**:
+
+1. Press `Ctrl+Shift+P` to open the **VS Code command palette**.
+2. Search for **"Docker: Compose Up"** and select it.
+3. Choose the correct `docker-compose.yml` file when prompted.
+
+Alternatively, you can start the containers manually:
+```bash
+docker compose up -d
+```
+
+#### **Stopping the Environment**
+To stop all running containers:
+1. Press `Ctrl+Shift+P`, search for **"Docker: Compose Down"**, and select it.
+
+Or use:
+```bash
+docker compose down
+```
+
+#### **Restarting the Environment**
+If you need to restart the containers:
+```bash
+docker restart decos_webapp decos_db
+```
+
+---
+
+### **Applying New Django Migrations**
+If you make changes to the models and need to apply migrations, follow these steps:
+
+1. Generate new migrations inside the running container:
+   ```bash
+   docker exec -it decos_webapp python manage.py makemigrations
+   ```
+2. Apply the migrations:
+   ```bash
+   docker exec -it decos_webapp python manage.py migrate
+   ```
+
+---
+
+This ensures a **fully automated setup** while keeping the development environment synchronized with your local files. Let me know if you need any final tweaks! 🚀
+
+
+
+---
+
 ### **Architectural Overview**
 
 The architecture is designed to handle **structured metadata**, enforce **FAIR principles**, and support **interoperability** among research institutions.
