@@ -6,10 +6,10 @@ WEBAPP_CONTAINER="decos_webapp"
 DJANGO_DIR="/app/django/decos_webapp"
 
 echo "🚀 Stopping and removing existing containers..."
-docker-compose down -v
+docker compose down -v
 
 echo "🚀 Rebuilding and starting fresh containers..."
-docker-compose up -d --build
+docker compose up -d --build
 
 echo "⌛ Waiting for PostgreSQL to be ready..."
 until docker exec "$DB_CONTAINER" pg_isready -U decos; do

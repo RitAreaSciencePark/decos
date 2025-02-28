@@ -65,7 +65,7 @@ Additionally, the system integrates external services for **data storage, metada
 
 ---
 
-## **4. Installation Guide**
+## **3. Installation Guide**
 
 To set up the **DECOS Webapp** in **debug mode**, follow these steps:
 
@@ -74,21 +74,66 @@ Before proceeding with the installation, ensure you have the following software 
 
 1. **[Visual Studio Code (VS Code)](https://code.visualstudio.com/)**  
    - Install the **Dev Containers** extension to enable remote debugging.  
-   - Open VS Code, go to **Extensions** (`Ctrl+Shift+X`), and search for **Dev Containers** to install it.
 
-2. **[Docker](https://www.docker.com/products/docker-desktop/)**  
-   - Install **Docker Desktop** and ensure it is running.  
-   - Verify the installation by running:  
+2. **Docker**  
+   You need Docker to run the application. Depending on your operating system, follow one of the sections below:
+
+   #### **Docker Desktop (Windows/macOS)**  
+   - Download and install **Docker Desktop** from the [official Docker website](https://www.docker.com/products/docker-desktop/).
+   - After installation, ensure that Docker Desktop is running.
+   - Verify the installation by running the following in your terminal or command prompt:
      ```bash
      docker --version
      ```
 
+   #### **Docker on Debian (Linux)**  
+   - To install Docker on **Debian**, follow the instructions in the official Docker documentation:  
+     [Install Docker on Debian](https://docs.docker.com/engine/install/debian/)
+   - After installing Docker, verify it by running:
+     ```bash
+     docker --version
+     ```
+
+   #### **Docker Compose**  
+   Docker Compose is required to manage multi-container Docker applications. Follow the installation guide below:
+
+   - **[Docker Compose installation on Debian](https://docs.docker.com/compose/install/)**  
+   - For **Windows and macOS**, Docker Compose is already included in **Docker Desktop**.
+   - For **Linux distributions** (including Ubuntu, CentOS, etc.), refer to the [official Docker Compose installation page](https://docs.docker.com/compose/install/).
+
 3. **Git** (for cloning the repository)  
    - Install Git if you haven't already.  
-   - Verify by running:  
+   - Verify by running:
      ```bash
      git --version
      ```
+
+4. **Using Dev Containers with VS Code**  
+       - Open VS Code, go to **Extensions** (`Ctrl+Shift+X`), and search for **Dev Containers** to install it.
+   To use Dev Containers for a consistent development environment, follow the [VS Code Dev Containers tutorial](https://code.visualstudio.com/docs/devcontainers/tutorial). Here's a brief overview of the steps:
+
+   - **Install the "Remote - Containers" extension**:  
+     Open **VS Code**, go to **Extensions** (`Ctrl+Shift+X`), search for **Remote - Containers**, and install it.
+
+   - **Open the Project Folder in VS Code**:  
+     Open the **`decos`** folder in VS Code by selecting **File** → **Open Folder...** and choose the `decos` directory.
+
+   - **Accessing Containers through a Shell**:  
+     Instead of reopening the project in the container, you can access the running container through a shell by following these steps:
+
+     1. **Access the Container via Docker Command**:
+        - In **VS Code**, navigate to **Terminal** > **New Terminal**. Or open a terminal.
+        - To access the container's shell, run the following command in your terminal:
+        ```bash
+        docker exec -it <container_name> /bin/bash
+        ```
+        Replace `<container_name>` with the name of the running container, e.g., `decos_webapp`.
+
+     2. **Using the VS Code Docker Extension**:  
+        - In **VS Code**, open the **Docker** extension.
+        - Right-click on the running container (e.g., `decos_webapp` or `decos_db`) listed in the **Docker Containers** section.
+        - Select **Attach Shell** to open a terminal session directly inside the container.
+
 
 ---
 
@@ -182,12 +227,6 @@ If you make changes to the models and need to apply migrations, follow these ste
    ```bash
    docker exec -it decos_webapp python manage.py migrate
    ```
-
----
-
-This ensures a **fully automated setup** while keeping the development environment synchronized with your local files. Let me know if you need any final tweaks! 🚀
-
-
 
 ---
 
