@@ -24,8 +24,8 @@ done
 echo "✅ Django webapp is ready!"
 
 echo "🚀 Applying Django migrations..."
-docker exec -w "$DJANGO_DIR" "$WEBAPP_CONTAINER" python3 manage.py migrate
-docker exec -w "$DJANGO_DIR" "$WEBAPP_CONTAINER" python3 manage.py migrate --database=prpmetadata-db
+docker exec -w "$DJANGO_DIR" "$WEBAPP_CONTAINER" python3 manage.py migrate --verbosity=0
+docker exec -w "$DJANGO_DIR" "$WEBAPP_CONTAINER" python3 manage.py migrate --database=prpmetadata-db --verbosity=0
 echo "✅ Migrations applied successfully!"
 
 # Run the separate Wagtail setup script

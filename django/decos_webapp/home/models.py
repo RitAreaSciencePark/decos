@@ -358,7 +358,7 @@ class SampleListPage(Page, SessionHandlerMixin):
 
         try:
             tokens = API_Tokens.objects.filter(laboratory=lab.lab_id, user_id=User.objects.get(username=username)).first()
-            client = decos_minio(endpoint=ApiSettings.objects.get(pk=1).minio_base_url, access_key=tokens.minio_acces_key, secret_key=tokens.minio_secret_key)
+            client = decos_minio(endpoint=ApiSettings.objects.all().first().minio_base_url, access_key=tokens.minio_acces_key, secret_key=tokens.minio_secret_key)
             data_locations = client.get_sample_list(lab=lab)
         except Exception as e:
             logger.error(f"MinIO data refresh failed: {e}")
@@ -384,7 +384,7 @@ class SampleListPage(Page, SessionHandlerMixin):
         if request.method == 'POST':
             username = request.user.username if request.user.is_authenticated else ""
             self._handle_elab_submission(request, lab, username)
-            minIO_status = self._refresh_minio_samples(request, lab)
+            minIO_status = self._refresh_minio_samples(request, lab, username)
 
         samples = Samples.objects.filter(lab_id=lab.lab_id, sample_id__icontains=filter_term)
         table = SamplesTable(samples)

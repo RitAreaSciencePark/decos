@@ -118,7 +118,7 @@ This script will:
 - Stop and remove existing containers.
 - Rebuild and start fresh containers for the web application and database.
 - Set up the PostgreSQL database and apply all necessary Django and Wagtail migrations.
-- Create the required Wagtail pages and an admin superuser.
+- Create the required Wagtail pages and an admin superuser (the code is in setup_wagtail.sh)
 
 #### **4. Start Debugging**
 After the script finishes:

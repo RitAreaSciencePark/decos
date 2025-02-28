@@ -2,3 +2,4 @@ django/easyDMP/media/uploads/
 django/easyDMP/PRP_CDM_app/zz_old_models.py
 django/easyDMP/tree.txt
 django/decos_webapp/decos_secrets.py
+lazy_secrets_injection.sh

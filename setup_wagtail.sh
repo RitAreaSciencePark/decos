@@ -7,10 +7,11 @@ DJANGO_DIR="/app/django/decos_webapp"
 SUPERUSER_NAME="admin"
 SUPERUSER_EMAIL="admin@example.com"
 SUPERUSER_PASSWORD="admin"
+DJANGO_DIR="/app/django/decos_webapp"
 
-echo "🚀 Setting up Wagtail site and pages..."
-docker exec -w "$DJANGO_DIR" "$WEBAPP_CONTAINER" sh -c "
-python3 manage.py shell <<EOF
+
+# Python script to be run directly
+PYTHON_SCRIPT="
 from django.contrib.auth import get_user_model
 from wagtail.models import Page, Site, PageViewRestriction
 from home.models import HomePage, SamplePage, EditSamplePage, SampleListPage, ResultsListPage, DMPPage, InstrumentsPage, ResultsPage, PipelinesPage, ExperimentMetadataReportPage
@@ -93,7 +94,10 @@ if results_list_page:
     add_private_menu_page(ExperimentMetadataReportPage, 'Experiment Metadata', 'dmp', results_list_page)
 else:
     print('⚠️ ResultsListPage not found! ExperimentMetadataReportPage cannot be created.')
-
-EOF
 "
+
+# Feed the Python script directly to the container's Python shell
+echo "$PYTHON_SCRIPT" | docker exec -w "$DJANGO_DIR" -i "$WEBAPP_CONTAINER" python3 manage.py shell
+
 echo "✅ Wagtail setup completed!"
+
