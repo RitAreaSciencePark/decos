@@ -362,6 +362,22 @@ class labDMP(models.Model):
         # Explicit table name in lowercase for PostgreSQL compatibility.
         db_table = 'labdmp'.lower()
 
+
+
+class FilesInfo(models.Model):
+    file_info_id = models.CharField(max_length=50, primary_key=True)
+    extension = models.CharField(max_length=128)
+    is_open = models.BooleanField(default=False)
+    software_used = models.CharField(max_length=128, blank=True)
+
+    class Meta:
+        # Explicit table name in lowercase for PostgreSQL compatibility.
+        db_table = 'filesinfo'.lower()
+
+class ExperimentDataManagementPlan(models.Model):
+    experiment_dmp_id = models.CharField(max_length=50, primary_key=True)
+
+
 # This model represents research results and related information within the multicentric laboratory ecosystem.
 # It stores dataset locations, publication references (e.g., DOI), and links to samples, laboratories, and instruments.
 class Results(models.Model):
@@ -428,3 +444,66 @@ class ResultxLab(models.Model):
         # Explicit table name in lowercase for PostgreSQL compatibility.
         db_table = 'result_x_lab'.lower()
 
+# This model represents the many-to-many relationship between research experiments and scientific instruments.
+# It links experiments to the instruments involved in generating the data.
+class ExperimentDMPxInstrument(models.Model):
+    # Primary key representing the association identifier.
+    x_id = models.CharField(max_length=50, primary_key=True)
+
+    # Reference to the experiment.
+    experimentdmp = models.ForeignKey(ExperimentDataManagementPlan, on_delete=models.PROTECT)
+
+    # Reference to the instrument involved in producing the experiment data.
+    instruments = models.ForeignKey(Instruments, on_delete=models.PROTECT)
+
+    class Meta:
+        # Explicit table name in lowercase for PostgreSQL compatibility.
+        db_table = 'experimentdmp_x_instrument'.lower()
+
+# This model represents the many-to-many relationship between research experiments and samples.
+# It links experiments to the samples used in generating the data.
+class ExperimentDMPxSample(models.Model):
+    # Primary key representing the association identifier.
+    x_id = models.CharField(max_length=50, primary_key=True)
+
+    # Reference to the experiment.
+    experimentdmp = models.ForeignKey(ExperimentDataManagementPlan, on_delete=models.PROTECT)
+
+    # Reference to the sample involved in the experiment.
+    samples = models.ForeignKey(Samples, on_delete=models.PROTECT)
+
+    class Meta:
+        # Explicit table name in lowercase for PostgreSQL compatibility.
+        db_table = 'experimentdmp_x_sample'.lower()
+
+# This model represents the many-to-many relationship between research experiments and laboratories.
+# It links experiments to the laboratories responsible for or contributing to the experiments.
+class ExperimentDMPxLab(models.Model):
+    # Primary key representing the association identifier.
+    x_id = models.CharField(max_length=50, primary_key=True)
+
+    # Reference to the experiment.
+    experimentdmp = models.ForeignKey(ExperimentDataManagementPlan, on_delete=models.PROTECT)
+
+    # Reference to the laboratory associated with the experiment.
+    lab = models.ForeignKey(Laboratories, on_delete=models.PROTECT)
+
+    class Meta:
+        # Explicit table name in lowercase for PostgreSQL compatibility.
+        db_table = 'experimentdmp_x_lab'.lower()
+
+# This model represents the many-to-many relationship between research experiments and file information.
+# It links experiments to the files associated with them, along with relevant metadata.
+class ExperimentDMPxFilesInfo(models.Model):
+    # Primary key representing the association identifier.
+    x_id = models.CharField(max_length=50, primary_key=True)
+
+    # Reference to the experiment.
+    experimentdmp = models.ForeignKey(ExperimentDataManagementPlan, on_delete=models.PROTECT)
+
+    # Reference to the file information.
+    file_info = models.ForeignKey(FilesInfo, on_delete=models.PROTECT)
+
+    class Meta:
+        # Explicit table name in lowercase for PostgreSQL compatibility.
+        db_table = 'experimentdmp_x_filesinfo'.lower()
