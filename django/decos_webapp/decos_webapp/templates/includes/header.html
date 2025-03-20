@@ -149,7 +149,8 @@
                 </div>
             </div>
                 {% if "easydmp" in request.build_absolute_uri %}
-
+                <!-- stub -->
+                {% endif %}
                     {% if request.session.lab_selected == None %}
                         <a class="btn btn-link" id="dropdownMenuButton" href="{{ current_site.root_url }}/switch-laboratory">Switch
                             lab</a>
@@ -167,7 +168,6 @@
                     {% endif %}
                 
                     <input type="hidden" name="next" value="{{ request.path }}">
-                {% endif %}
             {% else %}
                 <a href="{{ current_site.root_url }}/login">Login</a>
             {% endif %}
