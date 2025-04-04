@@ -213,11 +213,11 @@ SOCIALACCOUNT_PROVIDERS = {
             {
                 "id": "authentik",
                 "name": "Authentik",
-                "server_url": "https://authentik.company/application/o/tandoor/.well-known/openid-configuration",
+                "server_url": "https://orfeo-auth.areasciencepark.it/application/o/decos/.well-known/openid-configuration",
                 "token_auth_method": "client_secret_basic",
                 "APP": {
-                    "client_id": "ClientIdFromProvider",
-                    "secret": "SecretFromProvider"
+                    "client_id": "bs4JUlJa1QPJJKQQcMKkqAl0JUenibMeC5NtCctP",
+                    "secret": "VBxRlVaMNpFIR2U0vcMPm8FcN2NbwhBicgHj5QGY7i8srnnEV0jmutQMEtUp9bgyNI6r5hi85kz8v11v3jDdGtK1yJOycDScOyxZU7j3mrbW3y7RFRjuzQFsD3OLMZmC"
                 }
             }
         ]
