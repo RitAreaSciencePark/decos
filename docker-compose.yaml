@@ -1,9 +1,8 @@
-version: '3.4'
 
 services:
   webapp:
     container_name: decos_webapp
-    image: django
+    image: decos_webapp
     build:
       context: .
       dockerfile: ./django/Dockerfile
@@ -18,7 +17,7 @@ services:
     
   db:
     container_name: decos_db
-    image: postgres
+    image: decos_postgres_db
     build:
       context: .
       dockerfile: ./postgres-multiple-db/Dockerfile

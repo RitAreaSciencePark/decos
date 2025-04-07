@@ -104,7 +104,7 @@ from PRP_CDM_app.models.laboratory_models.lage import LageSamples
 
 from APIs.decos_minio_API.decos_minio_API import decos_minio  # MinIO API integration
 
-# Group.add_to_class('laboratory', models.BooleanField(default=False))
+Group.add_to_class('laboratory', models.BooleanField(default=False))
 
 logger = logging.getLogger(__name__)
 

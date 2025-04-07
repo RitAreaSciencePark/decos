@@ -193,8 +193,8 @@ LOGIN_REDIRECT_URL = '/'
 # ACCOUNT_AUTHENTICATION_METHOD = "username_email"
 ACCOUNT_LOGIN_METHODS = {'email', 'username'}
 
+ACCOUNT_SIGNUP_FIELDS = ['email*', 'username*', 'password1*']
 ACCOUNT_CONFIRM_EMAIL_ON_GET = True
-ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_LOGIN_ON_EMAIL_CONFIRMATION = True
 ACCOUNT_LOGOUT_ON_GET = True
@@ -202,7 +202,6 @@ ACCOUNT_LOGIN_ON_PASSWORD_RESET = True
 ACCOUNT_LOGOUT_REDIRECT_URL = '/login/'
 ACCOUNT_PRESERVE_USERNAME_CASING = False
 ACCOUNT_SESSION_REMEMBER = True
-ACCOUNT_SIGNUP_PASSWORD_ENTER_TWICE = False
 ACCOUNT_USERNAME_BLACKLIST = ["admin", "god"]
 ACCOUNT_USERNAME_MIN_LENGTH = 2
 
@@ -216,7 +215,7 @@ SOCIALACCOUNT_PROVIDERS = {
             {
                 "id": "authentik",
                 "name": "Authentik",
-                "server_url": "https://orfeo-auth.areasciencepark.it/application/o/deocs/.well-known/openid-configuration",
+                "server_url": "https://orfeo-auth.areasciencepark.it/application/o/decos/.well-known/openid-configuration",
                 "token_auth_method": "client_secret_basic",
                 "APP": {
                     "client_id": "p0d4fDR25PIXsnbaDFxq38xIzVhua5WjGdlwAi1N",
