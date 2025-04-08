@@ -18,3 +18,4 @@ try:
     from .local import *
 except ImportError:
     pass
+WAGTAILADMIN_BASE_URL = "http://easydmp.localhost:8080"

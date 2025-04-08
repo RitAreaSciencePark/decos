@@ -35,6 +35,17 @@ from PRP_CDM_app.models.common_data_model import (
     labDMP
 )
 
+
+import re
+
+def _sanitize_lab_title(title: str) -> str:
+    # Remove non-alphanumeric characters except spaces
+    cleaned = re.sub(r'[^\w\s]', '', title)
+    # Replace whitespace with underscores
+    underscored = re.sub(r'\s+', '_', cleaned)
+    # Convert to uppercase
+    return underscored.upper()
+
 # This form is used to switch between different user labs. It dynamically generates
 # a ChoiceField based on the labs available to the user.
 class LabSwitchForm(forms.Form):
@@ -56,7 +67,7 @@ def form_orchestrator(user_lab, request, filerequest, get_instance):
     if user_lab is None:
         return None
     try:
-        form_class = getattr(FormsDefinition, user_lab.title() + "Form")
+        form_class = getattr(FormsDefinition, _sanitize_lab_title(user_lab.title()) + "Form")
     except AttributeError:
         raise ValueError(f"Form definition for lab '{user_lab}' not found.")
 
