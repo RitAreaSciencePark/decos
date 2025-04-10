@@ -428,3 +428,35 @@ class ResultxLab(models.Model):
         # Explicit table name in lowercase for PostgreSQL compatibility.
         db_table = 'result_x_lab'.lower()
 
+class ExperimentDMP(models.Model):
+    experiment_dmp_id = models.CharField(max_length=50, primary_key=True)
+    main_repository = models.CharField(max_length=512, blank=True)
+    article_doi = models.CharField(max_length=256, blank=True)
+
+    class Meta:
+        db_table = 'experiment_dmp'.lower()
+
+class ExperimentDMPxInstrument(models.Model):
+    x_id = models.CharField(max_length=50, primary_key=True)
+    experiment_dmp = models.ForeignKey(ExperimentDMP, on_delete=models.PROTECT)
+    instruments = models.ForeignKey(Instruments, on_delete=models.PROTECT)
+
+    class Meta:
+        db_table = 'experiment_dmp_x_instrument'.lower()
+
+class ExperimentDMPxSample(models.Model):
+    x_id = models.CharField(max_length=50, primary_key=True)
+    experiment_dmp = models.ForeignKey(ExperimentDMP, on_delete=models.PROTECT)
+    samples = models.ForeignKey(Samples, on_delete=models.PROTECT)
+
+    class Meta:
+        db_table = 'experiment_dmp_x_sample'.lower()
+
+class ExperimentDMPxLab(models.Model):
+    x_id = models.CharField(max_length=50, primary_key=True)
+    experiment_dmp = models.ForeignKey(ExperimentDMP, on_delete=models.PROTECT)
+    lab = models.ForeignKey(Laboratories, on_delete=models.PROTECT)
+
+    class Meta:
+        db_table = 'experiment_dmp_x_lab'.lower()
+

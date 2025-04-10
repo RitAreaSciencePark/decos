@@ -3,3 +3,5 @@ django/easyDMP/PRP_CDM_app/zz_old_models.py
 django/easyDMP/tree.txt
 django/decos_webapp/decos_secrets.py
 lazy_secrets_injection.sh
+DMP_INFO.md
+django/decos_webapp/decos_webapp/settings/secrets_minIO.py

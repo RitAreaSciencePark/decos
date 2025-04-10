@@ -206,8 +206,10 @@ ACCOUNT_USERNAME_BLACKLIST = ["admin", "god"]
 ACCOUNT_USERNAME_MIN_LENGTH = 2
 
 # OpenID Connect authentication via Allauth
+from .secrets_minIO import SECRETS_MINIO
 
 
+# REDIRECT URL IN AUTHENTIK: http[s]://<host>:<port>/oidc/authentik/login/callback/
 
 SOCIALACCOUNT_PROVIDERS = {
     "openid_connect": {
@@ -218,10 +220,12 @@ SOCIALACCOUNT_PROVIDERS = {
                 "server_url": "https://orfeo-auth.areasciencepark.it/application/o/decos/.well-known/openid-configuration",
                 "token_auth_method": "client_secret_basic",
                 "APP": {
-                    "client_id": "p0d4fDR25PIXsnbaDFxq38xIzVhua5WjGdlwAi1N",
-                    "secret": "W87tnfhqdsI8uz5pAdkcZbiIDv23ZBCvbH2FtWEYzH8vJAX7XnfZJhcJRnnl1XAQyHXeq9Mt2cObTsp5p9l6akQMNLiUtXAM3HVdtSjVEphy6gHq2oK8gJsf90u1Yd9e"
+                    "client_id": f"{SECRETS_MINIO.client_id}",
+                    "secret": f"{SECRETS_MINIO.secret_token}"
                 },
             }
         ]
     }
 }
+
+
