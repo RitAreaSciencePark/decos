@@ -1,0 +1,75 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailuserbar navigation_tags wagtailimages_tags django_tables2  %}
+
+{% block body_class %}template-form{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+<link rel="stylesheet" href="{% static 'css/home_page.css' %}">
+<link rel="stylesheet" href="{% static 'css/forms/labdmp_page.css' %}">
+
+
+    <h1><b>Experiment Data Management Plan</b></h1>
+
+    {{ page.intro | richtext }}
+
+<div class="section_div">
+   <h4><b>Data</b>:</h4>
+    <p>
+    <i> Experiment DMP internal PID: </i>{{ data.experiment_dmp_id }} <br>
+    <i> DOI: </i>{{ data.article_doi }} <br>
+    <i> Main Repository location: </i>{{ data.main_repository }} <br>
+    </p>
+</div>
+
+<div class="section_div">
+    <b>General laboratory policies: </b>
+    <p>
+        <i>Electronic notebook used: </i>{{ lab_dmp.additional_enotebook_open_collection }}<br>
+        <i>Open Data License: </i>{{ lab_dmp.open_data_licence }}<br>
+        <i>Raw data storage time retention policy: </i>{{ lab_dmp.raw_data_storage_time_retention }}<br>
+        <i>Backup policy of published data: </i>{{ lab_dmp.backup_policy_published_data }}<br>
+        <i>Backup policy of unplished data: </i>{{ backup_policy_unplublished_data }}<br>
+
+    </p>
+</div>
+
+<div class="section_div">
+    <h4><b>Next Generation Sequencing sample data:</b></h4>
+    {% for sample in sample_list %}
+    <p>
+
+     <b> <i>Sample id: </i>
+        {{ sample.sample_id }}</b> <br>
+    <i>Sample laboratory: </i>
+            {{ sample.lab_id }} <br>
+    <i>Sample Data location: </i>
+        {{ sample.sample_location }}<br>
+    {% if "LAGE" in sample.lab_id.lab_id %}
+    {% include "./includes/ngs_include.html" %}
+    {% elif "LAME" in sample.lab_id.lab_id %}
+    {% include "./includes/material_include.html" %}
+    {% else %}
+    - TO BE IMPLEMENTED
+    {% endif %}
+
+    {% endfor %}
+
+</div>
+
+<div class="section_div">
+
+    <h4><b>Instruments:</b></h4>
+    {% for instrument in instrument_list %}
+    <p>
+    <i>Model: </i>
+    {{ instrument.model }} <br>
+    <i>Vendor: </i>
+    {{ instrument.vendor }} <br>
+    </p>
+
+    {% endfor %}
+
+</div>
+
+{% endblock %}

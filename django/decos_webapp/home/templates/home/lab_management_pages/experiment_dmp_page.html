@@ -8,7 +8,7 @@
 <link rel="stylesheet" href="{% static 'css/forms/labdmp_page.css' %}">
 
 
-    <h1><b>{{ lab }}: ADD RESULT</b></h1>
+    <h1><b>{{ lab }}: INSERT EXPERIMENT DMP</b></h1>
 
     {{ page.intro | richtext }}
 
@@ -19,7 +19,7 @@
             <input type="hidden" id="instrument_list_hidden" name="instrument_list" value="{{ instrument_list }}">
             <input type="hidden" id="software_list_hidden" name="software_list" value="{{ software_list }}">
 
-            <h4><b> RESULTS </b></h4>
+            <h4><b> SECTIONS: </b></h4>
             <p>
                 <i>What is the location of the dataset?</i>
                 <input type="text" class="form-control" id="main_repository_text" name="main_repository" aria-describedby="main_repository_text" value="{{ main_repository }}">
@@ -91,7 +91,7 @@
     <div class="section_div">
         <h4><b> INSTRUMENT/SOFTWARE </b></h4>
         <br>
-        <i>What is the instrument/software that was used to produce these results?</i>
+        <i>What is the instrument/software that you are going to use?</i>
         <form id="instrument_selection" method="get" action="">
             <input type="hidden" id="article_doi_hidden" name="article_doi" value="{{ article_doi }}">
             <input type="hidden" id="main_repository_hidden" name="main_repository" value="{{ main_repository }}">
@@ -156,7 +156,7 @@
            
             <input type="hidden" id="instrument_list_hidden" name="instrument_list" value="{{ instrument_list }}">
             <input type="hidden" id="software_list_hidden" name="software_list" value="{{ software_list }}">
-            <input type="submit" class="btn btn-primary">Submit Result</button>
+            <input type="submit" class="btn btn-primary">Submit DMP</button>
     </div>
 
     

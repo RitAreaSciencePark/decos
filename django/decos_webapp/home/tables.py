@@ -12,6 +12,7 @@
 
 from django_tables2 import tables, Column, TemplateColumn
 from PRP_CDM_app.models.common_data_model import (
+    ExperimentDMP,
     Proposals, 
     ServiceRequests, 
     Samples, 
@@ -83,7 +84,7 @@ class SamplesTable(tables.Table):
         fields = ("sample_id", "sr_id", "sample_short_description", "sample_status", "sample_location")
 
 # Table for selecting Samples when assigning Results
-class SamplesForResultsTable(BaseInteractiveTable):
+class SamplesSelectionTable(BaseInteractiveTable):
     class Meta:
         model = Samples
         template_name = "django_tables2/bootstrap-responsive.html"
@@ -93,7 +94,7 @@ class SamplesForResultsTable(BaseInteractiveTable):
         }
 
 # Table for selecting Instruments when assigning Results
-class InstrumentsForResultsTable(BaseInteractiveTable):
+class InstrumentsSelectionTable(BaseInteractiveTable):
     class Meta:
         model = Instruments
         template_name = "django_tables2/bootstrap-responsive.html"
@@ -111,4 +112,14 @@ class ResultsTable(tables.Table):
         fields = ("result_id", "main_repository", "article_doi")
         row_attrs = {
             "onClick": lambda record: f"document.getElementById('result_id_hidden').value = '{record.result_id}'; document.getElementById('result_selection').submit();"
+        }
+
+# Table for displaying Results supporting row selection
+class ExperimentDMPTable(tables.Table):
+    class Meta:
+        model = ExperimentDMP
+        template_name = "django_tables2/bootstrap-responsive.html"
+        fields = ("experiment_dmp_id", "main_repository", "article_doi")
+        row_attrs = {
+            "onClick": lambda record: f"document.getElementById('experiment_dmp_id_hidden').value = '{record.experiment_dmp_id}'; document.getElementById('experiment_dmp_selection').submit();"
         }

@@ -32,7 +32,9 @@ from PRP_CDM_app.models.common_data_model import (
     Samples,
     Instruments, 
     Results, 
-    labDMP
+    labDMP,
+    ExperimentDMP
+
 )
 
 # This form is used to switch between different user labs. It dynamically generates
@@ -150,6 +152,13 @@ class ResultsForm(forms.ModelForm):
         class Meta:
             model = Results
             fields = ['main_repository', 'article_doi']
+
+# to store the core elements of the experiment DMP
+class ExperimentDMPForm(forms.ModelForm):
+
+    class Meta:
+        model = ExperimentDMP
+        fields = ['main_repository', 'article_doi']
 
 # to add new laboratory in the admin panel
 class AddNewLabForm(forms.ModelForm):

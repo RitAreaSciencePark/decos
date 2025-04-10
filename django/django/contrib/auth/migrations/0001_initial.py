@@ -191,7 +191,7 @@ class Migration(migrations.Migration):
                         related_query_name="user",
                     ),
                 ),
-            ],d
+            ],
             options={
                 "swappable": "AUTH_USER_MODEL",
                 "verbose_name": "user",

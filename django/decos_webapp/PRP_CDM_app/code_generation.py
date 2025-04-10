@@ -87,6 +87,9 @@ def sample_id_generation(sr_id):
 def result_id_generation(data=None):
     return str(uuid4())  # Keeping it as a UUID, ignoring 'data' if passed
 
+def experimentdmp_id_generation(data=None):
+    return str(uuid4())  # Keeping it as a UUID, ignoring 'data' if passed
+
 # Generates a cross-identifier (XID) by concatenating two related IDs with truncation
 def xid_code_generation(relation_id_1, relation_id_2):
     return f"{relation_id_1[-TRUNCATE_LENGTH:]}_x_{relation_id_2[-TRUNCATE_LENGTH:]}"
