@@ -28,6 +28,21 @@ docker exec -w "$DJANGO_DIR" "$WEBAPP_CONTAINER" python3 manage.py migrate --ver
 docker exec -w "$DJANGO_DIR" "$WEBAPP_CONTAINER" python3 manage.py migrate --database=prpmetadata-db --verbosity=0
 echo "✅ Migrations applied successfully!"
 
+echo "🛡️ Creating secrets_minIO.py file..."
+
+SECRETS_PATH="django/decos_webapp/decos_webapp/settings"
+SECRETS_FILE="$SECRETS_PATH/secrets_minIO.py"
+
+mkdir -p "$SECRETS_PATH"
+
+cat > "$SECRETS_FILE" << EOF
+class SECRETS_MINIO:
+    client_id = "[INSERT CLIENT ID HERE]"
+    secret_token = "[INSERT SECRET TOKEN HERE]"
+EOF
+
+echo "✅ secrets_minIO.py created at $SECRETS_FILE"
+
 # Run the separate Wagtail setup script
 ./setup_wagtail.sh
 
