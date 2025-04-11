@@ -920,8 +920,26 @@ class ExperimentDMPPage(Page, SessionHandlerMixin):
         # Filters and additional GET params
         sample_filter = request.GET.get("sample_filter", "")
         instrument_filter = request.GET.get("instrument_filter", "")
-        article_doi = request.GET.get("article_doi", "")
-        main_repository = request.GET.get("main_repository", "")
+        # Keys to pull from request.GET
+        experiment_dmp_fields = [
+            "experiment_title",
+            "principal_investigator",
+            "affiliated_institutions",
+            "project_acronym",
+            "grant_number",
+            "plan_creation_date",
+            "funding_programme",
+            "collaborators_roles",
+            "ethics_approvals",
+            "roles_responsibilities",
+            "estimated_costs",
+            "infrastructure_support",
+        ]
+
+        # Dynamically extract from request.GET
+        experiment_dmp_info = {
+            field: request.GET.get(field, "") for field in experiment_dmp_fields
+        }
 
         # Query samples for the table display
         sample_query = Samples.objects.filter(lab_id=lab)
@@ -938,13 +956,12 @@ class ExperimentDMPPage(Page, SessionHandlerMixin):
         instrument_table = InstrumentsSelectionTable(instrument_query, prefix="inst_")
         RequestConfig(request).configure(instrument_table)
         instrument_table.paginate(page=request.GET.get("inst_page", 1), per_page=5)
-
+        
         # Prepare data for template
         return render(request, 'home/lab_management_pages/experiment_dmp_page.html', {
             'page': self,
             'lab': lab,
-            'article_doi': article_doi,
-            'main_repository': main_repository,
+            'experiment_dmp_info': experiment_dmp_info,
             'sample_table': sample_table,
             'sample_filter': sample_filter_set,
             'instrument_filter': instrument_filter_set,

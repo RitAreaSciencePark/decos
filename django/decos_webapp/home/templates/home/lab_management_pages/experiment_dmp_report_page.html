@@ -13,14 +13,21 @@
 
     {{ page.intro | richtext }}
 
-<div class="section_div">
-   <h4><b>Data</b>:</h4>
-    <p>
-    <i> Experiment DMP internal PID: </i>{{ data.experiment_dmp_id }} <br>
-    <i> DOI: </i>{{ data.article_doi }} <br>
-    <i> Main Repository location: </i>{{ data.main_repository }} <br>
-    </p>
-</div>
+    <div class="section_div">
+        <h4><b>Data</b>:</h4>
+        <p>
+           <i>Experiment DMP internal PID:</i> {{ data.experiment_dmp_id }} <br>
+           <i>Experiment Title:</i> {{ data.experiment_title }} <br>
+           <i>Principal Investigator:</i> {{ data.principal_investigator }} <br>
+           <i>Affiliated Institutions:</i> {{ data.affiliated_institutions }} <br>
+           <i>Project Acronym:</i> {{ data.project_acronym }} <br>
+           <i>Grant Number:</i> {{ data.grant_number }} <br>
+           <i>Plan Creation Date:</i> {{ data.plan_creation_date }} <br>
+           <i>Funding Programme:</i> {{ data.funding_programme }} <br>
+           <i>Collaborators and Roles:</i> {{ data.collaborators_roles }} <br>
+           <i>Ethics Approvals:</i> {{ data.ethics_approvals }} <br>
+        </p>
+     </div>
 
 <div class="section_div">
     <b>General laboratory policies: </b>

@@ -119,7 +119,7 @@ class ExperimentDMPTable(tables.Table):
     class Meta:
         model = ExperimentDMP
         template_name = "django_tables2/bootstrap-responsive.html"
-        fields = ("experiment_dmp_id", "main_repository", "article_doi")
+        fields = ("experiment_dmp_id", "experiment_title", "principal_investigator")
         row_attrs = {
             "onClick": lambda record: f"document.getElementById('experiment_dmp_id_hidden').value = '{record.experiment_dmp_id}'; document.getElementById('experiment_dmp_selection').submit();"
         }

@@ -430,8 +430,21 @@ class ResultxLab(models.Model):
 
 class ExperimentDMP(models.Model):
     experiment_dmp_id = models.CharField(max_length=50, primary_key=True)
-    main_repository = models.CharField(max_length=512, blank=True)
-    article_doi = models.CharField(max_length=256, blank=True)
+   # Section 1: Overview
+    experiment_title = models.CharField(max_length=255)
+    principal_investigator = models.CharField(max_length=255)
+    affiliated_institutions = models.TextField()
+    project_acronym = models.CharField(max_length=100, blank=True, null=True)
+    grant_number = models.CharField(max_length=100, blank=True, null=True)
+    plan_creation_date = models.DateField()
+    funding_programme = models.CharField(max_length=255, blank=True, null=True)
+    collaborators_roles = models.TextField(blank=True, null=True)
+    ethics_approvals = models.TextField(blank=True, null=True)
+
+    # Section 4: Allocation of Resources
+    roles_responsibilities = models.TextField( blank=True, null=True)
+    estimated_costs = models.TextField(blank=True, null=True)
+    infrastructure_support = models.TextField(blank=True, null=True)
 
     class Meta:
         db_table = 'experiment_dmp'.lower()
