@@ -88,7 +88,9 @@ add_private_menu_page(DMPPage, 'DMP Information', 'dmp', home_page, has_thank_yo
 add_private_menu_page(InstrumentsPage, 'Instruments', 'instruments', home_page, has_thank_you=True)
 add_private_menu_page(SamplePage, 'Add Sample Page', 'add-sample-page', home_page, has_thank_you=True)
 add_private_menu_page(EditSamplePage, 'Edit Sample Page', 'edit-sample-entry', home_page, in_menu=False)
-add_private_menu_page(PipelinesPage, 'Pipelines', 'pipelines', home_page, in_menu=False)
+add_private_menu_page(ExperimentDMPPage, 'Add Experiment DMP', 'add-experiment-dmp', home_page, in_menu=True)
+add_private_menu_page(ExperimentDMPListPage, 'Experiment DMP List', 'experiment-dmp-list', home_page, in_menu=True)
+
 
 # Get ResultsListPage (which is now created) for ExperimentMetadataReportPage
 results_list_page = ResultsListPage.objects.first()
@@ -96,6 +98,13 @@ if results_list_page:
     add_private_menu_page(ExperimentMetadataReportPage, 'Experiment Metadata', 'dmp', results_list_page)
 else:
     print('⚠️ ResultsListPage not found! ExperimentMetadataReportPage cannot be created.')
+
+# Get ExperimentDMPListPage (which is now created) for ExperimentDMPReportPage
+experiment_dmp_list_page = ExperimentDMPListPage.objects.first()
+if results_list_page:
+    add_private_menu_page(ExperimentDMPReportPage, 'Experiment Data Management Plan', 'experiment-data-management-plan', experiment_dmp_list_page)
+else:
+    print('⚠️ ExperimentDMPListPage not found! ExperimentDMPReportPage cannot be created.')
 "
 
 # Write the hostname into dev.py
