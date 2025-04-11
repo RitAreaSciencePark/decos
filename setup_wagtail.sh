@@ -88,7 +88,7 @@ add_private_menu_page(DMPPage, 'DMP Information', 'dmp', home_page, has_thank_yo
 add_private_menu_page(InstrumentsPage, 'Instruments', 'instruments', home_page, has_thank_you=True)
 add_private_menu_page(SamplePage, 'Add Sample Page', 'add-sample-page', home_page, has_thank_you=True)
 add_private_menu_page(EditSamplePage, 'Edit Sample Page', 'edit-sample-entry', home_page, in_menu=False)
-add_private_menu_page(ExperimentDMPPage, 'Add Experiment DMP', 'add-experiment-dmp', home_page, in_menu=True)
+add_private_menu_page(ExperimentDMPPage, 'Add Experiment DMP', 'add-experiment-dmp', home_page, in_menu=True, has_thank_you=True)
 add_private_menu_page(ExperimentDMPListPage, 'Experiment DMP List', 'experiment-dmp-list', home_page, in_menu=True)
 
 
