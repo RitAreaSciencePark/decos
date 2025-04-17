@@ -57,6 +57,43 @@
             ["biopsy","biopsy"]
         ]
     },
+    "Bio_Open_Lab_Unisalento" :
+    {
+            "sample_purpose" :
+            [
+                ["feasibility check (quick and dirty, rough estimate)", "feasibility check (quick and dirty, rough estimate)"],
+                ["parameter calibration", "parameter calibration"],
+                ["optimization of parameters/properties", "optimization of parameters/properties"],
+                ["fullfilment of given requirements", "fullfilment of given requirements"],
+                ["assessment (check presence or absence of given properties)", "assessment (check presence or absence of given properties)"],
+                ["investigation of properties (which are unknown before measurements)", "investigation of properties (which are unknown before measurements)"],
+                ["test of a specific hypothesis (focus only on given aspects)", "test of a specific hypothesis (focus only on given aspects)"],
+                ["correlative characterization (dedicated sample treatment to emphasise given features)", "correlative characterization (dedicated sample treatment to emphasise given features)"],
+                ["high quality sample (precise, careful treatment)", "high quality sample (precise, careful treatment)"],
+                ["further preparations", "further preparations"]
+            ],
+            "sample_type" :
+            [
+                ["nano", "nano"],
+                ["bulk/film", "bulk/film"],
+                ["bio", "bio"]
+            ],
+            "sheet" :
+            [
+                ["not applicable", "not applicable"],
+                ["foil", "foil"],
+                ["plate", "plate"],
+                ["leaf", "leaf"]
+            ],
+            "layer" :
+            [
+                ["not applicable", "not applicable"],
+                ["monolayer", "monolayer"],
+                ["thin film", "thin film"],
+                ["multilayer", "multilayer"]
+            ]
+    }
+    ,
     "Steps" :
     {
         "sample_quality_choices" :

@@ -35,7 +35,7 @@
 </div>
 
 <div class="section_div">
-    <h4><b>Next Generation Sequencing sample data:</b></h4>
+    <h4><b>Sample data:</b></h4>
     {% for sample in sample_list %}
     <p>
 
@@ -49,6 +49,8 @@
     {% include "./includes/ngs_include.html" %}
     {% elif "LAME" in sample.lab_id.lab_id %}
     {% include "./includes/material_include.html" %}
+    {% elif "UNISALENTO" in sample.lab_id.lab_id %}
+    {% include "./includes/biolab_unisalento_include.html" %}
     {% else %}
     - TO BE IMPLEMENTED
     {% endif %}

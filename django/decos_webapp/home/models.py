@@ -242,8 +242,9 @@ class SampleFormHandlerMixin:
         except Exception as e:
             return 'home/forms/generic_form_page.html'
 
+        from .forms import _sanitize_lab_title
         for template in formlist:
-            if lab_id.lower() in template.lower():
+            if _sanitize_lab_title(lab_id).lower() in template.lower():
                 return f'home/forms/{template}'
 
         return 'home/forms/generic_form_page.html'
@@ -1051,10 +1052,11 @@ class ExperimentDMPReportPage(Page):
         # Dynamically determine and replace specialized sample models
         specialized_samples = []
         for sample in samples:
-            lab_name = sample.lab_id.lab_id.capitalize() # LAGE -> Lage or sissa -> Sissa
+            from .forms import _sanitize_lab_title
+            lab_name = _sanitize_lab_title(sample.lab_id.lab_id) # LAGE -> Lage or sissa -> Sissa
             specialized_sample_model_name = f"{lab_name}Samples" # Lage -> LageSamples ...
             SpecializedSamplesModel = apps.get_model('PRP_CDM_app', specialized_sample_model_name) if apps.is_installed('PRP_CDM_app') else None
-
+            debug = SpecializedSamplesModel.objects.all()
             if SpecializedSamplesModel:
                 specialized_sample = SpecializedSamplesModel.objects.filter(pk=sample.pk).first()
                 if specialized_sample:

@@ -35,6 +35,8 @@ class PrpCdmAppConfig(AppConfig):
         # Import laboratory-specific models
         from .models.laboratory_models.lage import LageSamples  # LAGE laboratory models
         from .models.laboratory_models.lame import LameSamples  # LAME laboratory models
+        from .models.laboratory_models.bio_open_lab_unisalento import Bio_Open_Lab_UnisalentoSamples  # LAME laboratory models
+
 
         # Add imports here for additional laboratories when implemented
         # Example:
