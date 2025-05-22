@@ -3,14 +3,14 @@
 # Set environment variables
 DB_CONTAINER="decos_db"
 WEBAPP_CONTAINER="decos_webapp"
-DJANGO_DIR="/app/django/decos_webapp"
+DJANGO_DIR="/app/decos/decos_webapp"
 SUPERUSER_NAME="admin"
 SUPERUSER_EMAIL="admin@example.com"
 SUPERUSER_PASSWORD="admin"
-DJANGO_DIR="/app/django/decos_webapp"
+DJANGO_DIR="/app/decos/decos_webapp"
 
 # Prompt for hostname input
-read -p "Enter the hostname for Wagtail (e.g., easydmp.localhost): " WAGTAIL_HOSTNAME
+read -p "Enter the hostname for Wagtail (e.g., decos.localhost): " WAGTAIL_HOSTNAME
 
 # Python script to be run directly
 PYTHON_SCRIPT="
@@ -48,7 +48,7 @@ home_page = HomePage(
     title='Home',
     slug='home',
     show_in_menus=True,
-    intro='Welcome to EasyDMP!'
+    intro='Welcome to D.ECOS. Webapp!'
 )
 home_page = HomePage.add_root(instance=home_page)  # ✅ Create as ROOT
 home_page.save_revision().publish()
@@ -57,8 +57,8 @@ print('✅ HomePage created as the new ROOT page!')
 # Step 4: Create a new Wagtail Site with HomePage as Root
 site = Site.objects.create(
     hostname='$WAGTAIL_HOSTNAME',
-    port=8080,
-    site_name='EasyDMP',
+    port=443,
+    site_name='decos-webapp',
     root_page=home_page,
     is_default_site=True
 )
@@ -107,11 +107,12 @@ else:
     print('⚠️ ExperimentDMPListPage not found! ExperimentDMPReportPage cannot be created.')
 "
 
-# Write the hostname into dev.py
-SETTINGS_FILE="/app/django/decos_webapp/decos_webapp/settings/dev.py"
-docker exec -i "$WEBAPP_CONTAINER" /bin/sh -c "echo 'WAGTAILADMIN_BASE_URL = \"http://$WAGTAIL_HOSTNAME:8080\"' >> $SETTINGS_FILE"
+# Write the hostname into production.py
+# SETTINGS_FILE="/app/django/decos_webapp/decos_webapp/settings/production.py"
+# docker exec -i "$WEBAPP_CONTAINER" /bin/sh -c "echo 'WAGTAILADMIN_BASE_URL = \"http://$WAGTAIL_HOSTNAME:8080\"' >> $SETTINGS_FILE"
+
 
 # Feed the Python script directly to the container's Python shell
 echo "$PYTHON_SCRIPT" | docker exec -w "$DJANGO_DIR" -i "$WEBAPP_CONTAINER" python3 manage.py shell
 
-echo "✅ Wagtail setup completed!"
+echo "✅ D.ECOS. production ready setup completed!"

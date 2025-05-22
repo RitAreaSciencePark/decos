@@ -1,0 +1,23 @@
+.table-container{
+    font-size: small;
+    background-color: aliceblue;
+}
+
+#filterText {
+    float: left;
+    display: inline-flex;
+    width: 250pt;
+    height: fit-content;
+}
+
+.table-container a{
+    font-size: small;
+}
+
+button {
+    display: flex;
+}
+
+form {
+    display: inline-flex;
+}

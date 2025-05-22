@@ -1,0 +1,37 @@
+
+.section_div p{
+    padding-left: 5%;
+}
+.section_div {
+    padding: 5px;
+    margin-top: 10px;
+    font-size: medium;
+    margin: 10 auto;
+    font-family: roboto,sans-serif;
+    font-weight: lighter;
+    background-color: #fff;
+}
+
+.sr_id_selection{
+    display: flex;
+}
+
+#dropMenu .dropdown-menu {
+    width: 800px;
+}
+
+#sampleform {
+    padding: 5px;
+}
+
+input[type="text"] {
+    width: 400px;
+}
+
+input[type="submit"] {
+    float: right;
+}
+
+textarea {
+    width: 400px;
+}

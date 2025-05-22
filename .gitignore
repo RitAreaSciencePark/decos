@@ -1,7 +1,10 @@
-django/easyDMP/media/uploads/
-django/easyDMP/PRP_CDM_app/zz_old_models.py
-django/easyDMP/tree.txt
-django/decos_webapp/decos_secrets.py
+decos/decos_webapp/media/uploads/
+decos/decos_webapp/media/images/
+decos/decos_webapp/media/original_images/
+decos/decos_webapp/PRP_CDM_app/zz_old_models.py
+decos/decos_webapp/tree.txt
+decos/decos_webapp/decos_secrets.py
 lazy_secrets_injection.sh
 DMP_INFO.md
-django/decos_webapp/decos_webapp/settings/secrets_minIO.py
+decos/decos_webapp/decos_webapp/settings/secrets_minIO.py
+decos/.env

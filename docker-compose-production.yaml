@@ -1,0 +1,59 @@
+version: "3.8"
+
+services:
+  webapp:
+    container_name: decos_webapp
+    build:
+      context: .
+      dockerfile: ./decos/Dockerfile
+    command: >
+      sh -c "
+      python /app/decos/decos_webapp/manage.py collectstatic --noinput &&
+      cat /app/decos/decos_webapp/APIs/decos_minio_API/ca.pem >> /usr/local/lib/python3.12/site-packages/certifi/cacert.pem &&
+      PYTHONPATH=/app/decos/decos_webapp gunicorn decos_webapp.wsgi:application --bind 0.0.0.0:8080"
+      
+    expose:
+      - "8080"  # internal only; Nginx will use this
+    environment:
+      - DJANGO_SETTINGS_MODULE=decos_webapp.settings.production
+      - DECOS_ALLOWED_HOSTS
+      - WAGTAILADMIN_BASE_URL
+      - DECOS_SECRET_KEY
+      - CSRF_TRUSTED_ORIGINS
+    volumes:
+      - ./decos/decos_webapp/staticfiles:/app/decos/decos_webapp/staticfiles
+      - ./decos/decos_webapp/media:/app/decos/decos_webapp/media
+    user: root:root
+    depends_on:
+      - db
+
+  nginx:
+    container_name: decos_nginx
+    image: nginx:latest
+    ports:
+      - "443:443"  # external access
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
+      - ./decos/decos_webapp/staticfiles:/app/decos/decos_webapp/staticfiles  # must match STATIC_ROOT
+      - ./decos/decos_webapp/media:/app/decos/decos_webapp/media # must match MEDIA_ROOT
+
+    depends_on:
+      - webapp
+
+  db:
+    container_name: decos_db
+    image: decos_postgres_db
+    build:
+      context: .
+      dockerfile: ./postgres-multiple-db/Dockerfile
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: decos_webapp_db, decos_metadata_db
+      POSTGRES_USER: decos
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+      - ./backups:/backups
+
+volumes:
+  postgres_data:
