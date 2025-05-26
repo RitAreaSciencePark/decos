@@ -93,7 +93,7 @@ TEMPLATES = [
             os.path.join(PROJECT_DIR, "templates"),  # Main template directory for the project.
             os.path.join(PROJECT_DIR, "templates/widgets"),  # Contains custom widget templates.
             # django.__path__[0] + "/forms/templates",  # Commented-out alternative template path.
-            os.path.join("/app/django/django","forms/templates"),  # Custom template path for form rendering.
+            os.path.join("/app/decos/django","forms/templates"),  # Custom template path for form rendering.
         ],
         "APP_DIRS": True,  # Enables automatic discovery of templates within installed apps.
         "OPTIONS": {

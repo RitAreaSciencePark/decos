@@ -3,7 +3,7 @@
 # Set environment variables
 DB_CONTAINER="decos_db"
 WEBAPP_CONTAINER="decos_webapp"
-DJANGO_DIR="/app/django/decos_webapp"
+DJANGO_DIR="/app/decos/decos_webapp"
 
 echo "🚀 Stopping and removing existing containers..."
 docker compose down -v
