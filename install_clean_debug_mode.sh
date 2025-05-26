@@ -3,11 +3,11 @@
 # Set environment variables
 DB_CONTAINER="decos_db"
 WEBAPP_CONTAINER="decos_webapp"
-DJANGO_DIR="/app/django/decos_webapp"
+DJANGO_DIR="/app/decos/decos_webapp"
 
 echo "🛡️ Creating secrets_minIO.py file..."
 
-SECRETS_PATH="django/decos_webapp/decos_webapp/settings"
+SECRETS_PATH="decos/decos_webapp/decos_webapp/settings"
 SECRETS_FILE="$SECRETS_PATH/secrets_minIO.py"
 
 mkdir -p "$SECRETS_PATH"

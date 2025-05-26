@@ -18,4 +18,3 @@ try:
     from .local import *
 except ImportError:
     pass
-WAGTAILADMIN_BASE_URL = "http://decos.localhost:8080"

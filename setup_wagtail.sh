@@ -3,11 +3,11 @@
 # Set environment variables
 DB_CONTAINER="decos_db"
 WEBAPP_CONTAINER="decos_webapp"
-DJANGO_DIR="/app/django/decos_webapp"
+DJANGO_DIR="/app/decos/decos_webapp"
 SUPERUSER_NAME="admin"
 SUPERUSER_EMAIL="admin@example.com"
 SUPERUSER_PASSWORD="admin"
-DJANGO_DIR="/app/django/decos_webapp"
+DJANGO_DIR="/app/decos/decos_webapp"
 
 # Prompt for hostname input
 read -p "Enter the hostname for Wagtail (e.g., easydmp.localhost): " WAGTAIL_HOSTNAME
@@ -108,7 +108,7 @@ else:
 "
 
 # Write the hostname into dev.py
-SETTINGS_FILE="/app/django/decos_webapp/decos_webapp/settings/dev.py"
+SETTINGS_FILE="/app/decos/decos_webapp/decos_webapp/settings/dev.py"
 docker exec -i "$WEBAPP_CONTAINER" /bin/sh -c "echo 'WAGTAILADMIN_BASE_URL = \"http://$WAGTAIL_HOSTNAME:8080\"' >> $SETTINGS_FILE"
 
 # Feed the Python script directly to the container's Python shell

@@ -5,9 +5,9 @@ services:
     image: decos_webapp
     build:
       context: .
-      dockerfile: ./django/Dockerfile
+      dockerfile: ./decos/Dockerfile
       # BEAR WITH ME, first we pip install debugpy, then we add the certificate authority of minio into the requests.certs.where(), then we run the django server attaching the debugger, to init the server we need to run debugpy
-    command: ["sh", "-c", "pip install debugpy -t /tmp && cat /app/django/decos_webapp/APIs/decos_minio_API/ca.pem >> /usr/local/lib/python3.12/site-packages/certifi/cacert.pem && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 django/decos_webapp/manage.py runserver 0.0.0.0:8080"]
+    command: ["sh", "-c", "pip install debugpy -t /tmp && cat /app/decos/decos_webapp/APIs/decos_minio_API/ca.pem >> /usr/local/lib/python3.12/site-packages/certifi/cacert.pem && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 decos/decos_webapp/manage.py runserver 0.0.0.0:8080"]
     ports:
       - 8080:8080
       - 5678:5678
