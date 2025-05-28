@@ -6,10 +6,31 @@ $(document).one('submit','#refresh_form',function(e){
     }, 1000);
 });
 
-<<<<<<< HEAD
-=======
 function handleRowClick(inputId, recordId, formId) {
     $('#' + inputId).val(recordId);
     $('#' + formId).submit();
 };
->>>>>>> 7ba91e444ffe63cfd5e63a511123d609b24f16f1
+
+document.addEventListener('DOMContentLoaded', function () {
+    const dropdowns = document.querySelectorAll('.dropdown');
+
+    dropdowns.forEach(function (dropdown) {
+        let timeout;
+
+        dropdown.addEventListener('mouseenter', function () {
+            clearTimeout(timeout);
+            const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+            const instance = bootstrap.Dropdown.getOrCreateInstance(toggle);
+            instance.show();
+        });
+
+        dropdown.addEventListener('mouseleave', function () {
+            timeout = setTimeout(function () {
+                const toggle = dropdown.querySelector('[data-bs-toggle="dropdown"]');
+                const instance = bootstrap.Dropdown.getOrCreateInstance(toggle);
+                instance.hide();
+            }, 200); // Delay before closing (optional)
+        });
+    });
+});
+

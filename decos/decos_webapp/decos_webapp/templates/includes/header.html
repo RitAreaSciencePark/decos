@@ -30,7 +30,7 @@
 
             {% if request.user.is_authenticated %}
             <div id="dynamicpagemenu">
-                <div class="dropdown">
+                <div class="dropdown"  >
                     <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
                         Samples
@@ -48,7 +48,7 @@
 
 
                 {% if "dimmt" in request.build_absolute_uri %}
-                <div class="dropdown">
+                <div class="dropdown"  >
 
                     <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
@@ -64,7 +64,7 @@
                         {% endfor %}
                     </div>
                 </div>
-                <div class="dropdown">
+                <div class="dropdown" >
 
                     <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
@@ -83,7 +83,7 @@
                 {% else %}
  
 
-                    <div class="dropdown">
+                    <div class="dropdown" >
 
                         <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                             data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
@@ -100,7 +100,7 @@
                         </div>
                     </div>
 
-                    <div class="dropdown">
+                    <div class="dropdown" >
 
                     <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
@@ -139,7 +139,7 @@
         <div class="header_login">
 
             {% if request.user.is_authenticated %}
-            <div class="dropdown">
+            <div class="dropdown" >
                 <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                     data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
                     {{ request.user.username }}
@@ -157,7 +157,7 @@
                             lab</a>
                         </button>
                         {% else %}
-                        <div class="dropdown">
+                        <div class="dropdown" >
                             <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                                 data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
                                 {{ request.session.lab_selected }}
