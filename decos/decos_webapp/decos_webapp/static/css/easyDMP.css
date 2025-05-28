@@ -6,7 +6,7 @@
   --body-bg: #c3d9eb;
   --link-color: cornflowerblue;
   --header-bg: rgb(255, 255, 255);
-  --text-black: black;
+  --text-black:   color: rgb(52, 73, 94);
   --background-img: url('/media/backgrounds/sfondo_hub9ffaece8af87d1ab294a31307bef493_1005742_1920x1920_fit_q75_h2_lanczos_3.webp');
 }
 
@@ -15,7 +15,7 @@
 ===================================== */
 html {
   background-color: var(--white);
-
+  font-family: 'roboto', sans-serif;
 }
 
 body {
@@ -44,6 +44,10 @@ a {
   text-decoration: none;
 }
 
+header {
+      box-shadow: 0 4px 6px -2px rgba(0, 0, 0, 0.2);
+}
+
 .header_nav_block {
   display: block;
   text-align: right;
@@ -53,6 +57,7 @@ a {
   margin-right: 10px;
   padding-top: 15px;
   padding-bottom: 5px;
+  height: 93px;
   max-width: 800px;
 }
 
@@ -93,11 +98,32 @@ a {
   padding-bottom: 5px;
 }
 
+.dropdown-item:hover,
+.btn-link:hover {
+    text-decoration: none !important;
+}
+
+.btn-link {
+  color: var(--text-black);
+}
+
 .header_login {
   display: flex;
   float: right;
   margin-left: auto;
   font-weight: lighter;
+}
+
+#login-a {
+  color: var(--text-black);
+}
+
+#login-a:hover{
+  text-decoration: none !important; 
+}
+
+.no-user-login-container {
+  padding: 6px 12px;
 }
 
 header p {
@@ -112,10 +138,11 @@ header a {
 }
 
 .dropdown {
-  display: block;
+  display: flex;
 }
 
 #dropdown-button {
+  color: var(--text-black);
   display: inline-flex;
   text-align: left;
   margin-left: 5%;
@@ -157,4 +184,22 @@ h1 {
   color: var(--text-black);
   font-size: 5 px;
   padding: 10px 15px;
+}
+
+
+/* Show dropdown caret explicitly */
+.dropdown-toggle::after {
+    display: inline-block;
+    margin-left: 0.3em;
+    vertical-align: 0.1em;
+    content: "";
+    border-top: 0.4em solid;
+    border-right: 0.4em solid transparent;
+    border-left: 0.4em solid transparent;
+}
+
+/* Open dropdown on hover */
+.dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0; /* Optional: align menu without jump */
 }

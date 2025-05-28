@@ -1,0 +1,16 @@
+{% load i18n %}
+{% load socialaccount %}
+{% load static %}
+
+<div class="socialaccount_providers">
+    {% for provider in socialaccount_providers %}
+            <a class="provider_button"
+               href="{% provider_login_url provider.id process=process scope=scope auth_params=auth_params %}">
+                {% if "Authentik" in provider.name %}
+                    <img src="{% static 'icons/authentik_logo.svg' %}" alt="Authentik" id="authentik-icon">
+                {% else %}
+                    Sign in with {{ provider.name }}
+                {% endif %}
+            </a>
+    {% endfor %}
+</div>
