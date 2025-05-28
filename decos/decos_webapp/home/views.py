@@ -27,10 +27,10 @@ def switch_lab_view(request):
     # Ensure the user is authenticated before proceeding
     if request.user.is_authenticated:
         username = request.user.username
-
+    user_labs=request.user.groups.filter(laboratory=True)
     if request.method == 'POST':
         # Handle form submission for laboratory selection
-        form = LabSwitchForm(data=request.POST, user_labs=request.user.groups.filter(laboratory=True))
+        form = LabSwitchForm(data=request.POST, user_labs=user_labs)
         if form.is_valid():
             # Store the selected laboratory in the session
             laboratory = form.cleaned_data.get('lab_selected')
@@ -55,12 +55,18 @@ def switch_lab_view(request):
             })
 
         # Instantiate the form with the user's assigned laboratories
-        form = LabSwitchForm(user_labs=request.user.groups.filter(laboratory=True))
+        form = LabSwitchForm(user_labs=user_labs)
+        # Extract lab_id values from the user's groups
+        lab_ids_list = list(user_labs.values_list('name', flat=True))
 
-    # Render the laboratory switch page with the form
-    return render(request, 'switch_lab.html', {
-        'data': form,
-    })
+        # Filter Laboratories using those lab_ids
+        lab_description = Laboratories.objects.filter(lab_id__in=lab_ids_list)
+        return render(request, 'switch_lab.html', {
+            'data': form,
+            'lab_description' : lab_description
+        })
+
+    
 
 # Functional view for displaying and updating user data and API tokens.
 @login_required
