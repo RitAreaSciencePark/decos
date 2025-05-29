@@ -401,10 +401,10 @@ class SampleListPage(Page, SessionHandlerMixin):
         table = SamplesTable(samples)
         RequestConfig(request).configure(table)
         table.paginate(page=request.GET.get('page', 1), per_page=5)
-
         return render(request, 'home/sample_pages/sample_list.html', {
             'page': self,
             'table': table,
+            'elab_url': ApiSettings.objects.get(pk = '1').elab_base_url,
             'minio_filelist_status': minIO_status,
         })
 
