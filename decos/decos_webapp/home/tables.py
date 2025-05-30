@@ -90,7 +90,8 @@ class SamplesSelectionTable(BaseInteractiveTable):
         template_name = "django_tables2/bootstrap-responsive.html"
         fields = ("sample_id", "sample_short_description")
         row_attrs = {
-        "onClick": lambda record: f"document.getElementById('sample_id_hidden').value = '{record.sample_id}'; document.getElementById('sample_selection').submit();"
+            "onClick": lambda record: f"document.getElementById('sample_id').value = '{record.sample_id}'; document.getElementById('sample_selection').submit();"        
+            # "onClick": lambda record: f'alert("I am an alert box!")',
         }
 
 # Table for selecting Instruments when assigning Results

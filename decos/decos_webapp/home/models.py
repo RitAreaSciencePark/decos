@@ -116,6 +116,11 @@ try:
 except:
     print("meh") # FIXME: CATCH THIS IT IS
 
+from django.db.models import Q
+from urllib.parse import urlparse
+
+
+
 logger = logging.getLogger(__name__)
 
 # HeaderSettings allows customization of the website's header section, enabling
@@ -852,10 +857,6 @@ class ExperimentDMPPage(Page, SessionHandlerMixin):
                 items.append(item_id)
         return items
 
-    # Utility method to determine if a filter dropdown should be open
-    def is_filter_open(self, request, filter_key):
-        return "open " if request.GET.get(filter_key, "") else " "
-
     # Checks for lab session or redirects to lab switch page
     def get_lab_from_session_or_redirect(self, request):
         try:
@@ -868,113 +869,99 @@ class ExperimentDMPPage(Page, SessionHandlerMixin):
         return request.session['lab_selected']
 
     # Handles POST form submission for creating Results and linking related objects
-    def handle_form_submission(self, request, sample_list, instrument_list, software_list):
+    def handle_form_submission(self, request):
         form = ExperimentDMPForm(data=request.POST)
         if form.is_valid():
             data = form.save(commit=False)
             experiment_dmp_id = result_id_generation(data)
             data.experiment_dmp_id = experimentdmp_id_generation(data)
             data.save()
-
-            experiment_dmp = data
-
-            # Bulk-fetch samples to reduce database hits
-            samples = Samples.objects.filter(sample_id__in=sample_list)
-            for sample in samples:
-                ExperimentDMPxSample.objects.get_or_create(
-                    x_id=xid_code_generation(experiment_dmp_id, sample.sample_id),
-                    experiment_dmp=experiment_dmp, samples=sample
-                )
-
-            # Bulk-fetch instruments to reduce database hits
-            instruments = Instruments.objects.filter(instrument_id__in=instrument_list)
-            for instrument in instruments:
-                ExperimentDMPxInstrument.objects.get_or_create(
-                    x_id=xid_code_generation(experiment_dmp_id, instrument.instrument_id),
-                    experiment_dmp=experiment_dmp, instruments=instrument
-                )
-
             return render(request, 'home/thank_you_page.html', {'page': self, 'data': data})
         else:
             return render(request, 'home/error_page.html', {'page': self, 'errors': form.errors})
 
     def serve(self, request):
+        current_path = request.path.rstrip('/')
+        referer = request.META.get('HTTP_REFERER', '')
+        referer_path = urlparse(referer).path.rstrip('/')
+
+        if referer_path != current_path:
+            request.session['selected_samples'] = []
+            request.session['selected_instruments'] = []
+            request.session['fill_up_form'] = {}
+
+        samples_list = request.session.get('selected_samples', [])
+        instruments_list = request.session.get('selected_instruments', [])
+        fill_up_form = request.session.get('fill_up_form',{})
         # Validate lab session or redirect
         lab = self.get_lab_from_session_or_redirect(request)
         if isinstance(lab, HttpResponseRedirect):
             return lab
-
-        # Extract lists for samples, datasets, instruments, and software
-        sample_list = self.get_list_from_request(request, 'sample_list', 'sample_id')
-        public_dataset_list = self.get_list_from_request(request, 'public_dataset_list', 'public_dataset_location')
-        instrument_list = self.get_list_from_request(request, 'instrument_list', 'instrument_id')
-        software_list = self.get_list_from_request(request, 'software_list', 'software_id')
-
         # Handle form submission
         if request.method == 'POST':
-            return self.handle_form_submission(request, sample_list, instrument_list, software_list)
+            if request.POST.get("sample_id", "") != "":
+                samples_list.append(request.POST.get("sample_id", ""))
+                request.session['selected_samples'] = samples_list
+            elif request.POST.get("sample_id_rm", "") != "":
+                samples_list.remove(request.POST.get("sample_id_rm", ""))
+                request.session['selected_samples'] = samples_list
+            elif request.POST.get("instrument_id", "") != "":
+                instruments_list.append(request.POST.get("instrument_id", ""))
+                request.session['selected_instruments'] = instruments_list
+            elif request.POST.get("instrument_id_rm", "") != "":
+                instruments_list.remove(request.POST.get("instrument_id_rm", ""))
+                request.session['selected_instruments'] = instruments_list
+            elif (
+                request.POST.get("sample_id", "") == ""
+                and request.POST.get("sample_id_rm", "") == ""
+                and request.POST.get("instrument_id", "") == ""
+                and request.POST.get("instrument_id_rm", "") == ""
+            ):
+                for key in request.POST:
+                    if key != "csrfmiddlewaretoken":
+                        fill_up_form[key] = request.POST[key]
+                request.session['fill_up_form'] = fill_up_form
+            else:
+                return self.handle_form_submission(request)
 
-        # Open/close dropdown filter indicators
-        sample_filter_set = self.is_filter_open(request, "sample_filter")
-        instrument_filter_set = self.is_filter_open(request, "instrument_filter")
+        form = ExperimentDMPForm()
 
-        # Filters and additional GET params
-        sample_filter = request.GET.get("sample_filter", "")
-        instrument_filter = request.GET.get("instrument_filter", "")
-        # Keys to pull from request.GET
-        experiment_dmp_fields = [
-            "experiment_title",
-            "principal_investigator",
-            "affiliated_institutions",
-            "project_acronym",
-            "grant_number",
-            "plan_creation_date",
-            "funding_programme",
-            "collaborators_roles",
-            "ethics_approvals",
-            "roles_responsibilities",
-            "estimated_costs",
-            "infrastructure_support",
-        ]
+        from .tables import SamplesSelectionTable, InstrumentsSelectionTable
+        from django_tables2.config import RequestConfig
 
-        # Dynamically extract from request.GET
-        experiment_dmp_info = {
-            field: request.GET.get(field, "") for field in experiment_dmp_fields
-        }
-
-        # Query samples for the table display
-        sample_query = Samples.objects.filter(lab_id=lab)
-        if sample_filter:
-            sample_query = sample_query.filter(sample_id__contains=sample_filter)
-        sample_table = SamplesSelectionTable(sample_query, prefix="sample_")
+        search_term = request.GET.get("search", "")
+        if search_term != "":
+            sample_query = Samples.objects.filter(
+                Q(sample_id__icontains=search_term) | Q(sample_short_description__icontains=search_term),
+                lab_id=lab)
+        else:
+            sample_query = Samples.objects.filter(lab_id=lab)
+        sample_query = sample_query.exclude(sample_id__in=samples_list)
+        sample_table = SamplesSelectionTable(sample_query)
         RequestConfig(request).configure(sample_table)
         sample_table.paginate(page=request.GET.get("sample_page", 1), per_page=5)
 
-        # Query instruments for the table display
-        instrument_query = Instruments.objects.all()
-        if instrument_filter:
-            instrument_query = instrument_query.filter(instrument_id__contains=instrument_filter)
-        instrument_table = InstrumentsSelectionTable(instrument_query, prefix="inst_")
+        # Instruments selection
+        # Retrieve instruments
+        instrument_query = Instruments.objects.filter(instrument_labs__lab_id=lab)  
+        instrument_query = instrument_query.exclude(instrument_id__in=instruments_list)
+
+        instrument_table = InstrumentsSelectionTable(instrument_query)
         RequestConfig(request).configure(instrument_table)
-        instrument_table.paginate(page=request.GET.get("inst_page", 1), per_page=5)
-        
+        instrument_table.paginate(page=request.GET.get("instrument_page", 1), per_page=5)
+
+        field_values = fill_up_form
+
         # Prepare data for template
         return render(request, 'home/lab_management_pages/experiment_dmp_page.html', {
             'page': self,
             'lab': lab,
-            'experiment_dmp_info': experiment_dmp_info,
+            'field_values': field_values,
+            'experiment_dmp_info': form,
             'sample_table': sample_table,
-            'sample_filter': sample_filter_set,
-            'instrument_filter': instrument_filter_set,
-            'sample_list': json.dumps(sample_list),
-            'sample_list_view': sample_list,
-            'public_dataset_list': json.dumps(public_dataset_list),
-            'public_dataset_list_view': public_dataset_list,
-            'instruments_table': instrument_table,
-            'instrument_list': json.dumps(instrument_list),
-            'instrument_list_view': instrument_list,
-            'software_list': json.dumps(software_list),
-            'software_list_view': software_list,
+            'samples_list': samples_list,
+            'instrument_table': instrument_table,
+            'instruments_list': instruments_list,
         })
 
 class ExperimentDMPListPage(Page):
@@ -1003,8 +990,8 @@ class ExperimentDMPListPage(Page):
         filter_value = request.GET.get('filter', '') or request.POST.get('filter', '')
 
         # TODO: manage lab view only or something else
-        data = ExperimentDMP.objects.all()
-
+        data = ExperimentDMP.objects.filter()
+ 
         if filter_value:
             # Filters results by partial match on result_id
             data = data.filter(experiment_dmp_id__icontains=filter_value)
@@ -1066,9 +1053,6 @@ class ExperimentDMPReportPage(Page):
             else:
                 specialized_samples.append(sample)
 
-        # Retrieve instruments
-        instrument_ids = ExperimentDMPxInstrument.objects.filter(experiment_dmp=data).values_list('instruments_id', flat=True)
-        instrument_list = list(Instruments.objects.filter(pk__in=instrument_ids))
 
         # Get lab DMP (handling missing case properly)
         lab_dmp = labDMP.objects.filter(pk=lab.lab_id).first()
@@ -1188,8 +1172,6 @@ class ProposalListPage(Page): # DIMMT
         })
 
 class ServiceRequestSubmissionPage(Page): # DIMMT
-
-
 
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(

@@ -209,7 +209,8 @@ class Instruments(models.Model):
 
     # Brief description of the instrument; optional.
     description = models.CharField(max_length=50, blank=True)
-
+    labs = models.ManyToManyField('Laboratories', through='LabXInstrument')
+    
     class Meta:
         # Explicit table name in lowercase for PostgreSQL compatibility.
         db_table = 'instruments'.lower()
@@ -249,11 +250,8 @@ class InstrumentXTechnique(models.Model):
 # This model represents the many-to-many relationship between laboratories and scientific instruments.
 # It links laboratories to the instruments they own or operate within the multicentric laboratory ecosystem.
 class LabXInstrument(models.Model):
-    # Reference to the laboratory associated with the instrument.
-    lab_id = models.ForeignKey(Laboratories, on_delete=models.PROTECT)
-
-    # Reference to the instrument associated with the laboratory.
-    instrument_id = models.ForeignKey(Instruments, on_delete=models.PROTECT)
+    lab_id = models.ForeignKey(Laboratories, on_delete=models.PROTECT, related_name='lab_instruments')
+    instrument_id = models.ForeignKey(Instruments, on_delete=models.PROTECT, related_name='instrument_labs')
 
     class Meta:
         # Explicit table name in lowercase for PostgreSQL compatibility.
@@ -445,6 +443,9 @@ class ExperimentDMP(models.Model):
     roles_responsibilities = models.TextField( blank=True, null=True)
     estimated_costs = models.TextField(blank=True, null=True)
     infrastructure_support = models.TextField(blank=True, null=True)
+
+    instruments = models.ManyToManyField('Instruments', through='ExperimentDMPxInstrument')
+    samples = models.ManyToManyField('Samples', through='ExperimentDMPxSample')
 
     class Meta:
         db_table = 'experiment_dmp'.lower()

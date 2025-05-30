@@ -169,7 +169,7 @@ class ExperimentDMPForm(forms.ModelForm):
 
     class Meta:
         model = ExperimentDMP
-        exclude = ['experiment_dmp_id']
+        exclude = ['experiment_dmp_id', 'instruments', 'samples']
 
 # to add new laboratory in the admin panel
 class AddNewLabForm(forms.ModelForm):
