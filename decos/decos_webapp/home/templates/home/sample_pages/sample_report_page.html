@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load static %}
+{% load navigation_tags %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/home_page.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
+
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary">
+        <h3> SAMPLE INFORMATION </h3>
+    </div>
+<div class="container mt-4">
+  <div class="card shadow-sm">
+    <div class="card-header bg-primary">
+      <h4>ID: {{ sample.sample_id }}</h4>
+    </div>
+    <div class="card-body">
+      {% if error %}
+        <div class="alert alert-danger">{{ error }}</div>
+      {% else %}
+        <p class="card-text"><strong>Description:</strong> {{ sample.sample_short_description }}</p>
+        {% if sample.sample_description %}<p class="card-text"><strong>Details:</strong> {{ sample.sample_description }}</p>{% endif %}
+        {% if sample.sample_feasibility %}<p class="card-text"><strong>Feasibility:</strong> {{ sample.sample_feasibility }}</p>{% endif %}
+        {% if sample.sample_status %}<p class="card-text"><strong>Status:</strong> {{ sample.sample_status }}</p>{% endif %}
+        {% if sample.sample_location %}<p class="card-text"><strong>Location:</strong> {{ sample.sample_location }}</p>{% endif %}
+        <!-- Add other lab-specific fields as needed -->
+      {% endif %}
+
+
+    </div>
+  </div>
+      {% if sample|classname == "lagesamples" %}
+        {% include "home/sample_pages/includes/lage_report.html" %}
+      {% endif %}
+</div>
+  </div>
+{% endblock %}

@@ -110,7 +110,6 @@ from PRP_CDM_app.models.common_data_model import (  # Models related to samples,
 from PRP_CDM_app.models.laboratory_models.lage import LageSamples
 
 from APIs.decos_minio_API.decos_minio_API import decos_minio  # MinIO API integration
-
 try:
     Group.add_to_class('laboratory', models.BooleanField(default=False))
 except:
@@ -357,15 +356,16 @@ class SampleListPage(Page, SessionHandlerMixin):
         # Submits sample data to the external eLab system.
         sample_id = request.POST.get('elab_write')
         if not sample_id:
-            return
+            return None
 
         try:
             token = API_Tokens.objects.filter(laboratory=lab.lab_id, user_id=User.objects.get(username=username)).first()
             elab_api = DecosElabAPI(ApiSettings.objects.get(pk=1).elab_base_url, token.elab_token)
             sample = Samples.objects.get(pk=sample_id)
-            elab_api.create_new_decos_experiment(lab=lab, username=username, experiment_info=sample)
+            return elab_api.create_new_decos_experiment(lab=lab, username=username, experiment_info=sample)
         except (ObjectDoesNotExist, UnboundLocalError) as e:
             logger.error(f"Elab submission failed: {e}")
+            return None
 
     def _refresh_minio_samples(self, request, lab, username):
         # Updates sample locations from MinIO storage if requested.
@@ -394,13 +394,23 @@ class SampleListPage(Page, SessionHandlerMixin):
         if redirect_response:
             return redirect_response
 
+
         filter_term = request.POST.get('filter') or request.GET.get('filter', '')
         minIO_status = ""
 
         if request.method == 'POST':
             username = request.user.username if request.user.is_authenticated else ""
-            self._handle_elab_submission(request, lab, username)
+            elab_experiment_id = self._handle_elab_submission(request, lab, username)
+            if elab_experiment_id:
+                elab_url = ApiSettings.objects.get(pk=1).elab_base_url + f'experiments.php?mode=view&id={elab_experiment_id}'
+                return render(request, 'home/utility_pages/elab_redirect_page.html', {
+                'page': self,
+                'elab_url': elab_url,
+                })
             minIO_status = self._refresh_minio_samples(request, lab, username)
+        else:
+            elab_experiment_id = ""
+
 
         samples = Samples.objects.filter(lab_id=lab.lab_id, sample_id__icontains=filter_term)
         table = SamplesTable(samples)
@@ -409,7 +419,7 @@ class SampleListPage(Page, SessionHandlerMixin):
         return render(request, 'home/sample_pages/sample_list.html', {
             'page': self,
             'table': table,
-            'elab_url': ApiSettings.objects.get(pk = '1').elab_base_url,
+            'elab_url': ApiSettings.objects.get(pk=1).elab_base_url + 'experiments.php?mode=view&id=' + elab_experiment_id,
             'minio_filelist_status': minIO_status,
         })
 
@@ -869,13 +879,29 @@ class ExperimentDMPPage(Page, SessionHandlerMixin):
         return request.session['lab_selected']
 
     # Handles POST form submission for creating Results and linking related objects
-    def handle_form_submission(self, request):
-        form = ExperimentDMPForm(data=request.POST)
+    def handle_form_submission(self, request, fill_up_form, samples_list, instruments_list):
+        form = ExperimentDMPForm(data=fill_up_form)
         if form.is_valid():
             data = form.save(commit=False)
-            experiment_dmp_id = result_id_generation(data)
             data.experiment_dmp_id = experimentdmp_id_generation(data)
             data.save()
+            # Assign many-to-many relationships using through models
+            if samples_list:
+                for sample_id in samples_list:
+                    sample = Samples.objects.get(sample_id=sample_id)
+                    ExperimentDMPxSample.objects.get_or_create(
+                        x_id=xid_code_generation(data.experiment_dmp_id, sample.sample_id),
+                        experiment_dmp=data,
+                        samples=sample
+                    )
+            if instruments_list:
+                for instrument_id in instruments_list:
+                    instrument = Instruments.objects.get(instrument_id=instrument_id)
+                    ExperimentDMPxInstrument.objects.get_or_create(
+                        x_id=xid_code_generation(data.experiment_dmp_id, instrument.instrument_id),
+                        experiment_dmp=data,
+                        instruments=instrument
+                    )
             return render(request, 'home/thank_you_page.html', {'page': self, 'data': data})
         else:
             return render(request, 'home/error_page.html', {'page': self, 'errors': form.errors})
@@ -897,21 +923,32 @@ class ExperimentDMPPage(Page, SessionHandlerMixin):
         lab = self.get_lab_from_session_or_redirect(request)
         if isinstance(lab, HttpResponseRedirect):
             return lab
+        redirect_anchor = ""
         # Handle form submission
         if request.method == 'POST':
             if request.POST.get("sample_id", "") != "":
-                samples_list.append(request.POST.get("sample_id", ""))
+                if request.POST.get("sample_id", "") not in samples_list:
+                    samples_list.append(request.POST.get("sample_id", ""))
                 request.session['selected_samples'] = samples_list
+                redirect_anchor = "sample_selection"
             elif request.POST.get("sample_id_rm", "") != "":
-                samples_list.remove(request.POST.get("sample_id_rm", ""))
+                if request.POST.get("sample_id_rm", "") in samples_list:
+                    samples_list.remove(request.POST.get("sample_id_rm", ""))
                 request.session['selected_samples'] = samples_list
+                redirect_anchor = "sample_selection"
             elif request.POST.get("instrument_id", "") != "":
-                instruments_list.append(request.POST.get("instrument_id", ""))
+                if request.POST.get("instrument_id", "") not in instruments_list:
+                    instruments_list.append(request.POST.get("instrument_id", ""))
                 request.session['selected_instruments'] = instruments_list
+                redirect_anchor = "instrument_selection"
             elif request.POST.get("instrument_id_rm", "") != "":
-                instruments_list.remove(request.POST.get("instrument_id_rm", ""))
+                if request.POST.get("instrument_id_rm", "") in instruments_list:
+                    instruments_list.remove(request.POST.get("instrument_id_rm", ""))
                 request.session['selected_instruments'] = instruments_list
-            elif (
+                redirect_anchor = "instrument_selection"
+            elif(request.POST.get("create_dmp","") == "create"):
+                return self.handle_form_submission(request, fill_up_form=request.session['fill_up_form'], samples_list=samples_list, instruments_list=instruments_list)
+            elif(
                 request.POST.get("sample_id", "") == ""
                 and request.POST.get("sample_id_rm", "") == ""
                 and request.POST.get("instrument_id", "") == ""
@@ -921,8 +958,6 @@ class ExperimentDMPPage(Page, SessionHandlerMixin):
                     if key != "csrfmiddlewaretoken":
                         fill_up_form[key] = request.POST[key]
                 request.session['fill_up_form'] = fill_up_form
-            else:
-                return self.handle_form_submission(request)
 
         form = ExperimentDMPForm()
 
@@ -962,6 +997,8 @@ class ExperimentDMPPage(Page, SessionHandlerMixin):
             'samples_list': samples_list,
             'instrument_table': instrument_table,
             'instruments_list': instruments_list,
+            'error_list' :"",
+            # "scroll_to": redirect_anchor, TODO: restore if needed
         })
 
 class ExperimentDMPListPage(Page):
@@ -990,7 +1027,7 @@ class ExperimentDMPListPage(Page):
         filter_value = request.GET.get('filter', '') or request.POST.get('filter', '')
 
         # TODO: manage lab view only or something else
-        data = ExperimentDMP.objects.filter()
+        data = ExperimentDMP.objects.filter(samples__lab_id=lab.lab_id).distinct()
  
         if filter_value:
             # Filters results by partial match on result_id
@@ -1014,11 +1051,10 @@ class ExperimentDMPReportPage(Page):
         FieldPanel('intro', classname="full"),
     ]
 
-    # Retrieves lab from session; redirects if not set or invalid
     def get_lab_from_session_or_redirect(self, request):
-        lab_id = request.session.get('lab_selected')
+        lab_id = request.session.get("lab_selected")
         if not lab_id:
-            request.session["return_page"] = request.META.get('HTTP_REFERER', '/')
+            request.session["return_page"] = request.META.get("HTTP_REFERER", "/")
             return redirect("/switch-laboratory")
         return get_object_or_404(Laboratories, pk=lab_id)
 
@@ -1030,39 +1066,87 @@ class ExperimentDMPReportPage(Page):
         experiment_dmp_id = request.GET.get("experiment_dmp_id")
         data = get_object_or_404(ExperimentDMP, pk=experiment_dmp_id)
 
-        # Retrieve sample IDs related to the result
-        sample_ids = ExperimentDMPxSample.objects.filter(experiment_dmp=data).values_list('samples_id', flat=True)
+        sample_ids = ExperimentDMPxSample.objects.filter(
+            experiment_dmp=data
+        ).values_list("samples__sample_id", flat=True)
 
-        # Fetch all samples including their possible specializations
-        samples = Samples.objects.filter(pk__in=sample_ids).select_related('lab_id')
+        samples = Samples.objects.filter(pk__in=sample_ids).select_related("lab_id")
 
-        # Dynamically determine and replace specialized sample models
         specialized_samples = []
         for sample in samples:
             from .forms import _sanitize_lab_title
-            lab_name = _sanitize_lab_title(sample.lab_id.lab_id) # LAGE -> Lage or sissa -> Sissa
-            specialized_sample_model_name = f"{lab_name}Samples" # Lage -> LageSamples ...
-            SpecializedSamplesModel = apps.get_model('PRP_CDM_app', specialized_sample_model_name) if apps.is_installed('PRP_CDM_app') else None
-            debug = SpecializedSamplesModel.objects.all()
-            if SpecializedSamplesModel:
+            lab_name = _sanitize_lab_title(sample.lab_id.lab_id)
+            specialized_sample_model_name = f"{lab_name}Samples"
+            try:
+                SpecializedSamplesModel = apps.get_model("PRP_CDM_app", specialized_sample_model_name)
                 specialized_sample = SpecializedSamplesModel.objects.filter(pk=sample.pk).first()
-                if specialized_sample:
-                    specialized_samples.append(specialized_sample)
-                else:
-                    specialized_samples.append(sample)
-            else:
+                specialized_samples.append(specialized_sample if specialized_sample else sample)
+            except LookupError:
                 specialized_samples.append(sample)
 
+        instrument_ids = ExperimentDMPxInstrument.objects.filter(
+            experiment_dmp=data
+        ).values_list("instruments__instrument_id", flat=True)
 
-        # Get lab DMP (handling missing case properly)
+        instrument_list = Instruments.objects.filter(pk__in=instrument_ids)
+
         lab_dmp = labDMP.objects.filter(pk=lab.lab_id).first()
 
         return render(request, 'home/lab_management_pages/experiment_dmp_report_page.html', {
             'page': self,
             'data': data,
-            'sample_list': specialized_samples if specialized_samples else None,
-            'instrument_list': instrument_list if instrument_list else None,
-            'lab_dmp': lab_dmp if lab_dmp else None,
+            'sample_list': specialized_samples,
+            'instrument_list': instrument_list,
+            'lab_dmp': lab_dmp,
+        })
+    
+    from .forms import _sanitize_lab_title  # reuse your existing helper if available
+
+class SampleReportPage(Page):
+    intro = RichTextField(blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('intro', classname="full"),
+    ]
+
+    def get_lab_from_session_or_redirect(self, request):
+        lab_id = request.session.get("lab_selected")
+        if not lab_id:
+            request.session["return_page"] = request.META.get("HTTP_REFERER", "/")
+            return redirect("/switch-laboratory")
+        return get_object_or_404(Laboratories, pk=lab_id)
+
+    def serve(self, request):
+        lab = self.get_lab_from_session_or_redirect(request)
+        if isinstance(lab, HttpResponseRedirect):
+            return lab
+
+        sample_id = request.GET.get("sample_id")
+        if not sample_id:
+            return render(request, "home/sample_report_page.html", {
+                "page": self,
+                "error": "No sample_id provided in the request."
+            })
+
+        # Get dynamic model based on lab
+        from .forms import _sanitize_lab_title
+        lab_name = _sanitize_lab_title(lab.lab_id)  # e.g., LAGE -> Lage
+        model_name = f"{lab_name}Samples"
+
+        try:
+            SampleModel = apps.get_model("PRP_CDM_app", model_name)
+        except LookupError:
+            return render(request, "home/sample_pages/sample_report_page.html", {
+                "page": self,
+                "error": f"Sample model '{model_name}' not found."
+            })
+
+        sample = get_object_or_404(SampleModel, pk=sample_id)
+
+        return render(request, "home/sample_pages/sample_report_page.html", {
+            "page": self,
+            "sample": sample,
+            "lab": lab,
         })
 
 # EASYDMP STUB TODO: dmp search page

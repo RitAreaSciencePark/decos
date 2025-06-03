@@ -10,3 +10,6 @@ register = template.Library()
 def get_site_root(context):
     return Site.find_for_request(context["request"]).root_page
 
+@register.filter
+def classname(obj):
+    return obj.__class__.__name__.lower()

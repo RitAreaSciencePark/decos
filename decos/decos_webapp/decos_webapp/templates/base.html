@@ -41,7 +41,7 @@
         {% endblock %}
     </head>
 
-    <body class="{% block body_class %}{% endblock %}">
+    <body class="{% block body_class %}{% endblock %}" data-scroll-to="{{ scroll_to }}">
         {# Remove  wagtailuserbar: #}
 
         {% include "includes/header.html" %}

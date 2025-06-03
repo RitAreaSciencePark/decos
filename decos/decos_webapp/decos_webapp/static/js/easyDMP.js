@@ -41,20 +41,16 @@ document.addEventListener('DOMContentLoaded', function () {
             e.preventDefault(); // prevent default form submission
 
             const form = button.closest('.elab-form');
-
             if (!form) return;
 
-            fetch(form.action, {
-                method: 'POST',
-                body: new FormData(form),
-                headers: {
-                    'X-CSRFToken': getCSRFToken()
+            form.submit();
+
+            setTimeout(() => {
+                const elab_url_input = document.getElementById("elab_url");
+                if (elab_url_input && elab_url_input.value) {
+                    window.open(elab_url_input.value, '_blank');
                 }
-            }).then(response => {
-                setTimeout(() => {
-                    window.location.href = 'https://prp-electronic-lab.areasciencepark.it/experiments.php';
-                }, 1000); // 1s delay
-            });
+            }, 1000);
         });
     });
 
@@ -69,4 +65,34 @@ document.addEventListener('DOMContentLoaded', function () {
         }
         return '';
     }
+});
+
+document.addEventListener("DOMContentLoaded", function () {
+  const scrollTo = document.body.dataset.scrollTo;
+  if (scrollTo) {
+    window.location.hash = scrollTo; // triggers instant jump
+  }
+});
+
+// DMP Page requirements
+document.addEventListener("DOMContentLoaded", function () {
+  const requiredFields = [
+    "experiment_title",
+    "principal_investigator",
+    "plan_creation_date",
+    "affiliated_institutions"
+  ];
+
+  requiredFields.forEach(function (fieldName) {
+    const field = document.querySelector(`[name="${fieldName}"]`);
+    if (field) {
+      field.setAttribute("required", "required");
+
+      // Add a red asterisk after the label (i tag in your case)
+      const label = field.previousElementSibling;
+      if (label && label.tagName.toLowerCase() === 'i') {
+        label.innerHTML += ' <span style="color: red;">*</span>';
+      }
+    }
+  });
 });
