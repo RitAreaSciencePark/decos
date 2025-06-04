@@ -238,10 +238,10 @@ class InstrumentXTechnique(models.Model):
     x_id = models.CharField(max_length=50, primary_key=True)
 
     # Reference to the instrument involved in the technique.
-    instrument_id = models.ForeignKey(Instruments, on_delete=models.PROTECT)
+    instrument_id = models.ForeignKey(Instruments, on_delete=models.CASCADE)
 
     # Reference to the technique supported by the instrument.
-    technique_id = models.ForeignKey(Techniques, on_delete=models.PROTECT)
+    technique_id = models.ForeignKey(Techniques, on_delete=models.CASCADE)
 
     class Meta:
         # Explicit table name in lowercase for PostgreSQL compatibility.
@@ -250,8 +250,8 @@ class InstrumentXTechnique(models.Model):
 # This model represents the many-to-many relationship between laboratories and scientific instruments.
 # It links laboratories to the instruments they own or operate within the multicentric laboratory ecosystem.
 class LabXInstrument(models.Model):
-    lab_id = models.ForeignKey(Laboratories, on_delete=models.PROTECT, related_name='lab_instruments')
-    instrument_id = models.ForeignKey(Instruments, on_delete=models.PROTECT, related_name='instrument_labs')
+    lab_id = models.ForeignKey(Laboratories, on_delete=models.CASCADE, related_name='lab_instruments')
+    instrument_id = models.ForeignKey(Instruments, on_delete=models.CASCADE, related_name='instrument_labs')
 
     class Meta:
         # Explicit table name in lowercase for PostgreSQL compatibility.
@@ -372,8 +372,22 @@ class Results(models.Model):
     # DOI (Digital Object Identifier) for the published article or dataset; optional.
     article_doi = models.CharField(max_length=256, blank=True)
 
+    # Title of the publication related to the result; optional.
+    publication_title = models.CharField(max_length=512, blank=True)
+
+    # Authors of the publication; optional.
+    authors = models.TextField(blank=True)
+
+    # Name of the journal where the work was published; optional.
+    journal_name = models.CharField(max_length=256, blank=True)
+
+    # Year of publication; optional.
+    publication_year = models.PositiveIntegerField(blank=True, null=True)
+
     # Many-to-many relationship with ExperimentDMP through ResultxExperimentDMP
     experiment_dmps = models.ManyToManyField('ExperimentDMP', through='ResultxExperimentDMP')
+
+    lab = models.ManyToManyField('Laboratories', through='ResultxLaboratories')
 
     # TODO: complete the model with additional research result metadata as needed.
 
@@ -385,14 +399,23 @@ class Results(models.Model):
 # It links research outputs to the experiment DMPs involved in generating the data.
 class ResultxExperimentDMP(models.Model):
     x_id = models.CharField(max_length=50, primary_key=True)
-    result = models.ForeignKey(Results, on_delete=models.PROTECT)
-    experiment_dmp = models.ForeignKey('ExperimentDMP', on_delete=models.PROTECT)
+    result = models.ForeignKey(Results, on_delete=models.CASCADE)
+    experiment_dmp = models.ForeignKey('ExperimentDMP', on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'result_x_experiment_dmp'.lower()
 
+class ResultxLaboratories(models.Model):
+    x_id = models.CharField(max_length=50, primary_key=True)
+    result = models.ForeignKey(Results, on_delete=models.CASCADE)
+    lab = models.ForeignKey('Laboratories', on_delete=models.CASCADE)
+
+    class Meta:
+        db_table = 'result_x_laboratories'.lower()
+
 class ExperimentDMP(models.Model):
     experiment_dmp_id = models.CharField(max_length=50, primary_key=True)
+    
    # Section 1: Overview
     experiment_title = models.CharField(max_length=255)
     principal_investigator = models.CharField(max_length=255)
@@ -411,30 +434,31 @@ class ExperimentDMP(models.Model):
 
     instruments = models.ManyToManyField('Instruments', through='ExperimentDMPxInstrument')
     samples = models.ManyToManyField('Samples', through='ExperimentDMPxSample')
+    lab = models.ManyToManyField('Laboratories', through='ExperimentDMPxLab')
 
     class Meta:
         db_table = 'experiment_dmp'.lower()
 
 class ExperimentDMPxInstrument(models.Model):
     x_id = models.CharField(max_length=50, primary_key=True)
-    experiment_dmp = models.ForeignKey(ExperimentDMP, on_delete=models.PROTECT)
-    instruments = models.ForeignKey(Instruments, on_delete=models.PROTECT)
+    experiment_dmp = models.ForeignKey(ExperimentDMP, on_delete=models.CASCADE)
+    instruments = models.ForeignKey(Instruments, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'experiment_dmp_x_instrument'.lower()
 
 class ExperimentDMPxSample(models.Model):
     x_id = models.CharField(max_length=50, primary_key=True)
-    experiment_dmp = models.ForeignKey(ExperimentDMP, on_delete=models.PROTECT)
-    samples = models.ForeignKey(Samples, on_delete=models.PROTECT)
+    experiment_dmp = models.ForeignKey(ExperimentDMP, on_delete=models.CASCADE)
+    samples = models.ForeignKey(Samples, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'experiment_dmp_x_sample'.lower()
 
 class ExperimentDMPxLab(models.Model):
     x_id = models.CharField(max_length=50, primary_key=True)
-    experiment_dmp = models.ForeignKey(ExperimentDMP, on_delete=models.PROTECT)
-    lab = models.ForeignKey(Laboratories, on_delete=models.PROTECT)
+    experiment_dmp = models.ForeignKey(ExperimentDMP, on_delete=models.CASCADE)
+    lab = models.ForeignKey(Laboratories, on_delete=models.CASCADE)
 
     class Meta:
         db_table = 'experiment_dmp_x_lab'.lower()

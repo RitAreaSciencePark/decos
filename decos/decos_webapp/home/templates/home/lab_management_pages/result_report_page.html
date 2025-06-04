@@ -18,6 +18,18 @@
         <h4 class="card-title">Result ID: {{ result.result_id }}</h4>
         <p><strong>Main Repository:</strong> <a href="{{ result.main_repository }}" target="_blank">{{ result.main_repository }}</a></p>
         <p><strong>Article DOI:</strong> <a href="https://doi.org/{{ result.article_doi }}" target="_blank">{{ result.article_doi }}</a></p>
+        {% if result.publication_title %}
+          <p><strong>Title:</strong> {{ result.publication_title }}</p>
+        {% endif %}
+        {% if result.authors %}
+          <p><strong>Authors:</strong> {{ result.authors }}</p>
+        {% endif %}
+        {% if result.journal_name %}
+          <p><strong>Journal:</strong> {{ result.journal_name }}</p>
+        {% endif %}
+        {% if result.publication_year %}
+          <p><strong>Year:</strong> {{ result.publication_year }}</p>
+        {% endif %}
       </div>
     </div>
 

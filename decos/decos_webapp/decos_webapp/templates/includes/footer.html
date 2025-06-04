@@ -5,23 +5,8 @@
     <link rel="stylesheet" type="text/css" href="{% static 'css/easyDMP.css' %}">
 
     <div class=footer_block>
-    {% with github_url=settings.home.FooterSettings.github_url %}
     {{ settings.home.FooterSettings.footer_text | richtext }}
     </div>
 
-    <div class=footer_block>
-        <p>
-            {% if github_url %}
-             {% if settings.home.FooterSettings.github_icon %}
-                <a href="{{ github_url }}">{% image settings.home.FooterSettings.github_icon fill-14x14 %}</a>
-                {% else %}
-                <a href="{{ github_url }}"> github </a>
-                {% endif %}
-             {% endif %}
-        </p>
-    </div>
-
-
-{% endwith %}
 </footer>
 

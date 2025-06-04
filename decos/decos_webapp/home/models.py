@@ -139,7 +139,7 @@ class HeaderSettings(BaseGenericSetting):
 # allowing administrators to configure footer text with room for future enhancements.
 @register_setting
 class FooterSettings(BaseGenericSetting):
-    footer_text = models.TextField(blank=True, verbose_name="Footer Text", help_text="Text displayed in the website footer")
+    footer_text = RichTextField(blank=True, verbose_name="Footer Text", help_text="Text displayed in the website footer")
     # TODO: Add fields for copyright notice and social media links in the future
 
 # ApiSettings creates a configuration menu in the admin panel to specify API URLs
@@ -666,6 +666,13 @@ class ResultsPage(Page, SessionHandlerMixin):
                             result=data,
                             experiment_dmp=ExperimentDMP.objects.get(pk=dmp_id)
                         )
+                    from PRP_CDM_app.models.common_data_model import ResultxLaboratories
+                    ResultxLaboratories.objects.get_or_create(
+                            x_id=xid_code_generation(data.result_id, lab.lab_id),
+                            result=data,
+                            lab=Laboratories.objects.get(pk=lab.lab_id)
+                    )
+
                     return render(request, 'home/thank_you_page.html', {
                         'page': self,
                         'data': data,
@@ -679,7 +686,7 @@ class ResultsPage(Page, SessionHandlerMixin):
             
 
         form = ResultsForm()
-        experiment_dmps = ExperimentDMP.objects.filter(samples__lab_id=lab.lab_id).exclude(experiment_dmp_id__in=experiment_dmp_list).distinct()
+        experiment_dmps = ExperimentDMP.objects.filter(lab__lab_id=lab.lab_id).exclude(experiment_dmp_id__in=experiment_dmp_list).distinct()
         table = ExperimentDMPTable(experiment_dmps)
         RequestConfig(request).configure(table)
         table.paginate(page=request.GET.get("page", 1), per_page=5)
@@ -815,12 +822,21 @@ class ExperimentDMPPage(Page, SessionHandlerMixin):
         return request.session['lab_selected']
 
     # Handles POST form submission for creating Results and linking related objects
-    def handle_form_submission(self, request, fill_up_form, samples_list, instruments_list):
+    def handle_form_submission(self, request, fill_up_form, samples_list, instruments_list, lab):
         form = ExperimentDMPForm(data=fill_up_form)
         if form.is_valid():
             data = form.save(commit=False)
             data.experiment_dmp_id = experimentdmp_id_generation(data)
-            data.save()
+            data.save()  # Save first to get a valid primary key for M2M
+            debug = Laboratories.objects.get(pk=lab)
+            if Laboratories.objects.get(pk=lab):
+                _lab = Laboratories.objects.get(pk=lab)
+                ExperimentDMPxLab.objects.get_or_create(
+                    x_id=xid_code_generation(data.experiment_dmp_id, _lab.lab_id),
+                    experiment_dmp=data,
+                    lab=_lab
+                )
+            data.lab.set([Laboratories.objects.get(pk=lab)])
             # Assign many-to-many relationships using through models
             if samples_list:
                 for sample_id in samples_list:
@@ -883,7 +899,7 @@ class ExperimentDMPPage(Page, SessionHandlerMixin):
                 request.session['selected_instruments'] = instruments_list
                 redirect_anchor = "instrument_selection"
             elif(request.POST.get("create_dmp","") == "create"):
-                return self.handle_form_submission(request, fill_up_form=request.session['fill_up_form'], samples_list=samples_list, instruments_list=instruments_list)
+                return self.handle_form_submission(request, fill_up_form=request.session['fill_up_form'], samples_list=samples_list, instruments_list=instruments_list, lab=lab)
             elif(
                 request.POST.get("sample_id", "") == ""
                 and request.POST.get("sample_id_rm", "") == ""
@@ -963,11 +979,13 @@ class ExperimentDMPListPage(Page):
         filter_value = request.GET.get('filter', '') or request.POST.get('filter', '')
 
         # TODO: manage lab view only or something else
-        data = ExperimentDMP.objects.filter(samples__lab_id=lab.lab_id).distinct()
+        data = ExperimentDMP.objects.filter(lab__lab_id=lab.lab_id).distinct()
  
         if filter_value:
-            # Filters results by partial match on result_id
-            data = data.filter(experiment_dmp_id__icontains=filter_value)
+            data = data.filter(
+                Q(experiment_title__icontains=filter_value) |
+                Q(principal_investigator__icontains=filter_value)
+            )
 
         # Configures results table with pagination
         table = ExperimentDMPTable(data)
@@ -978,6 +996,110 @@ class ExperimentDMPListPage(Page):
             'page': self,
             'table': table,
             'filter_value': filter_value,
+        })
+
+
+# New Page: EditExperimentDMPPage
+class EditExperimentDMPPage(Page):
+    intro = RichTextField(blank=True)
+
+    content_panels = Page.content_panels + [
+        FieldPanel('intro', classname="full"),
+    ]
+
+    def serve(self, request):
+        experiment_dmp_id = request.GET.get('experiment_dmp_id')
+        if not experiment_dmp_id:
+            return render(request, "home/error_page.html", {
+                "page": self,
+                "error": "No experiment_dmp_id provided in the request."
+            })
+
+        try:
+            dmp = ExperimentDMP.objects.get(pk=experiment_dmp_id)
+        except ExperimentDMP.DoesNotExist:
+            return render(request, "home/error_page.html", {
+                "page": self,
+                "error": f"Experiment DMP with ID '{experiment_dmp_id}' not found."
+            })
+
+        # Populate selected samples and instruments based on the experiment DMP
+        samples_list = list(
+            ExperimentDMPxSample.objects.filter(experiment_dmp=dmp).values_list("samples__sample_id", flat=True)
+        )
+        instruments_list = list(
+            ExperimentDMPxInstrument.objects.filter(experiment_dmp=dmp).values_list("instruments__instrument_id", flat=True)
+        )
+
+        # Sample table: show all samples (or filter by lab if needed)
+        sample_table = SamplesSelectionTable(Samples.objects.all())
+        instrument_table = InstrumentsSelectionTable(Instruments.objects.all())
+        RequestConfig(request).configure(sample_table)
+        RequestConfig(request).configure(instrument_table)
+
+        if request.method == "POST":
+            # Begin logic for managing adding/removing instruments and samples based on POST data
+            samples_list = request.session.get("samples_list", samples_list)
+            instruments_list = request.session.get("instruments_list", instruments_list)
+
+            if "sample_id" in request.POST:
+                sample_id = request.POST.get("sample_id")
+                if sample_id and sample_id not in samples_list:
+                    samples_list.append(sample_id)
+            elif "sample_id_rm" in request.POST:
+                sample_id_rm = request.POST.get("sample_id_rm")
+                if sample_id_rm in samples_list:
+                    samples_list.remove(sample_id_rm)
+
+            if "instrument_id" in request.POST:
+                instrument_id = request.POST.get("instrument_id")
+                if instrument_id and instrument_id not in instruments_list:
+                    instruments_list.append(instrument_id)
+            elif "instrument_id_rm" in request.POST:
+                instrument_id_rm = request.POST.get("instrument_id_rm")
+                if instrument_id_rm in instruments_list:
+                    instruments_list.remove(instrument_id_rm)
+
+            request.session["samples_list"] = samples_list
+            request.session["instruments_list"] = instruments_list
+            # End logic for add/remove
+
+            form = ExperimentDMPForm(request.POST, instance=dmp)
+            if form.is_valid():
+                form.save()
+                dmp.refresh_from_db()
+
+                # Set M2M instruments
+                selected_instruments = Instruments.objects.filter(pk__in=instruments_list)
+                dmp.instruments.set(selected_instruments)
+
+                # Set M2M samples
+                selected_samples = Samples.objects.filter(pk__in=samples_list)
+                dmp.samples.set(selected_samples)
+
+                return render(request, "home/thank_you_page.html", {
+                    "page": self,
+                    "data": dmp
+                })
+        else:
+            # On GET, clear session variables and use DB associations
+            request.session["samples_list"] = samples_list
+            request.session["instruments_list"] = instruments_list
+            form = ExperimentDMPForm(instance=dmp)
+
+        # Always use the session samples/instruments list for rendering
+        samples_list = request.session.get("samples_list", samples_list)
+        instruments_list = request.session.get("instruments_list", instruments_list)
+
+        return render(request, "home/lab_management_pages/edit_experiment_dmp_page.html", {
+            "page": self,
+            "experiment_dmp_info": form,
+            "field_values": model_to_dict(dmp),
+            "experiment_dmp_id": experiment_dmp_id,
+            "sample_table": sample_table,
+            "samples_list": samples_list,
+            "instrument_table": instrument_table,
+            "instruments_list": instruments_list,
         })
 
 class ExperimentDMPReportPage(Page):

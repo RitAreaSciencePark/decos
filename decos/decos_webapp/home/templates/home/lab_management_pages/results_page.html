@@ -10,20 +10,56 @@
 <h1><b>{{ lab }}: ADD RESULT</b></h1>
 {{ page.intro | richtext }}
 
+
 <form method="post" class="mb-4">
   {% csrf_token %}
-  <div class="row">
-    <div class="col-md-6">
-      <label for="main_repository">Main Repository:</label>
-      <input type="text" name="main_repository" id="main_repository" class="form-control mb-3"
-             value="{{ field_values.main_repository|default:'' }}">
-    </div>
-    <div class="col-md-6">
-      <label for="article_doi">Article DOI:</label>
-      <input type="text" name="article_doi" id="article_doi" class="form-control mb-3"
-             value="{{ field_values.article_doi|default:'' }}">
+
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">Repository Info</h5>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="main_repository">Main Repository:</label>
+          <input type="text" name="main_repository" id="main_repository" class="form-control mb-3"
+                 value="{{ field_values.main_repository|default:'' }}">
+        </div>
+        <div class="col-md-6">
+          <label for="article_doi">Article DOI:</label>
+          <input type="text" name="article_doi" id="article_doi" class="form-control mb-3"
+                 value="{{ field_values.article_doi|default:'' }}">
+        </div>
+      </div>
     </div>
   </div>
+
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h5 class="card-title">Citation Info</h5>
+      <div class="row">
+        <div class="col-md-6">
+          <label for="publication_title">Title of Publication:</label>
+          <input type="text" name="publication_title" id="publication_title" class="form-control mb-3"
+                 value="{{ field_values.publication_title|default:'' }}">
+        </div>
+        <div class="col-md-6">
+          <label for="authors">Authors:</label>
+          <input type="text" name="authors" id="authors" class="form-control mb-3"
+                 value="{{ field_values.authors|default:'' }}">
+        </div>
+        <div class="col-md-6">
+          <label for="journal_name">Journal:</label>
+          <input type="text" name="journal_name" id="journal_name" class="form-control mb-3"
+                 value="{{ field_values.journal_name|default:'' }}">
+        </div>
+        <div class="col-md-6">
+          <label for="publication_year">Year:</label>
+          <input type="number" name="publication_year" id="publication_year" class="form-control mb-3"
+                 value="{{ field_values.publication_year|default:'' }}">
+        </div>
+      </div>
+    </div>
+  </div>
+
   <button type="submit" name="stage_result" value="create" class="btn btn-primary">Stage Result</button>
 </form>
 

@@ -162,14 +162,21 @@ class ResultsForm(forms.ModelForm):
         
         class Meta:
             model = Results
-            fields = ['main_repository', 'article_doi']
+            fields = [
+                'main_repository',
+                'article_doi',
+                'publication_title',
+                'authors',
+                'journal_name',
+                'publication_year'
+            ]
 
 # to store the core elements of the experiment DMP
 class ExperimentDMPForm(forms.ModelForm):
 
     class Meta:
         model = ExperimentDMP
-        exclude = ['experiment_dmp_id', 'instruments', 'samples']
+        exclude = ['experiment_dmp_id', 'instruments', 'samples', 'lab']
 
 # to add new laboratory in the admin panel
 class AddNewLabForm(forms.ModelForm):

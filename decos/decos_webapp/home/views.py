@@ -19,6 +19,10 @@ from PRP_CDM_app.models.common_data_model import (
     Laboratories,
 )
 
+from django.views.decorators.http import require_POST
+from django.contrib import messages
+from PRP_CDM_app.models.common_data_model import Samples, Results
+
 from .secrets_models import API_Tokens
 
 # Functional view for switching between laboratories.
@@ -121,3 +125,79 @@ def user_data_view(request):
         'user_data': form_user,
         'api_token_data': form_api_tokens,
     })
+
+
+@login_required
+@require_POST
+def delete_sample_entry(request):
+    sample_id = request.POST.get('sample_id')
+    if sample_id:
+        try:
+            sample = Samples.objects.get(pk=sample_id)
+
+            # Then delete subclass instance if it exists
+            for subclass in Samples.__subclasses__():
+                try:
+                    subclass_instance = subclass.objects.get(samples_ptr=sample)
+                    subclass_instance.delete()
+                except subclass.DoesNotExist:
+                    continue
+
+            # Finally, delete the base sample
+            sample.delete()
+            messages.success(request, f"Sample {sample_id} deleted successfully.")
+        except Samples.DoesNotExist:
+            messages.error(request, f"Sample {sample_id} not found.")
+        except Exception as e:
+            messages.error(request, f"Error deleting sample: {e}")
+    else:
+        messages.error(request, "No sample ID provided.")
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+# Delete ExperimentDMP and its intermediary relationships
+from PRP_CDM_app.models.common_data_model import ExperimentDMP
+from PRP_CDM_app.models.common_data_model import ExperimentDMPxSample, ExperimentDMPxInstrument, ExperimentDMPxLab
+
+
+@login_required
+@require_POST
+def delete_experiment_dmp_entry(request):
+    experiment_dmp_id = request.POST.get('experiment_dmp_id')
+    if experiment_dmp_id:
+        try:
+            dmp = ExperimentDMP.objects.get(pk=experiment_dmp_id)
+
+            # Delete the DMP
+            dmp.delete()
+            messages.success(request, f"Experiment DMP {experiment_dmp_id} deleted successfully.")
+        except ExperimentDMP.DoesNotExist:
+            messages.error(request, f"Experiment DMP {experiment_dmp_id} not found.")
+        except Exception as e:
+            messages.error(request, f"Error deleting Experiment DMP: {e}")
+    else:
+        messages.error(request, "No Experiment DMP ID provided.")
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+@login_required
+@require_POST
+def delete_result_entry(request):
+    result_id = request.POST.get('result_id')
+    if result_id:
+        try:
+            result = Results.objects.get(pk=result_id)
+
+            # Delete the DMP
+            result.delete()
+            messages.success(request, f"Result {result_id} deleted successfully.")
+        except ExperimentDMP.DoesNotExist:
+            messages.error(request, f"Result {result_id} not found.")
+        except Exception as e:
+            messages.error(request, f"Error deleting Result: {e}")
+    else:
+        messages.error(request, "No Result ID provided.")
+
+    return redirect(request.META.get('HTTP_REFERER', '/'))
