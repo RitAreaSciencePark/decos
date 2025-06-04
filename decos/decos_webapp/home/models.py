@@ -97,8 +97,6 @@ from PRP_CDM_app.models.common_data_model import (  # Models related to samples,
     LabXInstrument,
     Laboratories,
     Proposals,
-    ResultxInstrument,
-    ResultxSample,
     Results,
     Samples,
     ServiceRequests,
@@ -612,6 +610,7 @@ class InstrumentsPage(Page): # EASYDMP STUB! EPIRO WILL TAKE THIS FUNCTIONALITY
             })
 
 # This page adds research result information to create the metadata catalog, linking samples, instruments, and core data management plan.
+
 class ResultsPage(Page, SessionHandlerMixin):
     intro = RichTextField(blank=True)
     thankyou_page_title = models.CharField(
@@ -622,123 +621,76 @@ class ResultsPage(Page, SessionHandlerMixin):
         FieldPanel('thankyou_page_title'),
     ]
 
-    # Utility method to extract list values from GET parameters
-    def get_list_from_request(self, request, list_key, id_key):
-        items = []
-        if list_key in request.GET:
-            items = json.loads(request.GET.get(list_key, '[]'))
-        if id_key in request.GET:
-            item_id = request.GET.get(id_key)
-            if item_id:
-                items.append(item_id)
-        return items
-
-    # Utility method to determine if a filter dropdown should be open
-    def is_filter_open(self, request, filter_key):
-        return "open " if request.GET.get(filter_key, "") else " "
-
-    # Checks for lab session or redirects to lab switch page
-    def get_lab_from_session_or_redirect(self, request):
-        try:
-            if self.get_lab_from_session(request) is None:
-                request.session["return_page"] = request.META.get('HTTP_REFERER', '/')
-                return redirect("/switch-laboratory")
-        except KeyError:
-            request.session["return_page"] = request.META.get('HTTP_REFERER', '/')
-            return redirect("/switch-laboratory")
-        return request.session['lab_selected']
-
-    # Handles POST form submission for creating Results and linking related objects
-    def handle_form_submission(self, request, sample_list, instrument_list, software_list):
-        form = ResultsForm(data=request.POST)
-        if form.is_valid():
-            data = form.save(commit=False)
-            result_id = result_id_generation(data)
-            data.result_id = result_id
-            data.save()
-
-            result = data
-
-            # Bulk-fetch samples to reduce database hits
-            samples = Samples.objects.filter(sample_id__in=sample_list)
-            for sample in samples:
-                ResultxSample.objects.get_or_create(
-                    x_id=xid_code_generation(result_id, sample.sample_id),
-                    results=result, samples=sample
-                )
-
-            # Bulk-fetch instruments to reduce database hits
-            instruments = Instruments.objects.filter(instrument_id__in=instrument_list)
-            for instrument in instruments:
-                ResultxInstrument.objects.get_or_create(
-                    x_id=xid_code_generation(result_id, instrument.instrument_id),
-                    results=result, instruments=instrument
-                )
-
-            return render(request, 'home/thank_you_page.html', {'page': self, 'data': data})
-        else:
-            return render(request, 'home/error_page.html', {'page': self, 'errors': form.errors})
-
     def serve(self, request):
-        # Validate lab session or redirect
-        lab = self.get_lab_from_session_or_redirect(request)
-        if isinstance(lab, HttpResponseRedirect):
-            return lab
+        lab = self.get_lab_from_session(request)
+        if not lab:
+            request.session["return_page"] = request.META.get("HTTP_REFERER", "/")
+            return redirect("/switch-laboratory")
 
-        # Extract lists for samples, datasets, instruments, and software
-        sample_list = self.get_list_from_request(request, 'sample_list', 'sample_id')
-        public_dataset_list = self.get_list_from_request(request, 'public_dataset_list', 'public_dataset_location')
-        instrument_list = self.get_list_from_request(request, 'instrument_list', 'instrument_id')
-        software_list = self.get_list_from_request(request, 'software_list', 'software_id')
+        from .forms import ResultsForm
+        from .tables import ExperimentDMPTable
+        from django_tables2.config import RequestConfig
 
-        # Handle form submission
+        # Initialize session state
+        current_path = request.path.rstrip('/')
+        referer = request.META.get('HTTP_REFERER', '')
+        referer_path = urlparse(referer).path.rstrip('/')
+        if referer_path != current_path:
+            request.session['selected_experiment_dmps'] = []
+            request.session['results_form_state'] = {}
+
+        experiment_dmp_list = request.session.get('selected_experiment_dmps', [])
+        form_state = request.session.get('results_form_state', {})
+
         if request.method == 'POST':
-            return self.handle_form_submission(request, sample_list, instrument_list, software_list)
+            if request.POST.get("experiment_dmp_id", ""):
+                dmp_id = request.POST.get("experiment_dmp_id")
+                if dmp_id not in experiment_dmp_list:
+                    experiment_dmp_list.append(dmp_id)
+                request.session['selected_experiment_dmps'] = experiment_dmp_list
+            elif request.POST.get("experiment_dmp_id_rm", ""):
+                dmp_id = request.POST.get("experiment_dmp_id_rm")
+                if dmp_id in experiment_dmp_list:
+                    experiment_dmp_list.remove(dmp_id)
+                request.session['selected_experiment_dmps'] = experiment_dmp_list
+            elif request.POST.get("create_result", "") == "create":
+                form = ResultsForm(data=form_state)
+                if form.is_valid():
+                    data = form.save(commit=False)
+                    data.result_id = result_id_generation()
+                    data.save()
+                    from PRP_CDM_app.models.common_data_model import ResultxExperimentDMP
+                    for dmp_id in experiment_dmp_list:
+                        ResultxExperimentDMP.objects.get_or_create(
+                            x_id=xid_code_generation(data.result_id, dmp_id),
+                            result=data,
+                            experiment_dmp=ExperimentDMP.objects.get(pk=dmp_id)
+                        )
+                    return render(request, 'home/thank_you_page.html', {
+                        'page': self,
+                        'data': data,
+                        'lab': lab
+                    })
+            elif all(key not in request.POST for key in ["experiment_dmp_id", "experiment_dmp_id_rm"]):
+                for key in request.POST:
+                    if key != "csrfmiddlewaretoken":
+                        form_state[key] = request.POST[key]
+                request.session['results_form_state'] = form_state
+            
 
-        # Open/close dropdown filter indicators
-        sample_filter_set = self.is_filter_open(request, "sample_filter")
-        instrument_filter_set = self.is_filter_open(request, "instrument_filter")
+        form = ResultsForm()
+        experiment_dmps = ExperimentDMP.objects.filter(samples__lab_id=lab.lab_id).exclude(experiment_dmp_id__in=experiment_dmp_list).distinct()
+        table = ExperimentDMPTable(experiment_dmps)
+        RequestConfig(request).configure(table)
+        table.paginate(page=request.GET.get("page", 1), per_page=5)
 
-        # Filters and additional GET params
-        sample_filter = request.GET.get("sample_filter", "")
-        instrument_filter = request.GET.get("instrument_filter", "")
-        article_doi = request.GET.get("article_doi", "")
-        main_repository = request.GET.get("main_repository", "")
-
-        # Query samples for the table display
-        sample_query = Samples.objects.filter(lab_id=lab)
-        if sample_filter:
-            sample_query = sample_query.filter(sample_id__contains=sample_filter)
-        sample_table = SamplesSelectionTable(sample_query, prefix="sample_")
-        RequestConfig(request).configure(sample_table)
-        sample_table.paginate(page=request.GET.get("sample_page", 1), per_page=5)
-
-        # Query instruments for the table display
-        instrument_query = Instruments.objects.all()
-        if instrument_filter:
-            instrument_query = instrument_query.filter(instrument_id__contains=instrument_filter)
-        instrument_table = InstrumentsSelectionTable(instrument_query, prefix="inst_")
-        RequestConfig(request).configure(instrument_table)
-        instrument_table.paginate(page=request.GET.get("inst_page", 1), per_page=5)
-
-        # Prepare data for template
         return render(request, 'home/lab_management_pages/results_page.html', {
             'page': self,
             'lab': lab,
-            'article_doi': article_doi,
-            'main_repository': main_repository,
-            'sample_table': sample_table,
-            'sample_filter': sample_filter_set,
-            'instrument_filter': instrument_filter_set,
-            'sample_list': json.dumps(sample_list),
-            'sample_list_view': sample_list,
-            'public_dataset_list': json.dumps(public_dataset_list),
-            'public_dataset_list_view': public_dataset_list,
-            'instruments_table': instrument_table,
-            'instrument_list': json.dumps(instrument_list),
-            'instrument_list_view': instrument_list,
-            'software_list': json.dumps(software_list),
-            'software_list_view': software_list,
+            'data': form,
+            'experiment_dmp_table': table,
+            'experiment_dmp_list': experiment_dmp_list,
+            'field_values' : form_state
         })
 
 # This page displays a list of research results, filtered by lab and result ID, with pagination support.
@@ -786,7 +738,7 @@ class ResultsListPage(Page):
         })
 
 # This page displays detailed information about a selected research result, including associated samples, instruments, and the lab's data management plan (DMP).
-class ExperimentMetadataReportPage(Page):
+class ResultReportPage(Page):
     intro = RichTextField(blank=True)
 
     content_panels = Page.content_panels + [
@@ -807,43 +759,27 @@ class ExperimentMetadataReportPage(Page):
             return lab
 
         result_id = request.GET.get("result_id")
-        data = get_object_or_404(Results, pk=result_id)
+        if not result_id:
+            return render(request, "home/lab_management_pages/result_report_page.html", {
+                "page": self,
+                "error": "No result_id provided in the request."
+            })
 
-        # Retrieve sample IDs related to the result
-        sample_ids = ResultxSample.objects.filter(results=data).values_list('samples_id', flat=True)
+        # Retrieve the result object
+        result = get_object_or_404(Results, pk=result_id)
 
-        # Fetch all samples including their possible specializations
-        samples = Samples.objects.filter(pk__in=sample_ids).select_related('lab_id')
+        # Retrieve associated experiment DMPs
+        from PRP_CDM_app.models.common_data_model import ResultxExperimentDMP, ExperimentDMP
+        experiment_dmp_ids = ResultxExperimentDMP.objects.filter(result=result).values_list("experiment_dmp__experiment_dmp_id", flat=True)
+        experiment_dmps = ExperimentDMP.objects.filter(pk__in=experiment_dmp_ids)
 
-        # Dynamically determine and replace specialized sample models
-        specialized_samples = []
-        for sample in samples:
-            lab_name = sample.lab_id.lab_id.capitalize() # LAGE -> Lage or sissa -> Sissa
-            specialized_sample_model_name = f"{lab_name}Samples" # Lage -> LageSamples ...
-            SpecializedSamplesModel = apps.get_model('PRP_CDM_app', specialized_sample_model_name) if apps.is_installed('PRP_CDM_app') else None
+        # Optionally, you could add more metadata fields here to render in the report
 
-            if SpecializedSamplesModel:
-                specialized_sample = SpecializedSamplesModel.objects.filter(pk=sample.pk).first()
-                if specialized_sample:
-                    specialized_samples.append(specialized_sample)
-                else:
-                    specialized_samples.append(sample)
-            else:
-                specialized_samples.append(sample)
-
-        # Retrieve instruments efficiently
-        instrument_ids = ResultxInstrument.objects.filter(results=data).values_list('instruments_id', flat=True)
-        instrument_list = list(Instruments.objects.filter(pk__in=instrument_ids))
-
-        # Get lab DMP (handling missing case properly)
-        lab_dmp = labDMP.objects.filter(pk=lab.lab_id).first()
-
-        return render(request, 'home/lab_management_pages/experiment_metadata_report_page.html', {
-            'page': self,
-            'data': data,
-            'sample_list': specialized_samples if specialized_samples else None,
-            'instrument_list': instrument_list if instrument_list else None,
-            'lab_dmp': lab_dmp if lab_dmp else None,
+        return render(request, "home/lab_management_pages/result_report_page.html", {
+            "page": self,
+            "lab": lab,
+            "result": result,
+            "experiment_dmps": experiment_dmps
         })
 
 class ExperimentDMPPage(Page, SessionHandlerMixin):

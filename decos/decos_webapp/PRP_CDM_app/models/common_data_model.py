@@ -372,59 +372,24 @@ class Results(models.Model):
     # DOI (Digital Object Identifier) for the published article or dataset; optional.
     article_doi = models.CharField(max_length=256, blank=True)
 
+    # Many-to-many relationship with ExperimentDMP through ResultxExperimentDMP
+    experiment_dmps = models.ManyToManyField('ExperimentDMP', through='ResultxExperimentDMP')
+
     # TODO: complete the model with additional research result metadata as needed.
 
     class Meta:
         # Explicit table name in lowercase for PostgreSQL compatibility.
         db_table = 'results'.lower()
 
-# This model represents the many-to-many relationship between research results and scientific instruments.
-# It links research outputs to the instruments involved in generating the data.
-class ResultxInstrument(models.Model):
-    # Primary key representing the association identifier.
+# This model represents the many-to-many relationship between research results and ExperimentDMP.
+# It links research outputs to the experiment DMPs involved in generating the data.
+class ResultxExperimentDMP(models.Model):
     x_id = models.CharField(max_length=50, primary_key=True)
-
-    # Reference to the research result.
-    results = models.ForeignKey(Results, on_delete=models.PROTECT)
-
-    # Reference to the instrument involved in producing the result.
-    instruments = models.ForeignKey(Instruments, on_delete=models.PROTECT)
+    result = models.ForeignKey(Results, on_delete=models.PROTECT)
+    experiment_dmp = models.ForeignKey('ExperimentDMP', on_delete=models.PROTECT)
 
     class Meta:
-        # Explicit table name in lowercase for PostgreSQL compatibility.
-        db_table = 'result_x_instrument'.lower()
-
-# This model represents the many-to-many relationship between research results and samples.
-# It links research outputs to the samples used in generating the data.
-class ResultxSample(models.Model):
-    # Primary key representing the association identifier.
-    x_id = models.CharField(max_length=50, primary_key=True)
-
-    # Reference to the research result.
-    results = models.ForeignKey(Results, on_delete=models.PROTECT)
-
-    # Reference to the sample involved in the result.
-    samples = models.ForeignKey(Samples, on_delete=models.PROTECT)
-
-    class Meta:
-        # Explicit table name in lowercase for PostgreSQL compatibility.
-        db_table = 'result_x_sample'.lower()
-
-# This model represents the many-to-many relationship between research results and laboratories.
-# It links research outputs to the laboratories responsible for or contributing to the results.
-class ResultxLab(models.Model):
-    # Primary key representing the association identifier.
-    x_id = models.CharField(max_length=50, primary_key=True)
-
-    # Reference to the research result.
-    results = models.ForeignKey(Results, on_delete=models.PROTECT)
-
-    # Reference to the laboratory associated with the result.
-    lab = models.ForeignKey(Laboratories, on_delete=models.PROTECT)
-
-    class Meta:
-        # Explicit table name in lowercase for PostgreSQL compatibility.
-        db_table = 'result_x_lab'.lower()
+        db_table = 'result_x_experiment_dmp'.lower()
 
 class ExperimentDMP(models.Model):
     experiment_dmp_id = models.CharField(max_length=50, primary_key=True)

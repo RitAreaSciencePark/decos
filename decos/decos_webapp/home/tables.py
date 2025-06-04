@@ -115,7 +115,7 @@ class ResultsTable(tables.Table):
             "onClick": lambda record: f"document.getElementById('result_id_hidden').value = '{record.result_id}'; document.getElementById('result_selection').submit();"
         }
 
-# Table for displaying Results supporting row selection
+# Table for displaying ExperimentDMP supporting row selection
 class ExperimentDMPTable(tables.Table):
     class Meta:
         model = ExperimentDMP

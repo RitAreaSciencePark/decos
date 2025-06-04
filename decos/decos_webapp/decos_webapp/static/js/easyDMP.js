@@ -96,3 +96,22 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+// Results Page - Experiment DMP selection (adapted)
+document.addEventListener('DOMContentLoaded', function () {
+  const table = document.querySelector('#experiment_dmp_selection');
+  const hiddenInput = document.getElementById('experiment_dmp_id_hidden');
+  const form = document.getElementById('experiment_dmp_selection');
+
+  if (!table || !hiddenInput || !form) return;
+
+  table.querySelectorAll('tbody tr').forEach(row => {
+    row.addEventListener('click', () => {
+      const recordId = row.dataset.recordId || row.querySelector('td')?.textContent?.trim();
+      if (recordId) {
+        hiddenInput.value = recordId;
+        form.submit();
+      }
+    });
+  });
+});

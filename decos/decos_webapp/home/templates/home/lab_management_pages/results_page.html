@@ -7,157 +7,66 @@
 <link rel="stylesheet" href="{% static 'css/home_page.css' %}">
 <link rel="stylesheet" href="{% static 'css/forms/labdmp_page.css' %}">
 
+<h1><b>{{ lab }}: ADD RESULT</b></h1>
+{{ page.intro | richtext }}
 
-    <h1><b>{{ lab }}: ADD RESULT</b></h1>
-
-    {{ page.intro | richtext }}
-
-    <form action="." method="GET">
-        <div class="section_div">
-            <input type="hidden" id="sample_list_hidden" name="sample_list" value="{{ sample_list }}">
-            <input type="hidden" id="public_dataset_list_hidden" name="public_dataset_list" value="{{ public_dataset_list }}">
-            <input type="hidden" id="instrument_list_hidden" name="instrument_list" value="{{ instrument_list }}">
-            <input type="hidden" id="software_list_hidden" name="software_list" value="{{ software_list }}">
-
-            <h4><b> RESULTS </b></h4>
-            <p>
-                <i>What is the location of the dataset?</i>
-                <input type="text" class="form-control" id="main_repository_text" name="main_repository" aria-describedby="main_repository_text" value="{{ main_repository }}">
-                <br><i>What is the doi of the article?</i>
-                <input type="text" class="form-control" id="article_doi_text" name="article_doi" aria-describedby="article_doi_text" value="{{ article_doi }}"><br>
-            </p>
-        </div>
-
+<form method="post" class="mb-4">
+  {% csrf_token %}
+  <div class="row">
+    <div class="col-md-6">
+      <label for="main_repository">Main Repository:</label>
+      <input type="text" name="main_repository" id="main_repository" class="form-control mb-3"
+             value="{{ field_values.main_repository|default:'' }}">
+    </div>
+    <div class="col-md-6">
+      <label for="article_doi">Article DOI:</label>
+      <input type="text" name="article_doi" id="article_doi" class="form-control mb-3"
+             value="{{ field_values.article_doi|default:'' }}">
+    </div>
+  </div>
+  <button type="submit" name="stage_result" value="create" class="btn btn-primary">Stage Result</button>
+</form>
 
 
-        <p><input type="submit" value="Save section" class="btn btn-primary"></p>
+<!-- Experiment DMP Selection -->
+<div class="experiment_dmps card p-4 mb-4 shadow-sm">
+  <div class="card-body">
+    <h5 class="card-title">Experiment DMPs</h5>
+
+    <!-- Search form -->
+    <form method="get" class="mb-3">
+      <input type="text" name="search_dmp" id="search_dmp" placeholder="Search Experiment DMPs..." class="form-control" value="{{ request.GET.search_dmp }}">
     </form>
 
-    <div class="section_div">
-        <h4><b> SAMPLE </b></h4>
-        <br>
-        <i>This results were produced with a sample or a public dataset?</i>
-        <form id="sample_selection" method="get" action="">
-            <input type="hidden" id="article_doi_hidden" name="article_doi" value="{{ article_doi }}">
-            <input type="hidden" id="main_repository_hidden" name="main_repository" value="{{ main_repository }}">
-            <input type="hidden" id="sample_id_hidden" name="sample_id" value="">
+    <!-- Table selection form -->
+    <form method="post" id="experiment_dmp_selection" class="mb-3">
+      {% csrf_token %}
+      {% render_table experiment_dmp_table %}
+      <input type="hidden" id="experiment_dmp_id_hidden" name="experiment_dmp_id" value="">
+    </form>
 
-            <input type="hidden" id="sample_list_hidden" name="sample_list" value="{{ sample_list }}">
-            <input type="hidden" id="public_dataset_list_hidden" name="public_dataset_list" value="{{ public_dataset_list }}">
-            <input type="hidden" id="instrument_list_hidden" name="instrument_list" value="{{ instrument_list }}">
-            <input type="hidden" id="instrument_list_hidden" name="instrument_list" value="{{ instrument_list }}">
-            <input type="hidden" id="software_list_hidden" name="software_list" value="{{ software_list }}">
-            <div class="sample_selection" id="dropMenu">
-                <div class="dropdown {{ sample_filter }}dropup">
-                    <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
-                        data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
-                        Sample
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
-                        <input type="text" class="form-control" id="filterText" name="sample_filter" aria-describedby="filterText"
-                            placeholder="filter...">
-                        <button type="submit" class="btn btn-primary">search</button>
-
-                        <div class="dropdown-item" type="div" id="dropdown-div">
-                            {% render_table sample_table %}
-                        </div>
-                    </div>
-                </div>
-                <div class="sample_id_selection">
-                    <div class="dropdown">
-                        <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
-                            Public Dataset
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">    
-                            <div class="dropdown-item" type="div" id="dropdown-div">
-                                Insert dataset link: 
-                                <input type="text" name="public_dataset_location">
-                            </div>
-                        </div>
-                    </div>
-                </div>
+    <!-- Selected experiment DMP cards -->
+    <form method="post" id="selected_experiment_dmp_cards" class="mb-3">
+      {% csrf_token %}
+      <div class="row row-cols-1 row-cols-md-3 g-2">
+        {% for dmp in experiment_dmp_list %}
+        <div class="col">
+          <button type="submit" name="experiment_dmp_id_rm" value="{{ dmp }}" class="card shadow-sm w-100 text-start border-0">
+            <div class="card-body">
+              <h6 class="card-title mb-0">{{ dmp }}</h6>
             </div>
-        </form>
-    {% for sample_id in sample_list_view %}
-    {{ sample_id }}
-    {% endfor %}
-    <br>
-    {% for public_dataset in public_dataset_list_view %}
-    {{ public_dataset }}
-    {% endfor %}
-    </div>
+          </button>
+        </div>
+        {% endfor %}
+      </div>
+    </form>
+    <form method="post">
+        {% csrf_token %}
+        <button type="submit" name="create_result" value="create" class="btn btn-primary px-4">Create new Result</button>
+    </form>
+    <!-- Hidden experiment DMP list -->
+    <input type="hidden" name="experiment_dmp_list" id="experiment_dmp_list_hidden" value="{{ experiment_dmp_list|default:'' }}">
+  </div>
+</div>
 
-    <div class="section_div">
-        <h4><b> INSTRUMENT/SOFTWARE </b></h4>
-        <br>
-        <i>What is the instrument/software that was used to produce these results?</i>
-        <form id="instrument_selection" method="get" action="">
-            <input type="hidden" id="article_doi_hidden" name="article_doi" value="{{ article_doi }}">
-            <input type="hidden" id="main_repository_hidden" name="main_repository" value="{{ main_repository }}">
-            <input type="hidden" id="instrument_id_hidden" name="instrument_id" value="">
-
-            <input type="hidden" id="sample_list_hidden" name="sample_list" value="{{ sample_list }}">
-            <input type="hidden" id="public_dataset_list_hidden" name="public_dataset_list" value="{{ public_dataset_list }}">
-           
-            <input type="hidden" id="instrument_list_hidden" name="instrument_list" value="{{ instrument_list }}">
-            <input type="hidden" id="software_list_hidden" name="software_list" value="{{ software_list }}">
-            
-            <div class="instrument_selection" id="dropMenu">
-                <div class="dropdown {{ instrument_filter }}dropup">
-                    <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
-                        data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
-                        Instrument
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
-                        <input type="text" class="form-control" id="filterText" name="instrument_filter" aria-describedby="filterText"
-                            placeholder="filter...">
-                        <button type="submit" class="btn btn-primary">search</button>
-
-                        <div class="dropdown-item" type="div" id="dropdown-div">
-                            {% render_table instruments_table %}
-                        </div>
-                    </div>
-                </div>
-                <div class="instrument_id_selection">
-                    <div class="dropdown">
-                        <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
-                            data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
-                            Software
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">    
-                            <div class="dropdown-item" type="div" id="dropdown-div">
-                                Insert dataset link: 
-                                <input type="text" name="software_id">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-    {% for instrument_id in instrument_list_view %}
-    {{ instrument_id }}
-    {% endfor %}
-    <br>
-    {% for software in software_list_view %}
-    {{ software }}
-    {% endfor %}
-    </div>
-
-    <div class="section_div">
-        <form id="sent" method="post" action="">
-            {% csrf_token %}
-
-            <input type="hidden" id="article_doi_hidden" name="article_doi" value="{{ article_doi }}">
-            <input type="hidden" id="main_repository_hidden" name="main_repository" value="{{ main_repository }}">
-
-            <input type="hidden" id="sample_list_hidden" name="sample_list" value="{{ sample_list }}">
-            <input type="hidden" id="public_dataset_list_hidden" name="public_dataset_list" value="{{ public_dataset_list }}">
-           
-            <input type="hidden" id="instrument_list_hidden" name="instrument_list" value="{{ instrument_list }}">
-            <input type="hidden" id="software_list_hidden" name="software_list" value="{{ software_list }}">
-            <input type="submit" class="btn btn-primary">Submit Result</button>
-    </div>
-
-    
 {% endblock %}
