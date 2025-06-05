@@ -8,7 +8,12 @@
 # Description: URL configuration for the Home app, defining endpoints for the user data entry interface and the laboratory switching functionality.
 
 from django.urls import path
-from .views import user_data_view, switch_lab_view, test_secure
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.views.decorators.http import require_POST
+from .views import user_data_view, switch_lab_view, delete_sample_entry, delete_experiment_dmp_entry, delete_result_entry
+
+def in_data_curator_group(user):
+    return user.groups.filter(name="Data_Curator").exists()
 
 app_name = 'home'  # Namespace for the 'home' app URLs
 
@@ -18,6 +23,25 @@ urlpatterns = [
 
     # URL pattern for switching between laboratories
     path('switch-laboratory/', switch_lab_view, name='switch-laboratory'),
-    path('debug/', test_secure, name='test_secure'), # TODO: DESTROY ME
 
+    # URL pattern for deleting a sample entry
+    path(
+        'delete-sample-entry/',
+        login_required(user_passes_test(in_data_curator_group)(require_POST(delete_sample_entry))),
+        name='delete_sample_entry'
+    ),
+
+    # URL pattern for deleting a experiment dmp entry
+    path(
+        'delete-experiment-dmp-entry/',
+        login_required(user_passes_test(in_data_curator_group)(require_POST(delete_experiment_dmp_entry))),
+        name='delete_experiment_dmp_entry'
+    ),
+
+    #URL pattern for deleting a result entry
+    path(
+        'delete-result-entry/',
+        login_required(user_passes_test(in_data_curator_group)(require_POST(delete_result_entry))),
+        name='delete_result_entry'
+    )
 ]

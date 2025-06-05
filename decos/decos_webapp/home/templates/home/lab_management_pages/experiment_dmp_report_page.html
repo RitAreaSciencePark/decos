@@ -1,84 +1,64 @@
 {% extends "base.html" %}
-{% load static wagtailcore_tags wagtailuserbar navigation_tags wagtailimages_tags django_tables2  %}
-
-{% block body_class %}template-form{% endblock %}
+{% load static %}
+{% load wagtailcore_tags %}
+{% load navigation_tags %}
+{% wagtail_site as current_site %}
+{% get_site_root as site_root %}
 
 {% block content %}
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" href="{% static 'css/home_page.css' %}">
 <link rel="stylesheet" href="{% static 'css/forms/labdmp_page.css' %}">
-
-
-    <h1><b>Experiment Data Management Plan</b></h1>
-
-    {{ page.intro | richtext }}
-
-    <div class="section_div">
-        <h4><b>Data</b>:</h4>
-        <p>
-           <i>Experiment DMP internal PID:</i> {{ data.experiment_dmp_id }} <br>
-           <i>Experiment Title:</i> {{ data.experiment_title }} <br>
-           <i>Principal Investigator:</i> {{ data.principal_investigator }} <br>
-           <i>Affiliated Institutions:</i> {{ data.affiliated_institutions }} <br>
-           <i>Project Acronym:</i> {{ data.project_acronym }} <br>
-           <i>Grant Number:</i> {{ data.grant_number }} <br>
-           <i>Plan Creation Date:</i> {{ data.plan_creation_date }} <br>
-           <i>Funding Programme:</i> {{ data.funding_programme }} <br>
-           <i>Collaborators and Roles:</i> {{ data.collaborators_roles }} <br>
-           <i>Ethics Approvals:</i> {{ data.ethics_approvals }} <br>
-        </p>
-     </div>
-
 <div class="section_div">
-    <b>General laboratory policies: </b>
-    <p>
-        <i>Electronic notebook used: </i>{{ lab_dmp.additional_enotebook_open_collection }}<br>
-        <i>Open Data License: </i>{{ lab_dmp.open_data_licence }}<br>
-        <i>Raw data storage time retention policy: </i>{{ lab_dmp.raw_data_storage_time_retention }}<br>
-        <i>Backup policy of published data: </i>{{ lab_dmp.backup_policy_published_data }}<br>
-        <i>Backup policy of unplished data: </i>{{ backup_policy_unplublished_data }}<br>
+<div class="container mt-4">
+  <h1>Experiment DMP Report</h1>
+  <hr>
 
-    </p>
-</div>
+  <h3>General Information</h3>
 
-<div class="section_div">
-    <h4><b>Samples data:</b></h4>
-    {% for sample in sample_list %}
-    <p>
+  {% if data.experiment_title %}<p><strong>Experiment Title:</strong> {{ data.experiment_title }}</p>{% endif %}
+  {% if data.principal_investigator %}<p><strong>Principal Investigator:</strong> {{ data.principal_investigator }}</p>{% endif %}
+  {% if data.affiliated_institutions %}<p><strong>Affiliated Institutions:</strong> {{ data.affiliated_institutions }}</p>{% endif %}
+  {% if data.project_acronym %}<p><strong>Project Acronym:</strong> {{ data.project_acronym }}</p>{% endif %}
+  {% if data.grant_number %}<p><strong>Grant Number:</strong> {{ data.grant_number }}</p>{% endif %}
+  {% if data.plan_creation_date %}<p><strong>Plan Creation Date:</strong> {{ data.plan_creation_date }}</p>{% endif %}
+  {% if data.funding_programme %}<p><strong>Funding Programme:</strong> {{ data.funding_programme }}</p>{% endif %}
+  {% if data.collaborators_roles %}<p><strong>Collaborators & Roles:</strong> {{ data.collaborators_roles }}</p>{% endif %}
+  {% if data.ethics_approvals %}<p><strong>Ethics Approvals:</strong> {{ data.ethics_approvals }}</p>{% endif %}
 
-     <b> <i>Sample id: </i>
-        {{ sample.sample_id }}</b> <br>
-    <i>Sample laboratory: </i>
-            {{ sample.lab_id }} <br>
-    <i>Sample Data location: </i>
-        {{ sample.sample_location }}<br>
-    {% if "LAGE" in sample.lab_id.lab_id %}
-    {% include "./includes/ngs_include.html" %}
-    {% elif "LAME" in sample.lab_id.lab_id %}
-    {% include "./includes/material_include.html" %}
-    {% elif "UNISALENTO" in sample.lab_id.lab_id %}
-    {% include "./includes/biolab_unisalento_include.html" %}
-    {% else %}
-    - TO BE IMPLEMENTED
-    {% endif %}
+  {% if data.roles_responsibilities or data.estimated_costs or data.infrastructure_support %}
+  <h3>Resources & Support</h3>
+  {% if data.roles_responsibilities %}<p><strong>Roles and Responsibilities:</strong> {{ data.roles_responsibilities }}</p>{% endif %}
+  {% if data.estimated_costs %}<p><strong>Estimated Costs:</strong> {{ data.estimated_costs }}</p>{% endif %}
+  {% if data.infrastructure_support %}<p><strong>Infrastructure Support:</strong> {{ data.infrastructure_support }}</p>{% endif %}
+  {% endif %}
 
-    {% endfor %}
-
-</div>
-
-<div class="section_div">
-
-    <h4><b>Instruments:</b></h4>
+  {% if instrument_list %}
+  <h3>Instruments</h3>
+  <p>
     {% for instrument in instrument_list %}
-    <p>
-    <i>Model: </i>
-    {{ instrument.model }} <br>
-    <i>Vendor: </i>
-    {{ instrument.vendor }} <br>
-    </p>
-
+      {{ instrument.model }} ({{ instrument.vendor }}){% if instrument.description %} - {{ instrument.description }}{% endif %}<br>
     {% endfor %}
+    </p>
+  {% endif %}
+
+  {% if sample_list %}
+  <h3>Samples</h3>
+  <p>
+{% for sample in sample_list %}
+<a href="/samples/sample-report-page/?sample_id={{ sample.sample_id }}">
+        {{ sample.sample_id }} - {{ sample.sample_short_description }}
+</a>
+{% endfor %}
+    </p>
+  {% endif %}
+
+  {% if lab_dmp.sample_standard or lab_dmp.open_trusted_repo_published_data or lab_dmp.metadata_schema_defined %}
+  <h3>Laboratory Data Management Plan</h3>
+  {% if lab_dmp.sample_standard %}<p><strong>Sample Standard:</strong> {{ lab_dmp.sample_standard }}</p>{% endif %}
+  {% if lab_dmp.open_trusted_repo_published_data %}<p><strong>Open Repository Published:</strong> {{ lab_dmp.open_trusted_repo_published_data }}</p>{% endif %}
+  {% if lab_dmp.metadata_schema_defined %}<p><strong>Metadata Schema Defined:</strong> {{ lab_dmp.metadata_schema_defined }}</p>{% endif %}
+  {% endif %}
 
 </div>
-
+</div>
 {% endblock %}

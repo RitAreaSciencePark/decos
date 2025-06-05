@@ -2,8 +2,6 @@
 {% load static wagtailcore_tags wagtailuserbar navigation_tags wagtailimages_tags django_tables2  %}
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/home_page.css' %}">
-
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
 <link rel="stylesheet" href="{% static 'css/list_page.css' %}">
 
 Filter:
@@ -16,6 +14,7 @@ Filter:
 </div>
 <form method="get" action="./experiment-data-management-plan/" id="experiment_dmp_selection">
     <input type="hidden" id="experiment_dmp_id_hidden" name="experiment_dmp_id" value="tryme">
-{% render_table table %}
 </form>
+
+{% render_table table %}
 {% endblock %}

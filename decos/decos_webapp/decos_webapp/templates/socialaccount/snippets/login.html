@@ -1,0 +1,15 @@
+{% load i18n %}
+{% load allauth %}
+{% load socialaccount %}
+{% load static %}
+{% get_providers as socialaccount_providers %}
+{% if socialaccount_providers %}
+    {% if not SOCIALACCOUNT_ONLY %}
+        <img src="{% static 'icons/area_logo.png' %}" alt="AREA SCIENCE PARK logo" id="area-logo">
+        {% element h2 %}
+            {% translate "Single Sign On:" %}
+        {% endelement %}
+    {% endif %}
+    {% include "socialaccount/snippets/provider_list.html" with process="login" %}
+    {% include "socialaccount/snippets/login_extra.html" %}
+{% endif %}

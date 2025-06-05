@@ -2,27 +2,53 @@
 {% load static %}
 
 {% block content %}
-<link rel="stylesheet" href="{% static 'css/home_page.css' %}">
 
-<div class="container my-5">
-  <div class="row justify-content-center">
-    <div class="col-md-8 col-lg-6">
-      <div class="card shadow-sm">
-        <div class="card-header custom-card-header">
-          <h3 class="mb-0">Switch Laboratory</h3>
-        </div>
-        <div class="card-body">
-          <form method="post" novalidate>
-            {% csrf_token %}
-            {{ data.as_p }}
-            <div class="d-grid mt-3">
-              <button type="submit" class="btn btn-success">Submit</button>
-            </div>
-          </form>
+<div class="container mt-5">
+  <div class="mb-4">
+    <h2>Switch Laboratory</h2>
+    <p>Select the laboratory you want to access by clicking on a card:</p>
+  </div>
+
+  <form id="labSwitchForm" method="post">
+    {% csrf_token %}
+    <input type="hidden" name="lab_selected" id="lab_selected_input">
+  </form>
+
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+    {% for val, label in data.fields.lab_selected.choices %}
+      <div class="col">
+        <div class="card h-100 p-3 cursor-pointer"
+             onclick="submitLabSelection('{{ val }}')">
+          <div class="card-body">
+            <h5 class="card-title">{{ label }}</h5>
+            {% for lab in lab_description %}
+              {%if lab.lab_id == label %}
+                          <p class="card-text">{{ lab.description }}</p>
+              {% endif %}
+            {% endfor %}
+          </div>
         </div>
       </div>
-    </div>
+    {% endfor %}
   </div>
 </div>
 
+<script>
+  function submitLabSelection(labValue) {
+    const input = document.getElementById('lab_selected_input');
+    input.value = labValue;
+    document.getElementById('labSwitchForm').submit();
+  }
+</script>
+
+<style>
+  .cursor-pointer {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .cursor-pointer:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  }
+</style>
 {% endblock %}

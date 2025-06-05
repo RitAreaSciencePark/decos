@@ -26,8 +26,8 @@ services:
       POSTGRES_USER: decos
       POSTGRES_PASSWORD: postgres
     volumes:
-      - postgres_data:/var/lib/postgresql/data/
+      - postgres_data_dev:/var/lib/postgresql/data/
       - ./backups:/backups
 
 volumes:
-  postgres_data:
+  postgres_data_dev:

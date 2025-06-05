@@ -1,21 +1,52 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-</head><form method="get" action="/edit-sample-entry/">
+</head>
+
+{% with user_groups=request.user.groups.all %}
+  {% for group in user_groups %}
+    {% if group.name == "Data_Curator" %}
+<form method="get" action="/edit-sample-entry/">
     <input type="hidden" name="sample_id" value="{{ record.sample_id }}">
     <button type="submit" class="btn btn-light" id="edit_btn" value="edit">
         <i class="fa fa-edit"></i>
     </button>
 </form>
-<form method="post" action="">
+    {% endif %}
+  {% endfor %}
+{% endwith %}
+
+
+<form method="post" action="" class="elab-form">
     {% csrf_token %}
     <input type="hidden" name="elab_write" value="{{ record.sample_id }}">
-    <button type="submit" class="btn btn-light" id="edit_btn"><i class="fa fa-book"></i></button>
+    <button type="submit" class="btn btn-light elab-btn">
+        <i class="fa fa-book"></i>
+    </button>
 </form>
+
+{% with user_groups=request.user.groups.all %}
+  {% for group in user_groups %}
+    {% if group.name == "Pipelines" %}
 <form method="get" action="/pipelines/">
     <input type="hidden" name="pipelines" value="{{ record.sample_id }}">
     <button type="submit" class="btn btn-light" id="edit_btn" value="pipelines">
         <i class="fa fa-industry"></i>
     </button>
 </form>
+    {% endif %}
+  {% endfor %}
+{% endwith %}
 
-
-
+{% with user_groups=request.user.groups.all %}
+  {% for group in user_groups %}
+    {% if group.name == "Data_Curator" %}
+      <form method="post" action="/delete-sample-entry/" onsubmit="return confirm('Are you sure you want to delete this sample?');">
+          {% csrf_token %}
+          <input type="hidden" name="sample_id" value="{{ record.sample_id }}">
+          <button type="submit" class="btn btn-light" id="delete_btn" value="delete">
+              <i class="fa fa-trash"></i>
+          </button>
+      </form>
+    {% endif %}
+  {% endfor %}
+{% endwith %}
+</file>

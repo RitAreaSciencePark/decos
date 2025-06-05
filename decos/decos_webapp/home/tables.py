@@ -90,7 +90,8 @@ class SamplesSelectionTable(BaseInteractiveTable):
         template_name = "django_tables2/bootstrap-responsive.html"
         fields = ("sample_id", "sample_short_description")
         row_attrs = {
-        "onClick": lambda record: f"document.getElementById('sample_id_hidden').value = '{record.sample_id}'; document.getElementById('sample_selection').submit();"
+            "onClick": lambda record: f"document.getElementById('sample_id').value = '{record.sample_id}'; document.getElementById('sample_selection').submit();"        
+            # "onClick": lambda record: f'alert("I am an alert box!")',
         }
 
 # Table for selecting Instruments when assigning Results
@@ -106,6 +107,11 @@ class InstrumentsSelectionTable(BaseInteractiveTable):
 
 # Table for displaying Results supporting row selection
 class ResultsTable(tables.Table):
+    button_column = TemplateColumn(
+    verbose_name=(' '),
+    template_name='home/lab_management_pages/results_button_column.html',
+    orderable=False
+    )
     class Meta:
         model = Results
         template_name = "django_tables2/bootstrap-responsive.html"
@@ -114,8 +120,13 @@ class ResultsTable(tables.Table):
             "onClick": lambda record: f"document.getElementById('result_id_hidden').value = '{record.result_id}'; document.getElementById('result_selection').submit();"
         }
 
-# Table for displaying Results supporting row selection
+# Table for displaying ExperimentDMP supporting row selection
 class ExperimentDMPTable(tables.Table):
+    button_column = TemplateColumn(
+    verbose_name=(' '),
+    template_name='home/lab_management_pages/experiment_dmp_page_button_column.html',
+    orderable=False
+    )
     class Meta:
         model = ExperimentDMP
         template_name = "django_tables2/bootstrap-responsive.html"

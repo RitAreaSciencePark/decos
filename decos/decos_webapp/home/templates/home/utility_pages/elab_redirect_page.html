@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<script>
+  window.onload = function () {
+    const win = window.open("{{ elab_url|safe }}", "_blank");
+    if (!win) {
+      alert("Please enable pop-ups for this site to access the eLab experiment.");
+    }
+    window.history.back();
+  };
+</script>
+<p>Opening your eLab experiment in a new tab...</p>
+{% endblock %}

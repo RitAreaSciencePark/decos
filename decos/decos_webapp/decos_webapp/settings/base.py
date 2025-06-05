@@ -26,6 +26,13 @@ BASE_DIR = os.path.dirname(PROJECT_DIR)
 # Application definition
 INSTALLED_APPS = [
     "home",  # Main application for the web interface
+    "PRP_CDM_app",  # Custom app supporting the PRP@CERIC common data model 
+    "allauth",  # Third-party authentication system
+    "allauth.account",  # Account authentication and registration
+    "allauth.socialaccount",  # Social authentication integration
+    "allauth.socialaccount.providers.openid_connect",  # OpenID Connect support
+    "django_tables2",  # Table rendering framework for structured data display
+    "laboratories",  # Custom application for laboratories and groups/role linking
     "search",  # Implements search functionality within the project
     "wagtail.contrib.forms",  # Enables form handling in Wagtail
     "wagtail.contrib.redirects",  # Manages URL redirects within Wagtail
@@ -48,13 +55,6 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",  # Manages static file handling
     "wagtail.contrib.settings",  # Site-wide configurable settings in Wagtail
     "django.forms",  # Enables form customization and rendering
-    "PRP_CDM_app",  # Custom app supporting the PRP@CERIC common data model 
-    "allauth",  # Third-party authentication system
-    "allauth.account",  # Account authentication and registration
-    "allauth.socialaccount",  # Social authentication integration
-    "allauth.socialaccount.providers.openid_connect",  # OpenID Connect support
-    "django_tables2",  # Table rendering framework for structured data display
-    "laboratories",  # Custom application for laboratories and groups/role linking
 ]
 
 MIDDLEWARE = [
@@ -206,6 +206,8 @@ ACCOUNT_PRESERVE_USERNAME_CASING = False
 ACCOUNT_SESSION_REMEMBER = True
 ACCOUNT_USERNAME_BLACKLIST = ["admin", "god"]
 ACCOUNT_USERNAME_MIN_LENGTH = 2
+
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # OpenID Connect authentication via Allauth
 from .secrets_minIO import SECRETS_MINIO

@@ -26,9 +26,6 @@ class PrpCdmAppConfig(AppConfig):
             Instruments,
             Results,
             ServiceRequests,
-            ResultxSample,
-            ResultxInstrument,
-            ResultxLab,
             Proposals,
         )
 

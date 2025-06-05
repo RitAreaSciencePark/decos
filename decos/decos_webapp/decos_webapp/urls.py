@@ -13,6 +13,8 @@
 from django.conf import settings
 from django.urls import include, path
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
+
 
 from wagtail.admin import urls as wagtailadmin_urls
 from wagtail import urls as wagtail_urls
@@ -55,4 +57,10 @@ urlpatterns += [
 
     # Alternative: If Wagtail pages should be served from a subpath instead of the root
     # path("pages/", include(wagtail_urls)),
+  #  path("accounts/password_reset/", auth_views.PasswordResetView.as_view(), name="password_reset"),
+  #  path("accounts/password_reset/done/", auth_views.PasswordResetDoneView.as_view(), name="password_reset_done"),
+  #  path("accounts/reset/<uidb64>/<token>/", auth_views.PasswordResetConfirmView.as_view(), name="password_reset_confirm"),
+  #  path("accounts/reset/done/", auth_views.PasswordResetCompleteView.as_view(), name="password_reset_complete"),
+
 ]
+

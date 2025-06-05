@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags wagtailuserbar navigation_tags wagtailimages_tags django_tables2  %}
+
+{% block body_class %}template-form{% endblock %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/home_page.css' %}">
+<link rel="stylesheet" href="{% static 'css/forms/labdmp_page.css' %}">
+
+<div class="container mt-4">
+  <h2>Research Result Report</h2>
+
+  {% if error %}
+    <div class="alert alert-danger">{{ error }}</div>
+  {% else %}
+    <div class="card mt-4">
+      <div class="card-body">
+        <h4 class="card-title">Result ID: {{ result.result_id }}</h4>
+        <p><strong>Main Repository:</strong> <a href="{{ result.main_repository }}" target="_blank">{{ result.main_repository }}</a></p>
+        <p><strong>Article DOI:</strong> <a href="https://doi.org/{{ result.article_doi }}" target="_blank">{{ result.article_doi }}</a></p>
+        {% if result.publication_title %}
+          <p><strong>Title:</strong> {{ result.publication_title }}</p>
+        {% endif %}
+        {% if result.authors %}
+          <p><strong>Authors:</strong> {{ result.authors }}</p>
+        {% endif %}
+        {% if result.journal_name %}
+          <p><strong>Journal:</strong> {{ result.journal_name }}</p>
+        {% endif %}
+        {% if result.publication_year %}
+          <p><strong>Year:</strong> {{ result.publication_year }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <h5 class="mt-4">Linked Experiment DMPs</h5>
+    <ul class="list-group">
+      {% for dmp in experiment_dmps %}
+        <li class="list-group-item">
+          <strong><a href="/experiment-dmp-list/experiment-data-management-plan/?experiment_dmp_id={{ dmp.experiment_dmp_id }}">{{ dmp.experiment_title|default:"Untitled DMP" }}</a></strong><br>
+          <small>ID: {{ dmp.experiment_dmp_id }}</small>
+        </li>
+      {% empty %}
+        <li class="list-group-item">No linked Experiment DMPs found.</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
+{% endblock %}
