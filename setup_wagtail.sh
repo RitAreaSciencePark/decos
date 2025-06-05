@@ -16,7 +16,7 @@ read -p "Enter the hostname for Wagtail (e.g., decos.localhost): " WAGTAIL_HOSTN
 PYTHON_SCRIPT="
 from django.contrib.auth import get_user_model
 from wagtail.models import Page, Site, PageViewRestriction
-from home.models import HomePage, SamplePage, EditSamplePage, SampleListPage, ResultsListPage, DMPPage, InstrumentsPage, ResultsPage, PipelinesPage, ExperimentMetadataReportPage
+from home.models import HomePage, SamplePage, EditSamplePage, SampleListPage, ResultsListPage, DMPPage, InstrumentsPage, ResultsPage, PipelinesPage
 
 SUPERUSER_NAME = '$SUPERUSER_NAME'
 SUPERUSER_EMAIL = '$SUPERUSER_EMAIL'
@@ -90,14 +90,6 @@ add_private_menu_page(SamplePage, 'Add Sample Page', 'add-sample-page', home_pag
 add_private_menu_page(EditSamplePage, 'Edit Sample Page', 'edit-sample-entry', home_page, in_menu=False)
 add_private_menu_page(ExperimentDMPPage, 'Add Experiment DMP', 'add-experiment-dmp', home_page, in_menu=True, has_thank_you=True)
 add_private_menu_page(ExperimentDMPListPage, 'Experiment DMP List', 'experiment-dmp-list', home_page, in_menu=True)
-
-
-# Get ResultsListPage (which is now created) for ExperimentMetadataReportPage
-results_list_page = ResultsListPage.objects.first()
-if results_list_page:
-    add_private_menu_page(ExperimentMetadataReportPage, 'Experiment Metadata', 'dmp', results_list_page)
-else:
-    print('⚠️ ResultsListPage not found! ExperimentMetadataReportPage cannot be created.')
 
 # Get ExperimentDMPListPage (which is now created) for ExperimentDMPReportPage
 experiment_dmp_list_page = ExperimentDMPListPage.objects.first()
