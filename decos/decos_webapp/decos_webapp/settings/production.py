@@ -49,6 +49,7 @@ STORAGES = {
     },
 }
 
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # Add secure cookie settings
 SESSION_COOKIE_SECURE = True
