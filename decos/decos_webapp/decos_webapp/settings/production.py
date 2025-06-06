@@ -2,7 +2,7 @@ from .base import *
 import os
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 # This tells Django that HTTPS is being used even if a proxy (e.g., Nginx) handles it
 SECURE_SSL_REDIRECT = True
 
