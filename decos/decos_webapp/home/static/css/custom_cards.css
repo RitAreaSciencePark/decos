@@ -17,3 +17,7 @@
 .card-header.bg-success {
   background-color: #ffffff !important;
 }
+
+.card-header {
+  background-color: #ffffff !important;
+}

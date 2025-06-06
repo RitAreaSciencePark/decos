@@ -7,19 +7,51 @@
 
 <link rel="stylesheet" href="{% static 'css/home_page.css' %}">
 <link rel="stylesheet" href="{% static 'css/user_data.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
+
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <h1>User Data</h1>
 
 <form method="post" action="">
     {% csrf_token %}
-    <div class="section_div">
-        {{ user_data }}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header"><h5 class="mb-0">User Information</h5></div>
+        <div class="card-body">
+            {% for field in user_data %}
+            <div class="form-group mb-2" id="field-{{ field.name }}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
     </div>
-    <div class="section_div">
-    {{ api_token_data }}
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header"><h5 class="mb-0">API Token</h5></div>
+        <div class="card-body">
+            {% for field in api_token_data %}
+            <div class="form-group mb-2" id="field-{{ field.name }}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+                {% for error in field.errors %}
+                <div class="invalid-feedback d-block">{{ error }}</div>
+                {% endfor %}
+            </div>
+            {% endfor %}
+        </div>
     </div>
-    <button type="submit" class="page_button">modify data</button>
+    <div class="text-center">
+        <button type="submit" class="btn btn-primary">Modify Data</button>
+    </div>
 </form>
 
 {% endblock %}

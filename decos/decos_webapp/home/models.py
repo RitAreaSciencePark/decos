@@ -414,10 +414,16 @@ class SampleListPage(Page, SessionHandlerMixin):
         table = SamplesTable(samples)
         RequestConfig(request).configure(table)
         table.paginate(page=request.GET.get('page', 1), per_page=5)
+        url_elab = ""
+        try:
+            if ApiSettings.objects.get(pk=1).elab_base_url and elab_experiment_id:
+                url_elab = f"{ApiSettings.objects.get(pk=1).elab_base_url}experiments.php?mode=view&id={elab_experiment_id}"
+        except:
+            url_elab = ""
         return render(request, 'home/sample_pages/sample_list.html', {
             'page': self,
             'table': table,
-            'elab_url': ApiSettings.objects.get(pk=1).elab_base_url + 'experiments.php?mode=view&id=' + elab_experiment_id,
+            'elab_url': url_elab,
             'minio_filelist_status': minIO_status,
         })
 
