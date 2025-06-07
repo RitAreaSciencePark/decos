@@ -111,11 +111,11 @@ from APIs.decos_minio_API.decos_minio_API import decos_minio  # MinIO API integr
 try:
     Group.add_to_class('laboratory', models.BooleanField(default=False))
 except:
-    print("meh") # FIXME: CATCH THIS IT IS
+    print("meh") # FIXME: CATCH THIS IT IS of migrate auth 0013 --fake 
 
 from django.db.models import Q
 from urllib.parse import urlparse
-
+from .forms import _sanitize_lab_title
 
 
 logger = logging.getLogger(__name__)
@@ -373,7 +373,8 @@ class SampleListPage(Page, SessionHandlerMixin):
         try:
             tokens = API_Tokens.objects.filter(laboratory=lab.lab_id, user_id=User.objects.get(username=username)).first()
             client = decos_minio(endpoint=ApiSettings.objects.all().first().minio_base_url, access_key=tokens.minio_acces_key, secret_key=tokens.minio_secret_key)
-            data_locations = client.get_sample_list(lab=lab)
+            debug = lab.lab_id
+            data_locations = client.get_sample_list(_sanitize_lab_title(lab.lab_id))
         except Exception as e:
             logger.error(f"MinIO data refresh failed: {e}")
             return f"Error on MinIO: {e}"
@@ -1138,7 +1139,6 @@ class ExperimentDMPReportPage(Page):
 
         specialized_samples = []
         for sample in samples:
-            from .forms import _sanitize_lab_title
             lab_name = _sanitize_lab_title(sample.lab_id.lab_id)
             specialized_sample_model_name = f"{lab_name}Samples"
             try:
