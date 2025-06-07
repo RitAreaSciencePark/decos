@@ -1,0 +1,95 @@
+<div class="card mt-4">
+  <div class="card-header bg-info">
+    <h4 class="mb-0">BIO OPEN LAB UNISALENTO Sample Information</h4>
+  </div>
+  <div class="card-body">
+<p>
+<b>Sample Name: </b>
+{{ sample.sample_name }} <br>
+<b>Sample Producer: </b>
+{{ sample.sample_producer }} <br>
+<b>Affiliation: </b>
+{{ sample.affiliation }} <br>
+<b>Sample Purpose: </b>
+{{ sample.sample_purpose }} <br>
+<b>Sample Type: </b>
+{{ sample.sample_type }} <br>
+<b>Component Name: </b>
+{{ sample.component_name }} <br>
+<b>Component Chemical Formula: </b>
+{{ sample.component_chemical_formula }} <br>
+<b>Sheet: </b>
+{{ sample.sheet }} <br>
+<b>Layer: </b>
+{{ sample.layer }} <br>
+<b>Colloidal Solution: </b>
+{{ sample.colloidal_solution }} <br>
+<b>Sample Expiration Date (YYYY-MM-DD): </b>
+{{ sample.sample_expiration_date }} <br>
+</p>
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-2 g-4 mt-4">
+  {% for exp in metadata_entries %}
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <div class="card-header bg-secondary text-white">
+        Metadata Entry ID: {{ exp.ID }}
+      </div>
+      <div class="card-body">
+        <dl class="row">
+          <dt class="col-sm-5">Metadata ID</dt>
+          <dd class="col-sm-7">{{ exp.metadata_id|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Sample</dt>
+          <dd class="col-sm-7">{{ exp.sample|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Device Name</dt>
+          <dd class="col-sm-7">{{ exp.device_name|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Exposure (s)</dt>
+          <dd class="col-sm-7">{{ exp.exposure_s|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Acquisition Date</dt>
+          <dd class="col-sm-7">{{ exp.acquisition_date|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Acquisition Time</dt>
+          <dd class="col-sm-7">{{ exp.acquisition_time|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Formatted Voltage</dt>
+          <dd class="col-sm-7">{{ exp.formatted_voltage|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Formatted Indicated Mag</dt>
+          <dd class="col-sm-7">{{ exp.formatted_indicated_mag|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Stage Alpha</dt>
+          <dd class="col-sm-7">{{ exp.stage_alpha|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Stage Beta</dt>
+          <dd class="col-sm-7">{{ exp.stage_beta|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Stage X</dt>
+          <dd class="col-sm-7">{{ exp.stage_x|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Stage Y</dt>
+          <dd class="col-sm-7">{{ exp.stage_y|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Stage Z</dt>
+          <dd class="col-sm-7">{{ exp.stage_z|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Pixel Size (µm)</dt>
+          <dd class="col-sm-7">{{ exp.pixel_size_um|default:"—"|join:", " }}</dd>
+
+          <dt class="col-sm-5">Pixel Depth</dt>
+          <dd class="col-sm-7">{{ exp.pixel_depth|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Active Size (pixels)</dt>
+          <dd class="col-sm-7">{{ exp.active_size_pixels|default:"—"|join:", " }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+  </div>

@@ -107,6 +107,8 @@ from PRP_CDM_app.models.common_data_model import (  # Models related to samples,
 
 from PRP_CDM_app.models.laboratory_models.lage import LageSamples
 
+from PRP_CDM_app.models.laboratory_models.bio_open_lab_unisalento import Bio_Open_Lab_UnisalentoMetadata
+
 from APIs.decos_minio_API.decos_minio_API import decos_minio  # MinIO API integration
 try:
     Group.add_to_class('laboratory', models.BooleanField(default=False))
@@ -1166,6 +1168,8 @@ class ExperimentDMPReportPage(Page):
     
     from .forms import _sanitize_lab_title  # reuse your existing helper if available
 
+from django.apps import apps
+
 class SampleReportPage(Page):
     intro = RichTextField(blank=True)
 
@@ -1207,10 +1211,27 @@ class SampleReportPage(Page):
 
         sample = get_object_or_404(SampleModel, pk=sample_id)
 
+        # Dynamically resolve metadata model and retrieve metadata entries as list of dicts
+        metadata_model_name = f"{lab_name}Metadata"
+        metadata_entries = []
+        try:
+            MetadataModel = apps.get_model("PRP_CDM_app", metadata_model_name)
+            raw_metadata = MetadataModel.objects.filter(sample=sample)
+            for entry in raw_metadata:
+                # Use dictionary-style field access for fields with underscores
+                fields = {}
+                for field in entry._meta.fields:
+                    # Use field.name for dictionary access
+                    fields[field.name] = getattr(entry, field.name)
+                metadata_entries.append(fields)
+        except LookupError:
+            metadata_entries = []
+        # debug = metadata_entries[0]["metadata_id"] if metadata_entries else None
         return render(request, "home/sample_pages/sample_report_page.html", {
             "page": self,
             "sample": sample,
             "lab": lab,
+            "metadata_entries": metadata_entries,
         })
 
 # EASYDMP STUB TODO: dmp search page
