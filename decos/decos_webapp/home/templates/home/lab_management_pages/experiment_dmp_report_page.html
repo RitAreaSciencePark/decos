@@ -8,57 +8,85 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/home_page.css' %}">
 <link rel="stylesheet" href="{% static 'css/forms/labdmp_page.css' %}">
-<div class="section_div">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
 <div class="container mt-4">
-  <h1>Experiment DMP Report</h1>
-  <hr>
+  <div class="card">
+    <div class="card-header">
+      <h4>Experiment Data Management Plan</h4>
+    </div>
+    <div class="card-body">
+          <div class="card-body">
+            <div class="card-title"><h5>General Information</h5></div>
+            {% if data.experiment_title %}<p><strong>Experiment Title:</strong> {{ data.experiment_title }}</p>{% endif %}
+            {% if data.principal_investigator %}<p><strong>Principal Investigator:</strong> {{ data.principal_investigator }}</p>{% endif %}
+            {% if data.affiliated_institutions %}<p><strong>Affiliated Institutions:</strong> {{ data.affiliated_institutions }}</p>{% endif %}
+            {% if data.project_acronym %}<p><strong>Project Acronym:</strong> {{ data.project_acronym }}</p>{% endif %}
+            {% if data.grant_number %}<p><strong>Grant Number:</strong> {{ data.grant_number }}</p>{% endif %}
+            {% if data.plan_creation_date %}<p><strong>Plan Creation Date:</strong> {{ data.plan_creation_date }}</p>{% endif %}
+            {% if data.funding_programme %}<p><strong>Funding Programme:</strong> {{ data.funding_programme }}</p>{% endif %}
+            {% if data.collaborators_roles %}<p><strong>Collaborators & Roles:</strong> {{ data.collaborators_roles }}</p>{% endif %}
+            {% if data.ethics_approvals %}<p><strong>Ethics Approvals:</strong> {{ data.ethics_approvals }}</p>{% endif %}
+            {% if data.public_dataset %}<p><strong>Public Dataset used:</strong> {{ data.public_dataset }}</p>{% endif %}
+          </div>
+        </div>
 
-  <h3>General Information</h3>
+        {% if data.roles_responsibilities or data.estimated_costs or data.infrastructure_support %}
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="card-title"><h5>Resources & Support</h5></div>
+            {% if data.roles_responsibilities %}<p><strong>Roles and Responsibilities:</strong> {{ data.roles_responsibilities }}</p>{% endif %}
+            {% if data.estimated_costs %}<p><strong>Estimated Costs:</strong> {{ data.estimated_costs }}</p>{% endif %}
+            {% if data.infrastructure_support %}<p><strong>Infrastructure Support:</strong> {{ data.infrastructure_support }}</p>{% endif %}
+          </div>
+        </div>
+        {% endif %}
 
-  {% if data.experiment_title %}<p><strong>Experiment Title:</strong> {{ data.experiment_title }}</p>{% endif %}
-  {% if data.principal_investigator %}<p><strong>Principal Investigator:</strong> {{ data.principal_investigator }}</p>{% endif %}
-  {% if data.affiliated_institutions %}<p><strong>Affiliated Institutions:</strong> {{ data.affiliated_institutions }}</p>{% endif %}
-  {% if data.project_acronym %}<p><strong>Project Acronym:</strong> {{ data.project_acronym }}</p>{% endif %}
-  {% if data.grant_number %}<p><strong>Grant Number:</strong> {{ data.grant_number }}</p>{% endif %}
-  {% if data.plan_creation_date %}<p><strong>Plan Creation Date:</strong> {{ data.plan_creation_date }}</p>{% endif %}
-  {% if data.funding_programme %}<p><strong>Funding Programme:</strong> {{ data.funding_programme }}</p>{% endif %}
-  {% if data.collaborators_roles %}<p><strong>Collaborators & Roles:</strong> {{ data.collaborators_roles }}</p>{% endif %}
-  {% if data.ethics_approvals %}<p><strong>Ethics Approvals:</strong> {{ data.ethics_approvals }}</p>{% endif %}
+        {% if instrument_list %}
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="card-title"><h5>Instruments</h5></div>
+            <p>
+              {% for instrument in instrument_list %}
+                {{ instrument.model }} ({{ instrument.vendor }}){% if instrument.description %} - {{ instrument.description }}{% endif %}<br>
+              {% endfor %}
+            </p>
+          </div>
+        </div>
+        {% endif %}
 
-  {% if data.roles_responsibilities or data.estimated_costs or data.infrastructure_support %}
-  <h3>Resources & Support</h3>
-  {% if data.roles_responsibilities %}<p><strong>Roles and Responsibilities:</strong> {{ data.roles_responsibilities }}</p>{% endif %}
-  {% if data.estimated_costs %}<p><strong>Estimated Costs:</strong> {{ data.estimated_costs }}</p>{% endif %}
-  {% if data.infrastructure_support %}<p><strong>Infrastructure Support:</strong> {{ data.infrastructure_support }}</p>{% endif %}
-  {% endif %}
+        {% if sample_list %}
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="card-title"><h5>Samples</h5></div>
+            <p>
+              {% for sample in sample_list %}
+                <a href="/samples/sample-report-page/?sample_id={{ sample.sample_id }}">
+                  {{ sample.sample_id }} - {{ sample.sample_short_description }}
+                </a><br>
+              {% endfor %}
+            </p>
+          </div>
+        </div>
+        {% endif %}
 
-  {% if instrument_list %}
-  <h3>Instruments</h3>
-  <p>
-    {% for instrument in instrument_list %}
-      {{ instrument.model }} ({{ instrument.vendor }}){% if instrument.description %} - {{ instrument.description }}{% endif %}<br>
-    {% endfor %}
-    </p>
-  {% endif %}
+        {% if lab_dmp.sample_standard or lab_dmp.open_trusted_repo_published_data or lab_dmp.metadata_schema_defined or lab_dmp.instrument_metadata_collection or lab_dmp.additional_enotebook_open_collection or lab_dmp.backup_policy_published_data or lab_dmp.backup_policy_unplublished_data %}
+        <div class="card mb-4">
+          <div class="card-body">
+            <div class="card-title"><h5>Laboratory Data Management Plan</h5></div>
+            {% if lab_dmp.data_curator %}<p><strong>Data Curator:</strong> {{ lab_dmp.data_curator }}</p>{% endif %}
+            {% if lab_dmp.instrument_metadata_collection %}<p><strong>Instrument Metadata Collection:</strong> {{ lab_dmp.instrument_metadata_collection }}</p>{% endif %}
+            {% if lab_dmp.additional_enotebook_open_collection %}<p><strong>Use of an electronic laboratory notebook:</strong> {{ lab_dmp.additional_enotebook_open_collection }}</p>{% endif %}
+            {% if lab_dmp.sample_standard %}<p><strong>Use of a Sample Standard schema:</strong> {{ lab_dmp.sample_standard }}</p>{% endif %}
+            {% if lab_dmp.metadata_schema_defined %}<p><strong>Use of a defined Metadata Schema:</strong> {{ lab_dmp.metadata_schema_defined }}</p>{% endif %}
+            {% if lab_dmp.backup_policy_published_data %}<p><strong>Backup Policy for Published Data:</strong> {{ lab_dmp.backup_policy_published_data }}</p>{% endif %}
+            {% if lab_dmp.backup_policy_unplublished_data %}<p><strong>Backup Policy for Unpublished Data:</strong> {{ lab_dmp.backup_policy_unplublished_data }}</p>{% endif %}
+          </div>
+        </div>
+        {% endif %}
 
-  {% if sample_list %}
-  <h3>Samples</h3>
-  <p>
-{% for sample in sample_list %}
-<a href="/samples/sample-report-page/?sample_id={{ sample.sample_id }}">
-        {{ sample.sample_id }} - {{ sample.sample_short_description }}
-</a>
-{% endfor %}
-    </p>
-  {% endif %}
-
-  {% if lab_dmp.sample_standard or lab_dmp.open_trusted_repo_published_data or lab_dmp.metadata_schema_defined %}
-  <h3>Laboratory Data Management Plan</h3>
-  {% if lab_dmp.sample_standard %}<p><strong>Sample Standard:</strong> {{ lab_dmp.sample_standard }}</p>{% endif %}
-  {% if lab_dmp.open_trusted_repo_published_data %}<p><strong>Open Repository Published:</strong> {{ lab_dmp.open_trusted_repo_published_data }}</p>{% endif %}
-  {% if lab_dmp.metadata_schema_defined %}<p><strong>Metadata Schema Defined:</strong> {{ lab_dmp.metadata_schema_defined }}</p>{% endif %}
-  {% endif %}
-
-</div>
+      </div>
+    </div>
+    </div>
+  </div>
 </div>
 {% endblock %}

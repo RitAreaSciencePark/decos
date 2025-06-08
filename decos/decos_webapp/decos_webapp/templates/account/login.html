@@ -13,11 +13,11 @@
     </div>
     {% endif %}
 
-    <div class="dropdown login-dropdown">
+    <div class="dropdown-center login-dropdown d-flex justify-content-center">
     <button class="btn btn-secondary dropdown-toggle" type="button" id="loginDropdown" data-bs-toggle="dropdown" aria-expanded="false">
         {% trans "Sign In manually" %}
     </button>
-    <div class="dropdown-menu p-4 text-muted" aria-labelledby="loginDropdown">
+    <div class="dropdown-menu p-4 text-muted text-center mx-auto" style="float: none;" aria-labelledby="loginDropdown">
         {% if form.errors %}
             <p class="text-danger">{% trans "Invalid login credentials." %}</p>
         {% endif %}

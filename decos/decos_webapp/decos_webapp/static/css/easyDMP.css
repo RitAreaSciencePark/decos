@@ -167,6 +167,7 @@ footer {
   min-height: 20px;
   overflow: auto;
   background-color: var(--header-bg);
+  margin-top: 1.5em;
 }
 
 .footer_block {

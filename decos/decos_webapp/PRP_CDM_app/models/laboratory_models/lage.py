@@ -36,3 +36,4 @@ class LageSamples(Samples):
     class Meta:
         db_table= 'lage_samples'.lower()
         app_label = 'PRP_CDM_app'
+

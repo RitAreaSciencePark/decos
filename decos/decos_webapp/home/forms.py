@@ -129,7 +129,6 @@ class DMPform(forms.ModelForm):
                        'additional_enotebook_open_collection': BooleanIfWhat(yes_or_no=True),
                        'sample_standard': BooleanIfWhat(yes_or_no=True),
                        'metadata_schema_defined': BooleanIfWhat(yes_or_no=True),
-                       'open_data_licence':BooleanIfWhat(yes_or_no=True),
                        }
             exclude = ['lab_id', 'user_id']
 
@@ -162,13 +161,10 @@ class ResultsForm(forms.ModelForm):
         
         class Meta:
             model = Results
-            fields = [
-                'main_repository',
-                'article_doi',
-                'publication_title',
-                'authors',
-                'journal_name',
-                'publication_year'
+            exclude = [
+                'result_id',
+                'experiment_dmps',
+                'lab',
             ]
 
 # to store the core elements of the experiment DMP

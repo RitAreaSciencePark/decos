@@ -7,6 +7,7 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/home_page.css' %}">
 <link rel="stylesheet" href="{% static 'css/forms/labdmp_page.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
 
 <h1><b>{{ lab }}: INSERT EXPERIMENT DMP</b></h1>
 {{ page.intro|richtext }}
@@ -15,8 +16,10 @@
 
   <!-- Samples Card -->
   <div class="samples card p-4 mb-4 shadow-sm">
+    <div class="card-header">
+      <h5 class="mb-0">Samples</h5>
+    </div>
     <div class="card-body">
-      <h5 class="card-title">Samples</h5>
 
       <!-- Search form -->
       <form method="get" class="mb-3">
@@ -53,8 +56,10 @@
 
   <!-- Instruments Card (matching style) -->
   <div class="instruments card p-4 mb-4 shadow-sm">
+    <div class="card-header">
+      <h5 class="mb-0">Instruments</h5>
+    </div>
     <div class="card-body">
-      <h5 class="card-title">Instruments</h5>
 
       <!-- Search form -->
       <form method="get" class="mb-3">
@@ -90,77 +95,81 @@
   </div>
 
 </div>
-<div class="section_div">
-<form method="post">
-  {% csrf_token %}
-    <h4><b>GENERAL EXPERIMENT INFORMATION</b></h4>
-    <div class="container">
-      <div class="row">
-        <div class="col-md-6">
-          <i>Experiment Title:</i><br>
-          <input type="text" class="form-control" name="experiment_title"
-            value="{{ field_values.experiment_title }}"><br>
+  <form method="post">
+    <div class="card p-4 mb-4 shadow-sm">
+      <div class="card-header">
+        <h5 class="mb-0">GENERAL EXPERIMENT INFORMATION</h5>
+      </div>
+      <div class="card-body">
+        {% csrf_token %}
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <i>Experiment Title:</i><br>
+              <input type="text" class="form-control" name="experiment_title"
+                value="{{ field_values.experiment_title }}"><br>
 
-          <i>Principal Investigator:</i><br>
-          <input type="text" class="form-control" name="principal_investigator"
-            value="{{ field_values.principal_investigator }}"><br>
+              <i>Principal Investigator:</i><br>
+              <input type="text" class="form-control" name="principal_investigator"
+                value="{{ field_values.principal_investigator }}"><br>
 
-          <i>Affiliated Institutions:</i><br>
-          <input type="text" class="form-control" name="affiliated_institutions"
-            value="{{ field_values.affiliated_institutions }}"><br>
+              <i>Affiliated Institutions:</i><br>
+              <input type="text" class="form-control" name="affiliated_institutions"
+                value="{{ field_values.affiliated_institutions }}"><br>
 
-          <i>Project Acronym:</i><br>
-          <input type="text" class="form-control" name="project_acronym"
-            value="{{ field_values.project_acronym }}"><br>
+              <i>Project Acronym:</i><br>
+              <input type="text" class="form-control" name="project_acronym"
+                value="{{ field_values.project_acronym }}"><br>
 
-          <i>Grant Number:</i><br>
-          <input type="text" class="form-control" name="grant_number"
-            value="{{ field_values.grant_number }}"><br>
+              <i>Grant Number:</i><br>
+              <input type="text" class="form-control" name="grant_number"
+                value="{{ field_values.grant_number }}"><br>
 
-          <i>Plan Creation Date:</i><br>
-          <input type="date" class="form-control" name="plan_creation_date"
-            value="{{ field_values.plan_creation_date }}"><br>
+              <i>Plan Creation Date:</i><br>
+              <input type="date" class="form-control" name="plan_creation_date"
+                value="{{ field_values.plan_creation_date }}"><br>
+
+              <i>Public Dataset used:</i><br>
+              <textarea class="form-control" name="public_dataset">{{ field_values.public_dataset }}</textarea><br>
+            </div>
+
+            <div class="col-md-6">
+              <i>Funding Programme:</i><br>
+              <input type="text" class="form-control" name="funding_programme"
+                value="{{ field_values.funding_programme }}"><br>
+
+              <i>Collaborators and Roles:</i><br>
+              <textarea class="form-control" name="collaborators_roles">{{ field_values.collaborators_roles }}</textarea><br>
+
+              <i>Relevant Ethics Approvals:</i><br>
+              <textarea class="form-control" name="ethics_approvals">{{ field_values.ethics_approvals }}</textarea><br>
+
+              <i>Roles and Responsibilities:</i><br>
+              <textarea class="form-control" name="roles_responsibilities">{{ field_values.roles_responsibilities }}</textarea><br>
+
+              <i>Estimated Costs:</i><br>
+              <textarea class="form-control" name="estimated_costs">{{ field_values.estimated_costs }}</textarea><br>
+
+              <i>Infrastructure Support:</i><br>
+              <textarea class="form-control" name="infrastructure_support">{{ field_values.infrastructure_support }}</textarea><br>
+
+            </div>
+          </div>
         </div>
-
-        <div class="col-md-6">
-          <i>Funding Programme:</i><br>
-          <input type="text" class="form-control" name="funding_programme"
-            value="{{ field_values.funding_programme }}"><br>
-
-          <i>Collaborators and Roles:</i><br>
-          <textarea class="form-control" name="collaborators_roles">{{ field_values.collaborators_roles }}</textarea><br>
-
-          <i>Relevant Ethics Approvals:</i><br>
-          <textarea class="form-control" name="ethics_approvals">{{ field_values.ethics_approvals }}</textarea><br>
-
-          <i>Roles and Responsibilities:</i><br>
-          <textarea class="form-control" name="roles_responsibilities">{{ field_values.roles_responsibilities }}</textarea><br>
-
-          <i>Estimated Costs:</i><br>
-          <textarea class="form-control" name="estimated_costs">{{ field_values.estimated_costs }}</textarea><br>
-
-          <i>Infrastructure Support:</i><br>
-          <textarea class="form-control" name="infrastructure_support">{{ field_values.infrastructure_support }}</textarea><br>
-
-
+        <div class="mt-4 text-center">
+          <input type="hidden" name="save_action" id="save_action" value="">
+          <button type="submit" name="save_button" class="btn btn-primary px-4">Stage session</button>
         </div>
       </div>
     </div>
-      <div class="mt-4 text-center">
-        <input type="hidden" name="save_action" id="save_action" value="">
-        <button type="submit" name="save_button" class="btn btn-primary px-4">Stage session</button>
-    </form>
-    <form method="post">
-        {% csrf_token %}
-        <button type="submit" name="create_dmp" value="create" class="btn btn-primary px-4">Create new DMP</button>
-    </form>
-      </div>
-
-  </div>
+  </form>
+  <form method="post">
+      {% csrf_token %}
+      <button type="submit" name="create_dmp" value="create" class="btn btn-primary px-4">Create new DMP</button>
+  </form>
 
 
 
 
 
 {% endblock %}
-

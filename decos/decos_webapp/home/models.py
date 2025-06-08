@@ -107,15 +107,17 @@ from PRP_CDM_app.models.common_data_model import (  # Models related to samples,
 
 from PRP_CDM_app.models.laboratory_models.lage import LageSamples
 
+from PRP_CDM_app.models.laboratory_models.bio_open_lab_unisalento import Bio_Open_Lab_UnisalentoMetadata
+
 from APIs.decos_minio_API.decos_minio_API import decos_minio  # MinIO API integration
 try:
     Group.add_to_class('laboratory', models.BooleanField(default=False))
 except:
-    print("meh") # FIXME: CATCH THIS IT IS
+    print("meh") # FIXME: CATCH THIS IT IS of migrate auth 0013 --fake 
 
 from django.db.models import Q
 from urllib.parse import urlparse
-
+from .forms import _sanitize_lab_title
 
 
 logger = logging.getLogger(__name__)
@@ -373,7 +375,8 @@ class SampleListPage(Page, SessionHandlerMixin):
         try:
             tokens = API_Tokens.objects.filter(laboratory=lab.lab_id, user_id=User.objects.get(username=username)).first()
             client = decos_minio(endpoint=ApiSettings.objects.all().first().minio_base_url, access_key=tokens.minio_acces_key, secret_key=tokens.minio_secret_key)
-            data_locations = client.get_sample_list(lab=lab)
+            debug = lab.lab_id
+            data_locations = client.get_sample_list(_sanitize_lab_title(lab.lab_id))
         except Exception as e:
             logger.error(f"MinIO data refresh failed: {e}")
             return f"Error on MinIO: {e}"
@@ -411,10 +414,20 @@ class SampleListPage(Page, SessionHandlerMixin):
             elab_experiment_id = ""
 
 
-        samples = Samples.objects.filter(lab_id=lab.lab_id, sample_id__icontains=filter_term)
+        samples = Samples.objects.filter(
+            lab_id=lab.lab_id
+        ).filter(
+            Q(sample_id__icontains=filter_term) | Q(sample_short_description__icontains=filter_term)
+        )
         table = SamplesTable(samples)
         RequestConfig(request).configure(table)
         table.paginate(page=request.GET.get('page', 1), per_page=5)
+        url_elab = ""
+        try:
+            if ApiSettings.objects.get(pk=1).elab_base_url and elab_experiment_id:
+                url_elab = f"{ApiSettings.objects.get(pk=1).elab_base_url}experiments.php?mode=view&id={elab_experiment_id}"
+        except:
+            url_elab = ""
 
         url_elab = ""
         try:
@@ -425,6 +438,7 @@ class SampleListPage(Page, SessionHandlerMixin):
         return render(request, 'home/sample_pages/sample_list.html', {
             'page': self,
             'table': table,
+            'elab_url': url_elab,
             'elab_url': url_elab,
             'minio_filelist_status': minIO_status,
         })
@@ -1140,7 +1154,6 @@ class ExperimentDMPReportPage(Page):
 
         specialized_samples = []
         for sample in samples:
-            from .forms import _sanitize_lab_title
             lab_name = _sanitize_lab_title(sample.lab_id.lab_id)
             specialized_sample_model_name = f"{lab_name}Samples"
             try:
@@ -1168,6 +1181,8 @@ class ExperimentDMPReportPage(Page):
     
     from .forms import _sanitize_lab_title  # reuse your existing helper if available
 
+from django.apps import apps
+
 class SampleReportPage(Page):
     intro = RichTextField(blank=True)
 
@@ -1189,7 +1204,7 @@ class SampleReportPage(Page):
 
         sample_id = request.GET.get("sample_id")
         if not sample_id:
-            return render(request, "home/sample_report_page.html", {
+            return render(request, "home/sample_pages/sample_report_page.html", {
                 "page": self,
                 "error": "No sample_id provided in the request."
             })
@@ -1209,10 +1224,27 @@ class SampleReportPage(Page):
 
         sample = get_object_or_404(SampleModel, pk=sample_id)
 
+        # Dynamically resolve metadata model and retrieve metadata entries as list of dicts
+        metadata_model_name = f"{lab_name}Metadata"
+        metadata_entries = []
+        try:
+            MetadataModel = apps.get_model("PRP_CDM_app", metadata_model_name)
+            raw_metadata = MetadataModel.objects.filter(sample=sample)
+            for entry in raw_metadata:
+                # Use dictionary-style field access for fields with underscores
+                fields = {}
+                for field in entry._meta.fields:
+                    # Use field.name for dictionary access
+                    fields[field.name] = getattr(entry, field.name)
+                metadata_entries.append(fields)
+        except LookupError:
+            metadata_entries = []
+        # debug = metadata_entries[0]["metadata_id"] if metadata_entries else None
         return render(request, "home/sample_pages/sample_report_page.html", {
             "page": self,
             "sample": sample,
             "lab": lab,
+            "metadata_entries": metadata_entries,
         })
 
 # EASYDMP STUB TODO: dmp search page

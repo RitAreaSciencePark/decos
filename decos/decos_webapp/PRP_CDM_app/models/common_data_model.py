@@ -191,6 +191,9 @@ class Samples(models.Model):
     # Storage location or other laboratory-specific positioning details; optional.
     sample_location = models.CharField(blank=True, null=True)
 
+    # GDPR sensible data?
+    sensible_data = models.BooleanField(blank=True)
+
     class Meta:
         # Explicit table name in lowercase for PostgreSQL compatibility.
         db_table = 'samples'.lower()
@@ -314,6 +317,9 @@ class labDMP(models.Model):
     # Reference to the responsible user.
     user_id = models.CharField(max_length=50)
 
+    # Data curator of the laboratory
+    data_curator = models.CharField(max_length=128)
+
     # Metadata collection practices from laboratory instruments; optional.
     instrument_metadata_collection = models.CharField(max_length=128, blank=True)
 
@@ -325,30 +331,6 @@ class labDMP(models.Model):
 
     # Adoption of a defined metadata schema; optional.
     metadata_schema_defined = models.CharField(blank=True)
-
-    # Whether data and metadata are published in an open and trusted repository; optional.
-    open_trusted_repo_published_data = models.BooleanField(blank=True)
-
-    # Licensing practices for published data; optional.
-    open_data_licence = models.CharField(blank=True)
-
-    # Whether scientific publications are published in open access venues; optional.
-    open_access_journal_publication = models.BooleanField(blank=True)
-
-    # Whether scientific publications have clear data provenance; optional.
-    clear_data_provenance = models.BooleanField(blank=True)
-
-    # Whether scientific outputs such as presentations or posters are open access; optional.
-    related_data_open = models.BooleanField(blank=True)
-
-    # Whether scientific publications and other outputs are licensed; optional.
-    licence_scientific_documents = models.BooleanField(blank=True)
-
-    # Location where raw data is stored; optional.
-    raw_data_storage_location = models.CharField(blank=True)
-
-    # Retention period for raw data; optional.
-    raw_data_storage_time_retention = models.CharField(blank=True)
 
     # Backup policy for published data or raw data related to published data; optional.
     backup_policy_published_data = models.CharField(blank=True)
@@ -383,6 +365,30 @@ class Results(models.Model):
 
     # Year of publication; optional.
     publication_year = models.PositiveIntegerField(blank=True, null=True)
+
+        # Whether data and metadata are published in an open and trusted repository; optional.
+    open_trusted_repo_published_data = models.BooleanField(blank=True)
+
+    # Licensing practices for published data; optional.
+    open_data_licence = models.CharField(blank=True)
+
+    # Whether scientific publications are published in open access venues; optional.
+    open_access_journal_publication = models.BooleanField(blank=True)
+
+    # Whether scientific publications have clear data provenance; optional.
+    clear_data_provenance = models.BooleanField(blank=True)
+
+    # Whether scientific outputs such as presentations or posters are open access; optional.
+    related_data_open = models.BooleanField(blank=True)
+
+    # Whether scientific publications and other outputs are licensed; optional.
+    licence_scientific_documents = models.BooleanField(blank=True)
+
+    # Location where raw data is stored; optional.
+    raw_data_storage_location = models.CharField(blank=True)
+
+    # Retention period for raw data; optional.
+    raw_data_storage_time_retention = models.CharField(blank=True)
 
     # Many-to-many relationship with ExperimentDMP through ResultxExperimentDMP
     experiment_dmps = models.ManyToManyField('ExperimentDMP', through='ResultxExperimentDMP')
@@ -431,6 +437,7 @@ class ExperimentDMP(models.Model):
     roles_responsibilities = models.TextField( blank=True, null=True)
     estimated_costs = models.TextField(blank=True, null=True)
     infrastructure_support = models.TextField(blank=True, null=True)
+    public_dataset = models.TextField(blank=True, null=True)
 
     instruments = models.ManyToManyField('Instruments', through='ExperimentDMPxInstrument')
     samples = models.ManyToManyField('Samples', through='ExperimentDMPxSample')
