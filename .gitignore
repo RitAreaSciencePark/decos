@@ -8,3 +8,6 @@ lazy_secrets_injection.sh
 DMP_INFO.md
 decos/decos_webapp/decos_webapp/settings/secrets_minIO.py
 decos/.env
+nginx/nginx.conf
+.env
+.gitignore
