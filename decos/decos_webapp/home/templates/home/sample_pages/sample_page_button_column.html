@@ -15,7 +15,7 @@
 {% endwith %}
 
 
-<form method="post" action="" class="elab-form">
+<form method="post" action="" class="elab-form" data-no-row-click>
     {% csrf_token %}
     <input type="hidden" name="elab_write" value="{{ record.sample_id }}">
     <button type="submit" class="btn btn-light elab-btn">
@@ -49,4 +49,3 @@
     {% endif %}
   {% endfor %}
 {% endwith %}
-</file>

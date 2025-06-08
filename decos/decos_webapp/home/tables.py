@@ -82,6 +82,9 @@ class SamplesTable(tables.Table):
         model = Samples
         template_name = "django_tables2/bootstrap.html"
         fields = ("sample_id", "sr_id", "sample_short_description", "sample_status", "sample_location")
+        row_attrs = {
+            "onClick": lambda record: f"if (!event.target.closest('[data-no-row-click]')) {{ document.getElementById('sample_id_hidden').value = '{record.sample_id}'; document.getElementById('sample_selection').submit(); }}"
+        }
 
 # Table for selecting Samples when assigning Results
 class SamplesSelectionTable(BaseInteractiveTable):

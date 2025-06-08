@@ -56,9 +56,50 @@
           <input type="number" name="publication_year" id="publication_year" class="form-control mb-3"
                  value="{{ field_values.publication_year|default:'' }}">
         </div>
+        <!-- Additional fields -->
+        <!-- GENERAL PUBBLICATION PHASE block -->
+        <div class="w-100"></div>
+        <div class="col-12">
+          <div class="card mb-4">
+            <div class="card-header">GENERAL PUBBLICATION PHASE</div>
+            <div class="card-body">
+              <p>
+                <i>Will data and related metadata be published on an open and trusted repository with a d.o.i.?</i>
+                <input type="checkbox" name="open_trusted_repo_published_data" class="form-check-input ms-2" {% if field_values.open_trusted_repo_published_data %}checked{% endif %}><br>
+
+                <i>What type of license will be applied to the processed data and related metadata (e.g., CC-BY)?</i><br>
+                <input type="text" name="open_data_licence" class="form-control mb-3" value="{{ field_values.open_data_licence|default:'' }}"><br>
+                <i>Will any scientific publication arising from data and related metadata be published on an open access peer review journal or uploaded on an open access repository?</i>
+                <input type="checkbox" name="open_access_journal_publication" class="form-check-input ms-2" {% if field_values.open_access_journal_publication %}checked{% endif %}><br>
+
+                <i>Will any scientific publication have a clear data provenance?</i>
+                <input type="checkbox" name="clear_data_provenance" class="form-check-input ms-2" {% if field_values.clear_data_provenance %}checked{% endif %}><br>
+
+                <i>Will any scientific output related to data such as presentation or posters be open access registered with a d.o.i.?</i>
+                <input type="checkbox" name="related_data_open" class="form-check-input ms-2" {% if field_values.related_data_open %}checked{% endif %}><br>
+
+                <i>Will scientific publication or any other scientific document (presentation, poster, etc.) be licensed?</i>
+                <input type="checkbox" name="licence_scientific_documents" class="form-check-input ms-2" {% if field_values.licence_scientific_documents %}checked{% endif %}><br>
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <label for="raw_data_storage_location">Raw Data Storage Location:</label>
+          <input type="text" name="raw_data_storage_location" class="form-control mb-3" value="{{ field_values.raw_data_storage_location|default:'' }}">
+        </div>
+        <div class="col-md-6">
+          <label for="raw_data_storage_time_retention">Raw Data Retention Period:</label>
+          <input type="text" name="raw_data_storage_time_retention" class="form-control mb-3" value="{{ field_values.raw_data_storage_time_retention|default:'' }}">
+        </div>
       </div>
     </div>
   </div>
+
+
+
+
+
 
   <button type="submit" name="stage_result" value="create" class="btn btn-primary">Stage Result</button>
 </form>

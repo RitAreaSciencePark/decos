@@ -6,6 +6,7 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/forms/lage_form.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <h1><b>SAMPLE ENTRY FORM</b></h1>
@@ -13,9 +14,9 @@
 {{ page.intro | richtext }}
 
 {% if table %}
-    <div class="section_div">
-        <h4><b> GENERAL SAMPLE INFORMATION </b></h4>
-        <br>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+      <div class="card-body">
         <i>It is an internal entry or a service request?</i>
         <form id="sr_selection" method="get" action="">
             <input type="hidden" id="sr_id_hidden" name="sr_id" value="internal">
@@ -44,14 +45,14 @@
             </div>
         </form>
         <i>Service Request: </i> {{ sr_id }}
-
+      </div>
     </div>
-
 {% endif %}
 
-<div class="section_div">
+<div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+    <div class="card-body">
     <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
-    <br>
     {% csrf_token %}
     {% if "sr_" in sr_id %}
     <input type="hidden" name="sr_id_hidden" value='{{ sr_id }}' />
@@ -69,10 +70,11 @@
         <i>Please describe in a few words the experiment (max 500 characters)*</i>: <br> {{ LageSamples.sample_description }} <br>
     </p>
     <br>
+    </div>
 </div>
-    <div class="section_div">
-        <h4><b> LAGE SAMPLE INFORMATION </b></h4>
-        <br>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>LAGE SAMPLE INFORMATION</b></div>
+      <div class="card-body">
         <p>
             <i>Type of sample</i>: <br> {{ LageSamples.type }} <br>
             <i>In the list of samples, have you included the volume expressed in µl? (if not, specify why)</i>: <br>
@@ -85,9 +87,11 @@
 
             <br>
         </p>
+      </div>
     </div>
-    <div class="section_div">
-        <h4><b> FILES </b></h4>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>FILES</b></div>
+      <div class="card-body">
         <br>
         <p>
             <i>Include the sample sheet if present</i>: {{ LageSamples.sample_sheet_filename }} <br>
@@ -95,9 +99,9 @@
                 single zip or tar format)</i> {{ LageSamples.additional_filename }}
 
         </p>
-    <br>
-
-    <p><input type="submit" value="Insert data" class="btn btn-primary"></p>
+      <br>
+      <p><input type="submit" value="Insert data" class="btn btn-primary"></p>
+    </div>
 </form>
 <script>
     var QueryString = (new URL(location.href)).searchParams.get('filter');

@@ -34,15 +34,10 @@
   <div class="col">
     <div class="card h-100 shadow-sm">
       <div class="card-header bg-secondary text-white">
-        Metadata Entry ID: {{ exp.ID }}
+        <b>Metadata Entry ID:</b><br>{{ exp.metadata_id|default:"—" }}
       </div>
       <div class="card-body">
         <dl class="row">
-          <dt class="col-sm-5">Metadata ID</dt>
-          <dd class="col-sm-7">{{ exp.metadata_id|default:"—" }}</dd>
-
-          <dt class="col-sm-5">Sample</dt>
-          <dd class="col-sm-7">{{ exp.sample|default:"—" }}</dd>
 
           <dt class="col-sm-5">Device Name</dt>
           <dd class="col-sm-7">{{ exp.device_name|default:"—" }}</dd>

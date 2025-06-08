@@ -4,10 +4,10 @@
   </div>
   <div class="card-body">
     <p><strong>General Description of the Sample (max 500 words):</strong> {{ sample.sample_description }}</p>
-    <p><strong>Type of Sample:</strong> {{ sample.type_of_sample }}</p>
+    <p><strong>Type of Sample:</strong> {{ sample.type }}</p>
     <p><strong>Is Volume Included in µL?</strong> {{ sample.is_volume_in_uL }}</p>
     <p><strong>Is Buffer Used Included?</strong> {{ sample.is_buffer_used }}</p>
-    <p><strong>Expected Date of Delivery:</strong> {{ sample.expected_date_of_delivery }}</p>
+    <p><strong>Expected Date of Delivery:</strong> {{ sample.sample_date_of_delivery }}</p>
     <p><strong>Is Sample Quality Specified (RIN for RNA, DIN for DNA, or 260/280nm ratio)?</strong> {{ sample.is_quality }}</p>
     <p><strong>If Scientific Collaboration, Should Sample Be Returned?</strong> {{ sample.sample_back }}</p>
   </div>
@@ -18,7 +18,19 @@
     <h4 class="mb-0">Attached Files</h4>
   </div>
   <div class="card-body">
-    <p><strong>Sample Sheet (if present):</strong> {{ sample.samplesheet_file }}</p>
-    <p><strong>Additional Files (ZIP/TAR if more than one):</strong> {{ sample.additional_files }}</p>
+    <p><strong>Sample Sheet (if present):</strong>
+      {% if sample.sample_sheet_filename %}
+        <a href="{{ sample.sample_sheet_filename.url }}" target="_blank">{{ sample.sample_sheet_filename.name }}</a>
+      {% else %}
+        No file uploaded
+      {% endif %}
+    </p>
+    <p><strong>Additional Files (ZIP/TAR if more than one):</strong>
+      {% if sample.additional_filename %}
+        <a href="{{ sample.additional_filename.url }}" target="_blank">{{ sample.additional_filename.name }}</a>
+      {% else %}
+        No file uploaded
+      {% endif %}
+    </p>
   </div>
 </div>

@@ -22,8 +22,7 @@
                 <div class="card-header">GENERAL METADATA COLLECTION</div>
                 <div class="card-body">
                   <p>
-                      <i>Do you collect all the metadata produced by your instruments?</i>
-                      <br><i>If yes, what instruments?</i> {{ data.instrument_metadata_collection }} <br>
+                      <i> Who is the principal data curator of the laboratory?</i> {{ data.data_curator }}<br>
                       <i>Do you collect additional metadata by an open source laboratory notebook?</i>
                       <br><i>If yes, what is the name of the electronic notebook?</i> {{ data.additional_enotebook_open_collection }} <br>
                       <i>Do you use a well defined standard to name your samples?</i>
@@ -33,34 +32,11 @@
                   </p>
                 </div>
               </div>
-              <div class="card mb-4">
-                <div class="card-header">GENERAL PUBBLICATION PHASE</div>
-                <div class="card-body">
-                  <p>
-                      <i>Will data and related metadata be published on an open and trusted repository with a d.o.i.?</i>
-                      <br><i>Yes</i> {{ data.open_trusted_repo_published_data }} <br>
-                      <i> Will published processed data and related metadata be licensed?</i>
-                      <br><i>If yes, what type of license?</i> {{ data.open_data_licence }} <br>
-                      <i>Will any scientific publication arising from data and related metadata be published on an open access peer review journal or uploaded on an open access repository?</i>
-                      <br><i>Yes</i> {{ data.open_access_journal_publication }} <br>
-                      <i>Will any scientific publication have a clear data provenance?</i>
-                      <br><i>Yes</i> {{ data.clear_data_provenance }} <br>
-                      <i>Will any scientific output related to data such as presentation or posters be open access registered with a d.o.i.?</i>
-                      <br><i>Yes</i> {{ data.related_data_open }} <br>
-                      <i> Will scientific publication or any other scientific document (presentation, poster, etc.) be licensed?</i>
-                      <br><i>Yes</i> {{ data.licence_scientific_documents }} <br>
-                  </p>
-                </div>
-              </div>
 
               <div class="card mb-4">
                 <div class="card-header">GENERAL DATA AND METADATA STORAGE AND PRESERVATION</div>
                 <div class="card-body">
                   <p>
-                      <i>Where will raw data  be stored?</i>
-                      <br>{{ data.raw_data_storage_location }} <br>
-                      <i>How long will raw data be preserved?</i>
-                      <br>{{ data.raw_data_storage_time_retention }} <br>
                       <i>Which backup policy will be applied to published data or raw data related to published data?</i>
                       <br>{{ data.backup_policy_published_data }} <br>
                       <i>Which backup policy will be applied to not published data or raw data not related to published data?</i>

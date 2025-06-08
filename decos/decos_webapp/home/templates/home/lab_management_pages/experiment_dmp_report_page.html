@@ -8,15 +8,13 @@
 {% block content %}
 <link rel="stylesheet" href="{% static 'css/home_page.css' %}">
 <link rel="stylesheet" href="{% static 'css/forms/labdmp_page.css' %}">
-<div class="card mb-4">
-  <div class="card-body">
-    <div class="container mt-4">
-    <h1>Experiment DMP Report</h1>
-    <hr>
-    <div class="row">
-      <div class="col">
-
-        <div class="card mb-4">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
+<div class="container mt-4">
+  <div class="card">
+    <div class="card-header">
+      <h4>Experiment Data Management Plan</h4>
+    </div>
+    <div class="card-body">
           <div class="card-body">
             <div class="card-title"><h5>General Information</h5></div>
             {% if data.experiment_title %}<p><strong>Experiment Title:</strong> {{ data.experiment_title }}</p>{% endif %}
@@ -28,6 +26,7 @@
             {% if data.funding_programme %}<p><strong>Funding Programme:</strong> {{ data.funding_programme }}</p>{% endif %}
             {% if data.collaborators_roles %}<p><strong>Collaborators & Roles:</strong> {{ data.collaborators_roles }}</p>{% endif %}
             {% if data.ethics_approvals %}<p><strong>Ethics Approvals:</strong> {{ data.ethics_approvals }}</p>{% endif %}
+            {% if data.public_dataset %}<p><strong>Public Dataset used:</strong> {{ data.public_dataset }}</p>{% endif %}
           </div>
         </div>
 
@@ -70,13 +69,17 @@
         </div>
         {% endif %}
 
-        {% if lab_dmp.sample_standard or lab_dmp.open_trusted_repo_published_data or lab_dmp.metadata_schema_defined %}
+        {% if lab_dmp.sample_standard or lab_dmp.open_trusted_repo_published_data or lab_dmp.metadata_schema_defined or lab_dmp.instrument_metadata_collection or lab_dmp.additional_enotebook_open_collection or lab_dmp.backup_policy_published_data or lab_dmp.backup_policy_unplublished_data %}
         <div class="card mb-4">
           <div class="card-body">
             <div class="card-title"><h5>Laboratory Data Management Plan</h5></div>
-            {% if lab_dmp.sample_standard %}<p><strong>Sample Standard:</strong> {{ lab_dmp.sample_standard }}</p>{% endif %}
-            {% if lab_dmp.open_trusted_repo_published_data %}<p><strong>Open Repository Published:</strong> {{ lab_dmp.open_trusted_repo_published_data }}</p>{% endif %}
-            {% if lab_dmp.metadata_schema_defined %}<p><strong>Metadata Schema Defined:</strong> {{ lab_dmp.metadata_schema_defined }}</p>{% endif %}
+            {% if lab_dmp.data_curator %}<p><strong>Data Curator:</strong> {{ lab_dmp.data_curator }}</p>{% endif %}
+            {% if lab_dmp.instrument_metadata_collection %}<p><strong>Instrument Metadata Collection:</strong> {{ lab_dmp.instrument_metadata_collection }}</p>{% endif %}
+            {% if lab_dmp.additional_enotebook_open_collection %}<p><strong>Use of an electronic laboratory notebook:</strong> {{ lab_dmp.additional_enotebook_open_collection }}</p>{% endif %}
+            {% if lab_dmp.sample_standard %}<p><strong>Use of a Sample Standard schema:</strong> {{ lab_dmp.sample_standard }}</p>{% endif %}
+            {% if lab_dmp.metadata_schema_defined %}<p><strong>Use of a defined Metadata Schema:</strong> {{ lab_dmp.metadata_schema_defined }}</p>{% endif %}
+            {% if lab_dmp.backup_policy_published_data %}<p><strong>Backup Policy for Published Data:</strong> {{ lab_dmp.backup_policy_published_data }}</p>{% endif %}
+            {% if lab_dmp.backup_policy_unplublished_data %}<p><strong>Backup Policy for Unpublished Data:</strong> {{ lab_dmp.backup_policy_unplublished_data }}</p>{% endif %}
           </div>
         </div>
         {% endif %}

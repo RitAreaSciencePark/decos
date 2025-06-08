@@ -1,10 +1,4 @@
-body {
-    background-color: #f5f7fa;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
+
 
 .login-container {
     background: white;
@@ -14,6 +8,7 @@ body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100%;
     max-width: 400px;
+    margin: auto;
 }
 
 .login-container h2 {
@@ -46,10 +41,6 @@ form button {
     font-weight: bold;
 }
 
-form button:hover {
-    background-color: #0056b3;
-}
-
 .links {
     margin-top: 1rem;
     text-align: center;
@@ -70,11 +61,6 @@ form button:hover {
     max-width: 50%;
 }
 
-.provider_button {
-    display: flex;
-    margin-left: 0%;
-    margin-right: auto;
-}
 
 #authentik-icon {
     display: flex;  
@@ -84,25 +70,11 @@ form button:hover {
 }
 
 .login-dropdown {
-    justify-content: center;
-    display: flex;
+    text-align: center;
+    width: 100%;
     padding-top: 10px;
     margin-left: auto;
     margin-right: auto;
-    
-}
-
-.dropdown-menu {
-    background: white;
-    justify-items: center;
-    padding: 2rem 3rem;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 400px;
 }
 
 
-.mb-3 {
-    width: 300px;
-}

@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{% static 'css/home_page.css' %}">
 <link rel="stylesheet" href="{% static 'css/list_page.css' %}">
 
-<i> Refresh file location: </i>
+<i> Synchronize Datalake: </i>
 <form method="post" action="" id="refresh_form" name="refresh" value="true" >
     {% csrf_token %}
     <input type="hidden" name="refresh" value="true">
@@ -22,5 +22,11 @@ Filter:
     <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText" placeholder="filter...">
     <button type="submit" class="btn btn-primary">search</button>
 </form>
+
+
 {% render_table table %}
+
+<form method="get" action="./sample-report-page/" id="sample_selection">
+    <input type="hidden" id="sample_id_hidden" name="sample_id" value="">
+</form>
 {% endblock %}

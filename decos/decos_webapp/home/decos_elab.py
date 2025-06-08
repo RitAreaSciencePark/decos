@@ -29,7 +29,7 @@ class DecosElabAPI(ElabFTWAPI):
 
     def _new_LAGE_experiment(self, experiment_info, username) -> str | None:
         # Creates a new LAGE experiment entry in eLabFTW.
-        dict_to_render = model_to_dict(experiment_info)
+        dict_to_render = model_to_dict(LageSamples.objects.get(pk = experiment_info.pk))
 
         # Validate required fields
         if 'sample_id' not in dict_to_render or 'sample_short_description' not in dict_to_render:

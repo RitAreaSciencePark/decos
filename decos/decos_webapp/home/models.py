@@ -413,7 +413,11 @@ class SampleListPage(Page, SessionHandlerMixin):
             elab_experiment_id = ""
 
 
-        samples = Samples.objects.filter(lab_id=lab.lab_id, sample_id__icontains=filter_term)
+        samples = Samples.objects.filter(
+            lab_id=lab.lab_id
+        ).filter(
+            Q(sample_id__icontains=filter_term) | Q(sample_short_description__icontains=filter_term)
+        )
         table = SamplesTable(samples)
         RequestConfig(request).configure(table)
         table.paginate(page=request.GET.get('page', 1), per_page=5)
@@ -1191,7 +1195,7 @@ class SampleReportPage(Page):
 
         sample_id = request.GET.get("sample_id")
         if not sample_id:
-            return render(request, "home/sample_report_page.html", {
+            return render(request, "home/sample_pages/sample_report_page.html", {
                 "page": self,
                 "error": "No sample_id provided in the request."
             })
