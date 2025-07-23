@@ -94,6 +94,52 @@
             ]
     }
     ,
+    "Nanoinnovation_Laboratory" :
+    {
+        "type_choices": [
+            ["animal_tissue", "Animal/Vegetal Tissue Slides"],
+            ["cultured_cells", "Cultured Animal Eukaryotic Cells"],
+            ["bacteria", "Bacteria"],
+            ["virus", "Virus"],
+            ["powder", "Powder Sample"],
+            ["thin_film", "Sample in Thin Films"],
+            ["non_bio_slice", "Non Biological Slices or Cross-sections"],
+            ["gel", "Gels"],
+            ["solid", "Solid Materials"]
+        ],
+        "adherent_or_suspended": [
+            ["adherent", "Adherent"],
+            ["suspended", "Suspended"]
+        ],
+        "powder_form": [
+            ["crystals", "Crystals"],
+            ["amorphous", "Amorphous"]
+        ],
+        "thin_film_type": [
+            ["supported", "Supported"],
+            ["self_standing", "Self-standing"]
+        ],
+        "slice_standing": [
+            ["supported", "Supported"],
+            ["free", "Free standing"]
+        ],
+        "pure_or_mixture": [
+            ["pure", "Pure"],
+            ["mixture", "Mixture"]
+        ],
+        "chemical_hazard": [
+            ["asphyxiants", "asphyxiants"],
+            ["corrosives", "corrosives"],
+            ["irritants", "irritants"],
+            ["sensitizers", "sensitizers"],
+            ["carcinogens", "carcinogens"],
+            ["mutagens", "mutagens"],
+            ["teratogens", "teratogens"],
+            ["reactants", "reactants"],
+            ["flammables", "flammables"]
+        ]
+    }
+    ,
     "Steps" :
     {
         "sample_quality_choices" :
