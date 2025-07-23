@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags django_tables2 %}
+
+{% block body_class %}template-form{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/forms/lage_form.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<h1><b>SAMPLE ENTRY FORM</b></h1>
+
+{{ page.intro | richtext }}
+
+{% if table %}
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+      <div class="card-body">
+        <i>It is an internal entry or a service request?</i>
+        <form id="sr_selection" method="get" action="">
+            <input type="hidden" id="sr_id_hidden" name="sr_id" value="internal">
+            <div class="sr_id_selection" id="dropMenu">
+                <div class="dropdown">
+                    <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
+                        Service Request
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
+                        <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText"
+                            placeholder="filter...">
+                        <button type="submit" class="btn btn-primary">search</button>
+
+                        <div class="dropdown-item" type="div" id="dropdown-div">
+                            {% render_table table %}
+                        </div>
+                    </div>
+                </div>
+                <div class="sr_id_selection">
+                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="sr_id" value="internal"
+                        aria-haspopup="true" aria-expanded="true">
+                        Internal Request
+                    </button>
+                </div>
+            </div>
+        </form>
+        <i>Service Request: </i> {{ sr_id }}
+      </div>
+    </div>
+{% endif %}
+
+<div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+    <div class="card-body">
+    <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
+    {% csrf_token %}
+    {% if "sr_" in sr_id %}
+    <input type="hidden" name="sr_id_hidden" value='{{ sr_id }}' />
+    {% else %}
+    <input type="hidden" name="sr_id_hidden" value="internal" />
+    {% endif %}
+    <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
+    </p>
+    <p>
+        <i>Please insert a brief descriptive title of your experiment (max 64 characters):</i> <br>
+        {{ Nanoinnovation_LaboratorySamples.sample_short_description }}
+    </p>
+    <p>
+        <!-- <i>sr_id*</i>: <br> {{ .dmptitle }} <br> !-->
+        <i>Please describe in a few words the experiment (max 500 characters)*</i>: <br> {{ Nanoinnovation_LaboratorySamples.sample_description }} <br>
+    </p>
+    <br>
+    </div>
+</div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>NANOINNOVATION LABORATORY SAMPLE INFORMATION</b></div>
+      <div class="card-body">
+        <p>
+          <i>Type of sample</i>: <br>
+            <p><i>{{ Nanoinnovation_LaboratorySamples.type }}</i></p>
+
+          <!-- Sample-specific sections -->
+
+          <div class="sample-section" id="section-animal_tissue" style="display:none">
+            <p><i>Origin (which animal/vegetal)</i>: {{ Nanoinnovation_LaboratorySamples.origin }}</p>
+            <p><i>Fixed</i>: {{ Nanoinnovation_LaboratorySamples.is_fixed }}</p>
+            <p><i>Embedding medium</i>: {{ Nanoinnovation_LaboratorySamples.embedding_medium }}</p>
+            <p><i>Slice thickness [μm]</i>: {{ Nanoinnovation_LaboratorySamples.slice_thickness }}</p>
+            <p><i>Support [material, measures]</i>: {{ Nanoinnovation_LaboratorySamples.support }}</p>
+            <p><i>Other</i>: {{ Nanoinnovation_LaboratorySamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-cultured_cells" style="display:none">
+            <p><i>Origin</i>: {{ Nanoinnovation_LaboratorySamples.origin }}</p>
+            <p><i>Bio Safety Level</i>: {{ Nanoinnovation_LaboratorySamples.bio_safety_level }}</p>
+            <p><i>Fixed</i>: {{ Nanoinnovation_LaboratorySamples.is_fixed }}</p>
+            <p><i>Adherent or Suspended</i>: {{ Nanoinnovation_LaboratorySamples.adherent_or_suspended }}</p>
+            <p style="display:none"><i>Buffer medium</i>: {{ Nanoinnovation_LaboratorySamples.buffer_medium }}</p>
+            <p><i>Support</i>: {{ Nanoinnovation_LaboratorySamples.support }}</p>
+            <p><i>Other</i>: {{ Nanoinnovation_LaboratorySamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-bacteria" style="display:none">
+            <p><i>Origin</i>: {{ Nanoinnovation_LaboratorySamples.origin }}</p>
+            <p><i>Adherent or Suspended</i>: {{ Nanoinnovation_LaboratorySamples.adherent_or_suspended }}</p>
+            <p style="display:none"><i>Buffer medium</i>: {{ Nanoinnovation_LaboratorySamples.buffer_medium }}</p>
+            <p><i>Support</i>: {{ Nanoinnovation_LaboratorySamples.support }}</p>
+            <p><i>Other</i>: {{ Nanoinnovation_LaboratorySamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-virus" style="display:none">
+            <p><i>Origin</i>: {{ Nanoinnovation_LaboratorySamples.origin }}</p>
+            <p><i>Adherent or Suspended</i>: {{ Nanoinnovation_LaboratorySamples.adherent_or_suspended }}</p>
+            <p style="display:none"><i>Buffer medium</i>: {{ Nanoinnovation_LaboratorySamples.buffer_medium }}</p>
+            <p><i>Culture medium</i>: {{ Nanoinnovation_LaboratorySamples.culture_medium }}</p>
+            <p><i>Support</i>: {{ Nanoinnovation_LaboratorySamples.support }}</p>
+            <p><i>Other</i>: {{ Nanoinnovation_LaboratorySamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-powder" style="display:none">
+            <p><i>Pure or mixture</i>: {{ Nanoinnovation_LaboratorySamples.pure_or_mixture }}</p>
+            <p><i>Chemical name</i>: {{ Nanoinnovation_LaboratorySamples.chemical_name }}</p>
+            <p><i>Form</i>: {{ Nanoinnovation_LaboratorySamples.form }}</p>
+            <p><i>Chemical hazard</i>: {{ Nanoinnovation_LaboratorySamples.chemical_hazard }}</p>
+            <p><i>Other</i>: {{ Nanoinnovation_LaboratorySamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-thin_film" style="display:none">
+            <p><i>Support</i>: {{ Nanoinnovation_LaboratorySamples.support }}</p>
+            <p><i>Film thickness [nm]</i>: {{ Nanoinnovation_LaboratorySamples.film_thickness }}</p>
+            <p><i>Pure or mixture</i>: {{ Nanoinnovation_LaboratorySamples.pure_or_mixture }}</p>
+            <p><i>Chemical name and CAS</i>: {{ Nanoinnovation_LaboratorySamples.chemical_name_CAS_list }}</p>
+            <p><i>Self-standing or free-standing</i>: {{ Nanoinnovation_LaboratorySamples.self_standing_or_free_standing }}</p>
+            <p><i>Other</i>: {{ Nanoinnovation_LaboratorySamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-non_bio_slice" style="display:none">
+            <p><i>Sample origin</i>: {{ Nanoinnovation_LaboratorySamples.origin }}</p>
+            <p><i>Self-standing or free-standing</i>: {{ Nanoinnovation_LaboratorySamples.self_standing_or_free_standing }}</p>
+            <p><i>Support</i>: {{ Nanoinnovation_LaboratorySamples.support }}</p>
+            <p><i>Embedding medium</i>: {{ Nanoinnovation_LaboratorySamples.embedding_medium }}</p>
+            <p><i>Slice thickness</i>: {{ Nanoinnovation_LaboratorySamples.slice_thickness }}</p>
+            <p><i>Polishing</i>: {{ Nanoinnovation_LaboratorySamples.polishing }}</p>
+            <p><i>Other</i>: {{ Nanoinnovation_LaboratorySamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-gel" style="display:none">
+            <p><i>Pure or mixture</i>: {{ Nanoinnovation_LaboratorySamples.pure_or_mixture }}</p>
+            <p><i>Chemical name and CAS</i>: {{ Nanoinnovation_LaboratorySamples.chemical_name_CAS_list }}</p>
+            <p><i>Expected stiffness and roughness ranges</i>: {{ Nanoinnovation_LaboratorySamples.stiffness_and_roughness_ranges }}</p>
+            <p><i>Other</i>: {{ Nanoinnovation_LaboratorySamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-other" style="display:none">
+            <p><i>Sample info</i>: {{ Nanoinnovation_LaboratorySamples.other }}</p>
+          </div>
+        </p>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>FILES</b></div>
+      <div class="card-body">
+        <br>
+        <p>
+            <i>Include the sample sheet if present</i>: {{ Nanoinnovation_LaboratorySamples.sample_sheet_filename }} <br>
+            <i>Include additional file: <br> (FOR THIS VERSION OF EASYDMP: if more than one compress the files in a
+                single zip or tar format)</i> {{ Nanoinnovation_LaboratorySamples.additional_filename }}
+
+        </p>
+      <br>
+      <p><input type="submit" value="Insert data" class="btn btn-primary"></p>
+    </div>
+</form>
+
+<!-- TODO: PUT THESE IN THE RIGHT STATIC JS SECTION! -->
+
+ <!-- initial filtering of internal requests/ proposals -->
+<script>
+    var QueryString = (new URL(location.href)).searchParams.get('filter');
+    if (QueryString != '')
+        $('#dropMenu .dropdown .dropdown-menu').show();
+</script>
+
+
+ <!-- sample type dynamic menu + adherent-supended dynamic menu -->
+<script>
+  $(document).ready(function () {
+    const $sampleType = $('#id_type');
+
+    $sampleType.on('change', function () {
+      const selected = $(this).val().trim().toLowerCase().replace(/\s+/g, '');
+      console.log("Selected sample type:", selected);
+      $('.sample-section').hide();
+      $('#section-' + selected).show();
+    });
+
+    // Trigger immediately to reflect initial value
+    $sampleType.trigger('change');
+    
+    // adherent_suspended dynamic selection
+    // Show/hide buffer medium based on "adherent_or_suspended" selection
+    const $adherentField = $('select[name$="adherent_or_suspended"]');
+
+    $adherentField.on('change', function () {
+      const value = $(this).val().toLowerCase();
+      const $bufferField = $(this).closest('.sample-section').find('p:contains("Buffer medium")');
+
+      if (value === 'suspended') {
+        $bufferField.show();
+      } else {
+        $bufferField.hide();
+      }
+    });
+
+    $adherentField.trigger('change');
+  });
+</script>
+
+{% endblock %}

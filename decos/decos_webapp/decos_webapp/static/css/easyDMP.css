@@ -234,3 +234,16 @@ h1 {
   color: var(--text-black);
   text-decoration: none !important;
 }
+
+
+textarea {
+  width: 100%;
+  min-height: 12em;
+  height: auto;
+  overflow: hidden; /* optional for smooth resize */
+}
+
+input[type="text"] {
+  width: 100%;
+  overflow: hidden; /* optional for smooth resize */
+}
