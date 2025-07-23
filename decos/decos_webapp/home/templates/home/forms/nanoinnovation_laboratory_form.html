@@ -76,8 +76,6 @@
       <div class="card-header"><b>NANOINNOVATION LABORATORY SAMPLE INFORMATION</b></div>
       <div class="card-body">
         <p>
-          <p><i>Submitted at</i>: {{ Nanoinnovation_LaboratorySamples.submitted_at|date:"Y-m-d H:i" }}</p>
-
           <i>Type of sample</i>: <br>
             <p><i>{{ Nanoinnovation_LaboratorySamples.type }}</i></p>
 
@@ -156,13 +154,6 @@
           <div class="sample-section" id="section-other" style="display:none">
             <p><i>Sample info</i>: {{ Nanoinnovation_LaboratorySamples.other }}</p>
           </div>
-
-          <div class="sample-section" id="section-solid" style="display:none">
-            <p><i>Pure or mixture</i>: {{ Nanoinnovation_LaboratorySamples.pure_or_mixture }}</p>
-            <p><i>Chemical name, CAS register number and Chemical Hazard</i>: {{ Nanoinnovation_LaboratorySamples.chemical_name_CAS_list }}</p>
-            <p><i>Chemical hazard</i>: {{ Nanoinnovation_LaboratorySamples.chemical_hazard }}</p>
-            <p><i>Other</i>: {{ Nanoinnovation_LaboratorySamples.other }}</p>
-          </div>
         </p>
     <div class="card mb-4 shadow-sm">
       <div class="card-header"><b>FILES</b></div>
@@ -170,7 +161,7 @@
         <br>
         <p>
             <i>Include the sample sheet if present</i>: {{ Nanoinnovation_LaboratorySamples.sample_sheet_filename }} <br>
-            <i>Include additional file: <br> (FOR THIS VERSION OF DECOS WEBAPP: if more than one compress the files in a
+            <i>Include additional file: <br> (FOR THIS VERSION OF EASYDMP: if more than one compress the files in a
                 single zip or tar format)</i> {{ Nanoinnovation_LaboratorySamples.additional_filename }}
 
         </p>
