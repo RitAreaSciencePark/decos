@@ -22,7 +22,6 @@ from PRP_CDM_app.models.common_data_model import (
 from django.views.decorators.http import require_POST
 from django.contrib import messages
 from PRP_CDM_app.models.common_data_model import Samples, Results
-
 from .secrets_models import API_Tokens
 
 # Functional view for switching between laboratories.
@@ -78,9 +77,8 @@ def user_data_view(request):
     # Redirect to login if user is not authenticated
     if not request.user.is_authenticated:
         return redirect('login')
-
+    
     user = request.user
-
     if request.method == 'POST':
         # Process submitted user data and API token forms
         form_user = UserDataForm(data=request.POST)
@@ -126,7 +124,6 @@ def user_data_view(request):
         'api_token_data': form_api_tokens,
     })
 
-
 @login_required
 @require_POST
 def delete_sample_entry(request):
@@ -155,11 +152,9 @@ def delete_sample_entry(request):
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
-
 # Delete ExperimentDMP and its intermediary relationships
 from PRP_CDM_app.models.common_data_model import ExperimentDMP
 from PRP_CDM_app.models.common_data_model import ExperimentDMPxSample, ExperimentDMPxInstrument, ExperimentDMPxLab
-
 
 @login_required
 @require_POST
@@ -168,7 +163,6 @@ def delete_experiment_dmp_entry(request):
     if experiment_dmp_id:
         try:
             dmp = ExperimentDMP.objects.get(pk=experiment_dmp_id)
-
             # Delete the DMP
             dmp.delete()
             messages.success(request, f"Experiment DMP {experiment_dmp_id} deleted successfully.")
@@ -178,7 +172,6 @@ def delete_experiment_dmp_entry(request):
             messages.error(request, f"Error deleting Experiment DMP: {e}")
     else:
         messages.error(request, "No Experiment DMP ID provided.")
-
     return redirect(request.META.get('HTTP_REFERER', '/'))
 
 
