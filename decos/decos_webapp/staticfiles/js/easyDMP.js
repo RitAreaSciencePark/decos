@@ -115,24 +115,3 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 });
-
-document.addEventListener("DOMContentLoaded", function () {
-  const labSelect = document.querySelector("select[name*='laboratory']");
-  const fieldsToShow = ["elab_token", "jenkins_token", "minio_acces_key", "minio_secret_key"];
-
-  function toggleSensitiveFields(show) {
-    fieldsToShow.forEach(fieldName => {
-      const fieldDiv = document.getElementById(`field-${fieldName}`);
-      if (fieldDiv) {
-        fieldDiv.style.display = show ? "block" : "none";
-      }
-    });
-  }
-
-  if (labSelect) {
-    toggleSensitiveFields(!!labSelect.value);
-    labSelect.addEventListener("change", () => {
-      toggleSensitiveFields(!!labSelect.value);
-    });
-  }
-});
