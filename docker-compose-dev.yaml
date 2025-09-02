@@ -1,0 +1,38 @@
+
+services:
+  webapp:
+    container_name: decos_webapp
+    image: decos_webapp
+    build:
+      context: .
+      dockerfile: ./decos/Dockerfile
+      # BEAR WITH ME, first we pip install debugpy, then we add the certificate authority of minio into the requests.certs.where(), then we run the django server attaching the debugger, to init the server we need to run debugpy
+    command: ["sh", "-c", "pip install debugpy -t /tmp && cat /app/decos/decos_webapp/APIs/decos_minio_API/ca.pem >> /usr/local/lib/python3.12/site-packages/certifi/cacert.pem && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:5678 decos/decos_webapp/manage.py runserver 0.0.0.0:8080"]
+    environment:
+      # Ensure dev settings are used inside the container
+      DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-decos_webapp.settings.dev}
+      # Expose Wagtail admin base URL (overridable via host env or .env file)
+      WAGTAILADMIN_BASE_URL: ${WAGTAILADMIN_BASE_URL:-http://localhost:8080}
+    ports:
+      - 8080:8080
+      - 5678:5678
+    volumes:
+      - .:/app
+    user: root:root
+    
+  db:
+    container_name: decos_db
+    image: decos_postgres_db
+    build:
+      context: .
+      dockerfile: ./postgres-multiple-db/Dockerfile
+    environment:
+      POSTGRES_MULTIPLE_DATABASES: decos_webapp_db, decos_metadata_db
+      POSTGRES_USER: decos
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data_dev:/var/lib/postgresql/data/
+      - ./backups:/backups
+
+volumes:
+  postgres_data_dev:
