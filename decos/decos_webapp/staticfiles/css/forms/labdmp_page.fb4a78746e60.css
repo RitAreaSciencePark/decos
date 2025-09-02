@@ -1,0 +1,50 @@
+.section_div p{
+    padding-left: 5%;
+}
+.section_div {
+    padding: 5px;
+    margin-top: 10px;
+    font-size: medium;
+    margin: 10 auto;
+    font-family: roboto,sans-serif;
+    font-weight: lighter;
+    background-color: #fff;
+}
+
+#sampleform {
+    padding: 5px;
+}
+
+
+input[type="text"] {
+    width: 400px;
+}
+
+input[type="submit"] {
+    float: right;
+    
+}
+
+
+.dynamic_selections{
+    font-size: small;
+    display: flex;
+    flex-wrap: wrap;
+    margin-left: auto;
+    margin-right: center;
+    max-width: 100%;
+    padding-top: 1.5em;
+
+}
+
+.samples {
+    display: flex;
+    font-size: small;
+    width: 50%;
+}
+
+.instruments {
+    display: flex;
+    font-size: small;
+    width: 50%;
+}

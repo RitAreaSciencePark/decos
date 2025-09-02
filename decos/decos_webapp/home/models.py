@@ -402,6 +402,7 @@ class SampleListPage(Page, SessionHandlerMixin):
         if request.method == 'POST':
             username = request.user.username if request.user.is_authenticated else ""
             elab_experiment_id = self._handle_elab_submission(request, lab, username)
+            elab_url = ""
             if elab_experiment_id:
                 elab_url = ApiSettings.objects.get(pk=1).elab_base_url + f'experiments.php?mode=view&id={elab_experiment_id}'
                 return render(request, 'home/utility_pages/elab_redirect_page.html', {
@@ -427,9 +428,17 @@ class SampleListPage(Page, SessionHandlerMixin):
                 url_elab = f"{ApiSettings.objects.get(pk=1).elab_base_url}experiments.php?mode=view&id={elab_experiment_id}"
         except:
             url_elab = ""
+
+        url_elab = ""
+        try:
+            if ApiSettings.objects.get(pk=1).elab_base_url and elab_experiment_id:
+                url_elab = f"{ApiSettings.objects.get(pk=1).elab_base_url}experiments.php?mode=view&id={elab_experiment_id}"
+        except:
+            url_elab = ""
         return render(request, 'home/sample_pages/sample_list.html', {
             'page': self,
             'table': table,
+            'elab_url': url_elab,
             'elab_url': url_elab,
             'minio_filelist_status': minIO_status,
         })

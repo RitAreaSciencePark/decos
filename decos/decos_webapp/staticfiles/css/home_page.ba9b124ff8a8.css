@@ -1,0 +1,18 @@
+.section_div p{
+    padding-left: 5%;
+}
+.section_div {
+    padding: 5px;
+    margin-top: 10px;
+    font-size: medium;
+    margin: 10 auto;
+    font-family: roboto,sans-serif;
+    font-weight: lighter;
+    background-color: #fff;
+}
+
+.template-homepage main {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+  }

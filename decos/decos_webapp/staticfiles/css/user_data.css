@@ -1,0 +1,31 @@
+.section_div p{
+    padding-left: 5%;
+}
+.section_div {
+    padding: 5px;
+    margin-top: 10px;
+    font-size: medium;
+    margin: 10 auto;
+    font-family: roboto,sans-serif;
+    font-weight: lighter;
+    background-color: #fff;
+}
+
+.section_div input {
+    display: flex;
+    margin-left: 4%;
+    width: 300px;
+    margin-bottom: 10px;
+}
+
+.section_div select {
+    display: inline-flex;
+    margin-left: 2%;
+    margin-top: 10px;
+}
+
+.page_button {
+    display: flex;
+    margin-left: auto;
+    margin-top: 10px;
+}

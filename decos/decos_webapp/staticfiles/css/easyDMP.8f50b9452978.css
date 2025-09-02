@@ -1,0 +1,160 @@
+/* =====================================
+   COLORS
+===================================== */
+:root {
+  --white: #fff;
+  --body-bg: #c3d9eb;
+  --link-color: cornflowerblue;
+  --header-bg: rgb(255, 255, 255);
+  --text-black: black;
+  --background-img: url('/media/backgrounds/sfondo_hub9ffaece8af87d1ab294a31307bef493_1005742_1920x1920_fit_q75_h2_lanczos_3.webp');
+}
+
+/* =====================================
+   GLOBAL STYLES
+===================================== */
+html {
+  background-color: var(--white);
+
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  height: fit-content;
+  overflow: auto;
+  background-image: var(--background-img);
+  /* Ensure the image covers the div and is centered */
+  background-size: cover;
+  background-position: center;
+  background-repeat: repeat-y;
+}
+
+.main_content {
+  margin-left: 5%;
+  margin-right: 5%;
+  margin-top: 5%;
+}
+
+a {
+  color: var(--link-color);
+  font-size: 14px;
+  font-weight: normal;
+  text-decoration: none;
+}
+
+.header_nav_block {
+  display: block;
+  text-align: right;
+  float: right;
+  margin-left: auto;
+  margin-top: auto;
+  margin-right: 10px;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  max-width: 800px;
+}
+
+.header_logo_block {
+  display: block;
+  width: 250px;
+  padding: 5px;
+  padding-left: 2%;
+  margin-top: auto;
+  margin-bottom: 10px;
+}
+
+#navdiv a {
+  text-align: center;
+  font-size: normal;
+  width: fit-content;
+  margin-bottom: auto;
+}
+
+#navdiv {
+  margin-left: 5px;
+  margin-bottom: 2px;
+  text-align: center;
+  margin-bottom: auto;
+}
+
+#staticpagemenu {
+  display: inline-flex;
+}
+
+#dynamicpagemenu {
+  display: inline-flex;
+}
+
+.header_nav {
+  display: flex;
+  width: fit-content;
+  padding-bottom: 5px;
+}
+
+.header_login {
+  display: flex;
+  float: right;
+  margin-left: auto;
+  font-weight: lighter;
+}
+
+header p {
+  color: var(--text-black);
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+header a {
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.dropdown {
+  display: block;
+}
+
+#dropdown-button {
+  display: inline-flex;
+  text-align: left;
+  margin-left: 5%;
+  text-decoration: none;
+}
+
+header {
+  border-color: var(--header-bg);
+  display: flex;
+  /* border-bottom: 4px dotted; */
+  height: fit-content;
+  width: 100%;
+  font-size: 16px;
+  font-weight: lighter;
+  background-color: var(--header-bg);
+}
+
+main {
+  height: fit-content;
+  flex: 1;
+}
+
+footer {
+  display: flex;
+  flex-direction: column;
+  columns: 2;
+  text-align: center;
+  height: fit-content;
+  min-height: 20px;
+  overflow: auto;
+  background-color: var(--header-bg);
+}
+
+.footer_block {
+  padding-right: 80px;
+}
+
+h1 {
+  color: var(--text-black);
+  font-size: 5 px;
+  padding: 10px 15px;
+}

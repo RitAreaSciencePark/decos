@@ -173,6 +173,10 @@ class CsrfViewMiddleware(MiddlewareMixin):
 
     @cached_property
     def csrf_trusted_origins_hosts(self):
+        import pprint
+        print("WHAT")
+        pprint.pprint(dir(settings))
+        pprint.pprint(settings._wrapped.__dict__)
         return [
             urlparse(origin).netloc.lstrip("*")
             for origin in settings.CSRF_TRUSTED_ORIGINS

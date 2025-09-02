@@ -10,13 +10,13 @@ SUPERUSER_PASSWORD="admin"
 DJANGO_DIR="/app/decos/decos_webapp"
 
 # Prompt for hostname input
-read -p "Enter the hostname for Wagtail (e.g., easydmp.localhost): " WAGTAIL_HOSTNAME
+read -p "Enter the hostname for Wagtail (e.g., decos.localhost): " WAGTAIL_HOSTNAME
 
 # Python script to be run directly
 PYTHON_SCRIPT="
 from django.contrib.auth import get_user_model
 from wagtail.models import Page, Site, PageViewRestriction
-from home.models import HomePage, SamplePage, EditSamplePage, SampleListPage, ResultsListPage, DMPPage, InstrumentsPage, ResultsPage, PipelinesPage, ExperimentMetadataReportPage
+from home.models import HomePage, SamplePage, EditSamplePage, SampleListPage, ResultsListPage, DMPPage, InstrumentsPage, ResultsPage, PipelinesPage
 
 SUPERUSER_NAME = '$SUPERUSER_NAME'
 SUPERUSER_EMAIL = '$SUPERUSER_EMAIL'
@@ -48,7 +48,7 @@ home_page = HomePage(
     title='Home',
     slug='home',
     show_in_menus=True,
-    intro='Welcome to EasyDMP!'
+    intro='Welcome to D.ECOS. Webapp!'
 )
 home_page = HomePage.add_root(instance=home_page)  # ✅ Create as ROOT
 home_page.save_revision().publish()
@@ -57,8 +57,8 @@ print('✅ HomePage created as the new ROOT page!')
 # Step 4: Create a new Wagtail Site with HomePage as Root
 site = Site.objects.create(
     hostname='$WAGTAIL_HOSTNAME',
-    port=8080,
-    site_name='EasyDMP',
+    port=443,
+    site_name='decos-webapp',
     root_page=home_page,
     is_default_site=True
 )
@@ -91,14 +91,6 @@ add_private_menu_page(EditSamplePage, 'Edit Sample Page', 'edit-sample-entry', h
 add_private_menu_page(ExperimentDMPPage, 'Add Experiment DMP', 'add-experiment-dmp', home_page, in_menu=True, has_thank_you=True)
 add_private_menu_page(ExperimentDMPListPage, 'Experiment DMP List', 'experiment-dmp-list', home_page, in_menu=True)
 
-
-# Get ResultsListPage (which is now created) for ExperimentMetadataReportPage
-results_list_page = ResultsListPage.objects.first()
-if results_list_page:
-    add_private_menu_page(ExperimentMetadataReportPage, 'Experiment Metadata', 'dmp', results_list_page)
-else:
-    print('⚠️ ResultsListPage not found! ExperimentMetadataReportPage cannot be created.')
-
 # Get ExperimentDMPListPage (which is now created) for ExperimentDMPReportPage
 experiment_dmp_list_page = ExperimentDMPListPage.objects.first()
 if results_list_page:
@@ -107,11 +99,12 @@ else:
     print('⚠️ ExperimentDMPListPage not found! ExperimentDMPReportPage cannot be created.')
 "
 
-# Write the hostname into dev.py
-SETTINGS_FILE="/app/decos/decos_webapp/decos_webapp/settings/dev.py"
-docker exec -i "$WEBAPP_CONTAINER" /bin/sh -c "echo 'WAGTAILADMIN_BASE_URL = \"http://$WAGTAIL_HOSTNAME:8080\"' >> $SETTINGS_FILE"
+# Write the hostname into production.py
+# SETTINGS_FILE="/app/django/decos_webapp/decos_webapp/settings/production.py"
+# docker exec -i "$WEBAPP_CONTAINER" /bin/sh -c "echo 'WAGTAILADMIN_BASE_URL = \"http://$WAGTAIL_HOSTNAME:8080\"' >> $SETTINGS_FILE"
+
 
 # Feed the Python script directly to the container's Python shell
 echo "$PYTHON_SCRIPT" | docker exec -w "$DJANGO_DIR" -i "$WEBAPP_CONTAINER" python3 manage.py shell
 
-echo "✅ Wagtail setup completed!"
+echo "✅ D.ECOS. production ready setup completed!"

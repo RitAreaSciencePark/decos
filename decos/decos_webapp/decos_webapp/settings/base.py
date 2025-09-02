@@ -67,6 +67,8 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",  # Enhances security by enabling protections like HSTS, XSS filtering, and SSL redirection
     "wagtail.contrib.redirects.middleware.RedirectMiddleware",  # Handles page redirects within Wagtail to ensure smooth navigation
     "allauth.account.middleware.AccountMiddleware",  # Middleware to manage account-related session behaviors for Django Allauth
+   # "decos_webapp.middleware.DebugOriginMiddleware",  # ← your import path
+
 ]
 
 ROOT_URLCONF = "decos_webapp.urls"  # Specifies the main URL configuration file for request routing
