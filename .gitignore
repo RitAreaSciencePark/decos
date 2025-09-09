@@ -9,5 +9,10 @@ DMP_INFO.md
 decos/decos_webapp/decos_webapp/settings/secrets_minIO.py
 decos/.env
 nginx/nginx.conf
+nginx/certs/
+.env.dev
+.env.dev.bak
+.env.production
+.env.production.bak
 .env
 .gitignore

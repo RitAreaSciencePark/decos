@@ -114,20 +114,30 @@ WSGI_APPLICATION = "decos_webapp.wsgi.application"  # Entry point for WSGI serve
 # DATABASE ROUTING: crucial for handling multiple databases, ensures queries are directed correctly.
 DATABASE_ROUTERS = ["decos_webapp.db_routers.ExternalDbRouter"]  # Custom database router located in db_routers.py.
 
+
+
+
+# load env
+import os
+POSTGRES_USER = os.getenv("POSTGRES_USER","decos")
+POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postgres")
+
+                          
+
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql',  # PostgreSQL database engine.
         'NAME': 'decos_webapp_db',  # Main database for storing application data.
-        'USER': 'decos',  # Database username.
-        'PASSWORD': 'postgres', # FIXME: Update with a secure password before deployment.
+        'USER': POSTGRES_USER,  # Database username from .env.XX (dev or production or test)
+        'PASSWORD': POSTGRES_PASSWORD, # Database password from .env.XX
         'HOST': 'db',  # Database server hostname.
         'PORT': '5432',  # Default PostgreSQL port.
     },
     "prpmetadata-db": {
         'ENGINE': 'django.db.backends.postgresql',  # PostgreSQL database engine for metadata storage.
         'NAME': 'decos_metadata_db',  # Database storing metadata for the PRP system.
-        'USER': 'decos',  # Database username.
-        'PASSWORD': 'postgres', # FIXME: Update with a secure password before deployment.
+        'USER': POSTGRES_USER,  # Database username from .env.XX (dev or production or test)
+        'PASSWORD': POSTGRES_PASSWORD, # Database password from .env.XX
         'HOST': 'db',  # Database server hostname.
         'PORT': '5432',  # Default PostgreSQL port.
     }

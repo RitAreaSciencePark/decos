@@ -1,17 +1,7 @@
 #!/bin/bash
 
-# Set environment variables
-DB_CONTAINER="decos_db"
-WEBAPP_CONTAINER="decos_webapp"
-DJANGO_DIR="/app/decos/decos_webapp"
-SUPERUSER_NAME="admin"
-SUPERUSER_EMAIL="admin@example.com"
-SUPERUSER_PASSWORD="admin"
-DJANGO_DIR="/app/decos/decos_webapp"
-
 # Prompt for hostname input
 read -p "Enter the hostname for Wagtail (e.g., decos.localhost): " WAGTAIL_HOSTNAME
-
 # Python script to be run directly
 PYTHON_SCRIPT="
 from django.contrib.auth import get_user_model
@@ -48,7 +38,7 @@ home_page = HomePage(
     title='Home',
     slug='home',
     show_in_menus=True,
-    intro='Welcome to D.ECOS. Webapp!'
+    intro='Welcome to Digital ECOSystem Webapp!'
 )
 home_page = HomePage.add_root(instance=home_page)  # ✅ Create as ROOT
 home_page.save_revision().publish()
@@ -57,7 +47,7 @@ print('✅ HomePage created as the new ROOT page!')
 # Step 4: Create a new Wagtail Site with HomePage as Root
 site = Site.objects.create(
     hostname='$WAGTAIL_HOSTNAME',
-    port=443,
+    port=$WEB_APP_PORT,
     site_name='decos-webapp',
     root_page=home_page,
     is_default_site=True
@@ -93,10 +83,24 @@ add_private_menu_page(ExperimentDMPListPage, 'Experiment DMP List', 'experiment-
 
 # Get ExperimentDMPListPage (which is now created) for ExperimentDMPReportPage
 experiment_dmp_list_page = ExperimentDMPListPage.objects.first()
-if results_list_page:
+if experiment_dmp_list_page:
     add_private_menu_page(ExperimentDMPReportPage, 'Experiment Data Management Plan', 'experiment-data-management-plan', experiment_dmp_list_page)
 else:
     print('⚠️ ExperimentDMPListPage not found! ExperimentDMPReportPage cannot be created.')
+
+# Delete default groups Editors and Moderators, and create Data_Curator and Pipelines roles
+from django.contrib.auth.models import Group
+# Reset groups: delete 'Editors' and 'Moderators', then create 'Data_Curator' and 'Pipelines'
+for name in [\"Editors\", \"Moderators\"]:
+    deleted, _ = Group.objects.filter(name=name).delete()
+    if deleted:
+        print(f'🗑️  Deleted group \"{name}\"')
+    else:
+        print(f'ℹ️  Group \"{name}\" did not exist')
+
+for name in (\"Data_Curator\", \"Pipelines\"):
+    Group.objects.get_or_create(name=name)
+    print(f'✅  Ensured group \"{name}\" exists')
 "
 
 # Write the hostname into production.py
