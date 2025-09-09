@@ -4,6 +4,47 @@ set -euo pipefail
 ENV_SETUP=".env.dev.setup"
 ENV_DEV=".env.dev"
 
+SECRETS_DIR=".secrets"
+SECRETS_BUNDLE="$SECRETS_DIR/bundle.env"
+SECRETS_RUNTIME_DIR="$SECRETS_DIR/.runtime"
+
+mkdir -p "$SECRETS_DIR" "$SECRETS_RUNTIME_DIR"
+chmod 700 "$SECRETS_DIR" "$SECRETS_RUNTIME_DIR" 2>/dev/null || true
+
+b64enc() { printf '%s' "$1" | base64 | tr -d '\n'; }
+b64dec() { printf '%s' "$1" | base64 -d; }
+
+# write or update KEY_B64=... in bundle.env
+bundle_set() {
+  local key="$1" val="$2" b64
+  b64="$(b64enc "$val")"
+  touch "$SECRETS_BUNDLE"
+  grep -v -E "^${key}_B64=" "$SECRETS_BUNDLE" > "$SECRETS_BUNDLE.tmp" || true
+  printf '%s_B64=%s\n' "$key" "$b64" >> "$SECRETS_BUNDLE.tmp"
+  mv "$SECRETS_BUNDLE.tmp" "$SECRETS_BUNDLE"
+  chmod 600 "$SECRETS_BUNDLE" || true
+}
+
+# read KEY_B64=… and decode
+bundle_get() {
+  local key="$1" b64
+  b64="$(grep -E "^${key}_B64=" "$SECRETS_BUNDLE" | head -n1 | cut -d= -f2- || true)"
+  [ -n "$b64" ] && b64dec "$b64"
+}
+
+# materialize a plain-text secret file from bundle to .runtime and export both *_HOST_FILE and value
+materialize_secret() {
+  local key="$1" fname="$SECRETS_RUNTIME_DIR/${key,,}.txt"
+  local val
+  val="$(bundle_get "$key")"
+  [ -z "$val" ] && return 0
+  printf '%s' "$val" > "$fname"
+  chmod 600 "$fname" || true
+  export "${key}_HOST_FILE=$fname"
+  export "$key=$val"
+}
+
+
 
 for arg in "$@"; do
   case "$arg" in
@@ -128,6 +169,23 @@ else
       case "$key" in
         *PASSWORD*|*SECRET*|*TOKEN*|*KEY*)
           value="$(prompt_secret "$key" "$default")"
+
+          # make a safe filename like: superuser_password.txt, decos_secret_key.txt, etc.
+          file_base="$(printf '%s' "$key" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9_' '_')"
+          host_secret_path="$SECRETS_DIR/${file_base}.txt"
+
+          # save secret to file
+          printf '%s' "$value" > "$host_secret_path"
+          chmod 600 "$host_secret_path" || true
+
+          # write only a pointer to the secret into .env.dev
+          printf "%s_HOST_FILE=%s\n" "$key" "$host_secret_path" >> "$ENV_DEV"
+
+          # also export for current shell (useful later in the script)
+          export "${key}_HOST_FILE=$host_secret_path"
+          export "$key=$value"
+
+          continue
           ;;
         *)
           value="$(prompt_var "$key" "$default")"
@@ -136,8 +194,11 @@ else
     else
       value="$default"
     fi
-    printf "%s=%s\n" "$key" "$value"
-    printf "%s=%s\n" "$key" "$value" >> "$ENV_DEV"
+
+# non-secrets still get written as KEY=value lines
+printf "%s=%s\n" "$key" "$value" >> "$ENV_DEV"
+
+
   done < "$ENV_SETUP"
 
   echo "✅ Wrote $ENV_DEV"
@@ -154,16 +215,24 @@ if [ -f "$ENV_DEV" ]; then
     # skip blanks and comments
     [ -z "$line" ] && continue
     case "$line" in \#*) continue ;; esac
-
-    # we only care about these keys
     case "$line" in
-      DB_CONTAINER=*|WEBAPP_CONTAINER=*|DJANGO_DIR=*|POSTGRES_DB=*|POSTGRES_USER=*|POSTGRES_PASSWORD=*|POSTGRES_VOLUME=*|WEB_APP_PORT=*|DEBUGPY_PORT=*|SUPERUSER_NAME=*|SUPERUSER_PASSWORD=*|SUPERUSER_EMAIL=*)
-        k=${line%%=*}
-        v=${line#*=}
-        export "$k=$v"
+      *PASSWORD_HOST_FILE=*|*SECRET_HOST_FILE=*|*TOKEN_HOST_FILE=*|*KEY_HOST_FILE=*)
+        k="${line%%_HOST_FILE=*}"
+        f="${line#*=}"
+        export "${k}_HOST_FILE=$f"
+        if [ -f "$f" ]; then
+          export "$k=$(cat "$f")"
+        else
+          echo "⚠️  Secret file not found for $k: $f" >&2
+        fi
         ;;
-      *) : ;;  # ignore others
+      DB_CONTAINER=*|WEBAPP_CONTAINER=*|DJANGO_DIR=*|POSTGRES_DB=*|POSTGRES_USER=*|POSTGRES_PASSWORD=*|POSTGRES_VOLUME=*|WEB_APP_PORT=*|DEBUGPY_PORT=*|SUPERUSER_NAME=*|SUPERUSER_PASSWORD=*|SUPERUSER_EMAIL=*)
+        k=${line%%=*}; v=${line#*=}; export "$k=$v"
+        ;;
+      *) : ;;
     esac
+
+
   done < "$ENV_DEV"
 fi
 

@@ -18,7 +18,6 @@ import django
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -115,14 +114,16 @@ WSGI_APPLICATION = "decos_webapp.wsgi.application"  # Entry point for WSGI serve
 DATABASE_ROUTERS = ["decos_webapp.db_routers.ExternalDbRouter"]  # Custom database router located in db_routers.py.
 
 
-
+import os, pathlib
+# This is an override of getenv to check if you need to read a file (like for the secrets)
 
 # load env
-import os
 POSTGRES_USER = os.getenv("POSTGRES_USER","decos")
-POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "postgres")
-
-                          
+# Secret read
+from pathlib import Path
+path = Path("/app/",os.getenv("POSTGRES_PASSWORD_HOST_FILE"))
+with path.open("r", encoding="utf-8") as f:
+    POSTGRES_PASSWORD = f.read().strip()
 
 DATABASES = {
     "default": {
@@ -233,7 +234,7 @@ SOCIALACCOUNT_PROVIDERS = {
                 "name": "Authentik",
                 "server_url": "https://orfeo-auth.areasciencepark.it/application/o/decos/.well-known/openid-configuration",
                 "token_auth_method": "client_secret_basic",
-                "APP": {
+                "APP": { # FIXME: CHANGE THE SECRETS WITH THE SECRETS_FILE...!!!!!!
                     "client_id": f"{SECRETS_MINIO.client_id}",
                     "secret": f"{SECRETS_MINIO.secret_token}"
                 },

@@ -10,6 +10,24 @@ services:
     command: ["sh", "-c", "pip install debugpy -t /tmp && cat /app/decos/decos_webapp/APIs/decos_minio_API/ca.pem >> /usr/local/lib/python3.12/site-packages/certifi/cacert.pem && python /tmp/debugpy --wait-for-client --listen 0.0.0.0:${DEBUGPY_PORT:-5678} decos/decos_webapp/manage.py runserver 0.0.0.0:${WEB_APP_PORT:-8080}"]
     env_file:
       - .env.dev
+    environment:
+      DECOS_SECRET_KEY_FILE: /run/secrets/decos_secret_key
+      SUPERUSER_PASSWORD_FILE: /run/secrets/superuser_password
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+      MINIO_ACCESS_KEY_FILE: /run/secrets/minio_access_key     
+      MINIO_SECRET_KEY_FILE: /run/secrets/minio_secret_key     
+    secrets:
+      - source: decos_secret_key
+        target: decos_secret_key
+      - source: superuser_password
+        target: superuser_password
+      - source: postgres_password
+        target: postgres_password
+      - source: minio_access_key 
+        target: minio_access_key
+      - source: minio_secret_key
+        target: minio_secret_key
+
     ports:
       - "8080:8080"
       - "5678:5678"
@@ -29,6 +47,10 @@ services:
       - .env.dev
     environment:
       POSTGRES_MULTIPLE_DATABASES: ${POSTGRES_WEBAPP_DB:-decos_webapp_db}, ${POSTGRES_METADATA_DB:-decos_metadata_db}
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
+    secrets:
+      - source: postgres_password
+        target: postgres_password
     volumes:
       - default_pg_data:/var/lib/postgresql/data/
       - ./backups:/backups
@@ -36,3 +58,15 @@ services:
 volumes:
   default_pg_data:
     name: ${POSTGRES_VOLUME:-postgres_data_dev}
+
+secrets:
+  decos_secret_key:
+    file: ${DECOS_SECRET_KEY_HOST_FILE}
+  superuser_password:
+    file: ${SUPERUSER_PASSWORD_HOST_FILE}
+  postgres_password:
+    file: ${POSTGRES_PASSWORD_HOST_FILE}
+  minio_access_key:
+    file: ${MINIO_ACCESS_KEY_HOST_FILE}   
+  minio_secret_key:
+    file: ${MINIO_SECRET_KEY_HOST_FILE} 
