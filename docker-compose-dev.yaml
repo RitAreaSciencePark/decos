@@ -14,8 +14,7 @@ services:
       DECOS_SECRET_KEY_FILE: /run/secrets/decos_secret_key
       SUPERUSER_PASSWORD_FILE: /run/secrets/superuser_password
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-      MINIO_ACCESS_KEY_FILE: /run/secrets/minio_access_key     
-      MINIO_SECRET_KEY_FILE: /run/secrets/minio_secret_key     
+      MINIO_SECRET_KEY_FILE: /run/secrets/minio_secret_token    
     secrets:
       - source: decos_secret_key
         target: decos_secret_key
@@ -23,10 +22,8 @@ services:
         target: superuser_password
       - source: postgres_password
         target: postgres_password
-      - source: minio_access_key 
-        target: minio_access_key
-      - source: minio_secret_key
-        target: minio_secret_key
+      - source: minio_secret_token
+        target: minio_secret_token
 
     ports:
       - "8080:8080"
@@ -61,12 +58,10 @@ volumes:
 
 secrets:
   decos_secret_key:
-    file: ${DECOS_SECRET_KEY_HOST_FILE}
+    file: ${DECOS_SECRET_KEY_HOST_FILE:-.secrets/decos_secret_key.txt}
   superuser_password:
-    file: ${SUPERUSER_PASSWORD_HOST_FILE}
+    file: ${SUPERUSER_PASSWORD_HOST_FILE:-.secrets/superuser_password.txt}
   postgres_password:
-    file: ${POSTGRES_PASSWORD_HOST_FILE}
-  minio_access_key:
-    file: ${MINIO_ACCESS_KEY_HOST_FILE}   
-  minio_secret_key:
-    file: ${MINIO_SECRET_KEY_HOST_FILE} 
+    file: ${POSTGRES_PASSWORD_HOST_FILE:-.secrets/postgres_password.txt}
+  minio_secret_token:
+    file: ${MINIO_SECRET_KEY_HOST_FILE:-.secrets/minio_secret_token.txt}

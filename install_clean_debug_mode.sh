@@ -11,6 +11,9 @@ SECRETS_RUNTIME_DIR="$SECRETS_DIR/.runtime"
 mkdir -p "$SECRETS_DIR" "$SECRETS_RUNTIME_DIR"
 chmod 700 "$SECRETS_DIR" "$SECRETS_RUNTIME_DIR" 2>/dev/null || true
 
+
+## -- NOT USED (for now)
+
 b64enc() { printf '%s' "$1" | base64 | tr -d '\n'; }
 b64dec() { printf '%s' "$1" | base64 -d; }
 
@@ -43,6 +46,7 @@ materialize_secret() {
   export "${key}_HOST_FILE=$fname"
   export "$key=$val"
 }
+## -- END NOT USED (for now)
 
 
 

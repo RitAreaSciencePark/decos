@@ -22,7 +22,11 @@ WAGTAILADMIN_BASE_URL = os.getenv("WAGTAILADMIN_BASE_URL", "http://10.128.8.14:8
 
 # Secret key used for cryptographic signing (sessions, CSRF, etc.).
 # OK to hardcode for local development, but NEVER hardcode or reuse in prod.
-SECRET_KEY = os.getenv("DECOS_SECRET_KEY", "django-insecure-v^6bbtrnq64d&fp=%*@^@ix7si3_%^x@ova2k6&mj)w7tnlf9d")
+# Secret read
+from pathlib import Path
+path = Path("/app/",os.getenv("DECOS_SECRET_KEY_HOST_FILE"))
+with path.open("r", encoding="utf-8") as f:
+    SECRET_KEY = f.read().strip()
 
 # Hostnames the app will serve. In development, `*` is convenient.
 # In production, restrict this to explicit hostnames/domains.

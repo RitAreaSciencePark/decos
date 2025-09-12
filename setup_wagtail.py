@@ -2,10 +2,17 @@ from django.contrib.auth import get_user_model
 from wagtail.models import Page, Site, PageViewRestriction
 from home.models import HomePage, SamplePage, EditSamplePage, SampleListPage, ResultsListPage, DMPPage, InstrumentsPage, ResultsPage, PipelinesPage
 import os
+from pathlib import Path
+# This is an override of getenv to check if you need to read a file (like for the secrets)
+
+
 
 SUPERUSER_NAME = os.getenv("SUPERUSER_NAME","admin")
 SUPERUSER_EMAIL = os.getenv("SUPERUSER_EMAIL","")
-SUPERUSER_PASSWORD = os.getenv("SUPERUSER_PASSWORD","changeme")
+# Secret read
+path = Path("/app/",os.getenv("SUPERUSER_PASSWORD_HOST_FILE"))
+with path.open("r", encoding="utf-8") as f:
+    SUPERUSER_PASSWORD = f.read().strip()
 
 User = get_user_model()
 if not User.objects.filter(username=SUPERUSER_NAME).exists():
