@@ -18,7 +18,7 @@ DEBUG = True
 # Base URL used by Wagtail for things like previews and notifications in admin.
 # In dev, this can point to your local or sandbox environment.
 # Read from env var `WAGTAILADMIN_BASE_URL`, falling back to current dev default.
-WAGTAILADMIN_BASE_URL = os.getenv("WAGTAILADMIN_BASE_URL", "http://10.128.8.14:8080")
+WAGTAILADMIN_BASE_URL = os.getenv("WAGTAILADMIN_BASE_URL", "http://localhost:8080")
 
 # Secret key used for cryptographic signing (sessions, CSRF, etc.).
 # OK to hardcode for local development, but NEVER hardcode or reuse in prod.

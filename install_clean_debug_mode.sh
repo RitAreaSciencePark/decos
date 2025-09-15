@@ -264,6 +264,8 @@ echo "✅ Migrations applied successfully!"
 
 # Run the separate Wagtail setup script
 ./setup_wagtail.sh
+echo "✅ Digital ECOSystem database init completed!"
+
 
 echo "🚀 Restarting webapp to ensure all changes take effect..."
 docker restart "$WEBAPP_CONTAINER"

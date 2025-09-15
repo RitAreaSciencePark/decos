@@ -7,10 +7,7 @@ DEBUG = True
 SECURE_SSL_REDIRECT = True
 
 # Define allowed domains for your application
-print(f"allowed hosts: {os.environ.get('DECOS_ALLOWED_HOSTS')}")
-      
 ALLOWED_HOSTS = os.environ.get('DECOS_ALLOWED_HOSTS', 'localhost').split(',')
-print(f"allowed hosts true: {ALLOWED_HOSTS}")
 
 # Get WAGTAILADMIN_BASE_URL from environment variable
 WAGTAILADMIN_BASE_URL = os.environ.get('WAGTAILADMIN_BASE_URL')

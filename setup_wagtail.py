@@ -1,6 +1,6 @@
 from django.contrib.auth import get_user_model
 from wagtail.models import Page, Site, PageViewRestriction
-from home.models import HomePage, SamplePage, EditSamplePage, SampleListPage, ResultsListPage, DMPPage, InstrumentsPage, ResultsPage, PipelinesPage
+from home.models import HomePage, SamplePage, EditSamplePage, SampleListPage, SampleReportPage, ResultsListPage, DMPPage, InstrumentsPage, ResultsPage, PipelinesPage
 import os
 from pathlib import Path
 # This is an override of getenv to check if you need to read a file (like for the secrets)
@@ -82,6 +82,13 @@ add_private_menu_page(SamplePage, 'Add Sample Page', 'add-sample-page', home_pag
 add_private_menu_page(EditSamplePage, 'Edit Sample Page', 'edit-sample-entry', home_page, in_menu=False)
 add_private_menu_page(ExperimentDMPPage, 'Add Experiment DMP', 'add-experiment-dmp', home_page, in_menu=True, has_thank_you=True)
 add_private_menu_page(ExperimentDMPListPage, 'Experiment DMP List', 'experiment-dmp-list', home_page, in_menu=True)
+
+# Get ExperimentDMPListPage (which is now created) for ExperimentDMPReportPage
+sample_list_page = SampleListPage.objects.first()
+if sample_list_page:
+    add_private_menu_page(SampleReportPage, 'Sample Report', 'sample-report-page', sample_list_page)
+else:
+    print('⚠️ SampleReportPage not found! SampleReportPage cannot be created.')
 
 # Get ExperimentDMPListPage (which is now created) for ExperimentDMPReportPage
 experiment_dmp_list_page = ExperimentDMPListPage.objects.first()

@@ -59,7 +59,6 @@ for arg in "$@"; do
       # Safety: ensure compose files exist
       COMPOSE_ENV_FILE="${COMPOSE_ENV_FILE:-.env.production}"
       COMPOSE_FILE="${COMPOSE_FILE:-docker-compose-production.yaml}"
-      ls .env.production
 
       if [[ ! -f "$COMPOSE_ENV_FILE" ]]; then
         echo "⚠️  Env file not found: $COMPOSE_ENV_FILE"
@@ -230,7 +229,7 @@ if [ -f "$ENV_PROD" ]; then
           echo "⚠️  Secret file not found for $k: $f" >&2
         fi
         ;;
-      DB_CONTAINER=*|WEBAPP_CONTAINER=*|DJANGO_DIR=*|POSTGRES_DB=*|POSTGRES_USER=*|POSTGRES_PASSWORD=*|POSTGRES_VOLUME=*|WEB_APP_PORT=*|DEBUGPY_PORT=*|SUPERUSER_NAME=*|SUPERUSER_PASSWORD=*|SUPERUSER_EMAIL=*)
+      DB_CONTAINER=*|WEBAPP_CONTAINER=*|DJANGO_DIR=*|POSTGRES_DB=*|POSTGRES_USER=*|POSTGRES_PASSWORD=*|POSTGRES_VOLUME=*|WEB_APP_PORT=*|DEBUGPY_PORT=*|SUPERUSER_NAME=*|SUPERUSER_PASSWORD=*|SUPERUSER_EMAIL=*|WAGTAILADMIN_BASE_URL=*)
         k=${line%%=*}; v=${line#*=}; export "$k=$v"
         ;;
       *) : ;;
@@ -281,9 +280,10 @@ echo "✅ Migrations applied successfully!"
 
 # Run the separate Wagtail setup script
 ./setup_wagtail.sh
+echo "✅ Digital ECOSystem database init completed!"
 
 echo "🚀 Restarting webapp to ensure all changes take effect..."
 docker restart "$WEBAPP_CONTAINER"
 
-echo "✅ DECOS Django Wagtail setup complete! 🎉"
-echo "🧠 remember to attach debugpy to start the server!"
+echo "✅ DECOS Django Wagtail setup complete!"
+echo "🚀 DECOS is running on $WAGTAILADMIN_BASE_URL"

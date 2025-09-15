@@ -7,5 +7,3 @@
 
 # Feed the Python script directly to the container's Python shell
 docker exec -w "$DJANGO_DIR" -i "$WEBAPP_CONTAINER" python3 manage.py shell --interface=python < ./setup_wagtail.py
-
-echo "✅ D.ECOS. dev ready setup completed!"
