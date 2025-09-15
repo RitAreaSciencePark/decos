@@ -11,6 +11,10 @@
     background-color: #fff;
 }
 
+.card {
+    margin-bottom: 10px;
+}
+
 #sampleform {
     padding: 5px;
 }
@@ -31,9 +35,9 @@ input[type="submit"] {
     display: flex;
     flex-wrap: wrap;
     margin-left: auto;
-    margin-right: center;
+    margin-right: auto;
     max-width: 100%;
-    padding-top: 1.5em;
+    align-self: center;
 
 }
 
@@ -41,10 +45,11 @@ input[type="submit"] {
     display: flex;
     font-size: small;
     width: 50%;
+    margin-right: 10px;
 }
 
 .instruments {
     display: flex;
     font-size: small;
-    width: 50%;
+    width: 49%;
 }

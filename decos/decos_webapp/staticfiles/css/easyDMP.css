@@ -167,6 +167,7 @@ footer {
   min-height: 20px;
   overflow: auto;
   background-color: var(--header-bg);
+  margin-top: 1.5em;
 }
 
 .footer_block {
@@ -232,4 +233,17 @@ h1 {
 .btn-link {
   color: var(--text-black);
   text-decoration: none !important;
+}
+
+
+textarea {
+  width: 100%;
+  min-height: 12em;
+  height: auto;
+  overflow: hidden; /* optional for smooth resize */
+}
+
+input[type="text"] {
+  width: 100%;
+  overflow: hidden; /* optional for smooth resize */
 }

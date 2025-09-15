@@ -58,7 +58,7 @@ for arg in "$@"; do
 
       # Safety: ensure compose files exist
       COMPOSE_ENV_FILE="${COMPOSE_ENV_FILE:-.env.production}"
-      COMPOSE_FILE="${COMPOSE_FILE:-docker-compose-dev.yaml}"
+      COMPOSE_FILE="${COMPOSE_FILE:-docker-compose-production.yaml}"
       ls .env.production
 
       if [[ ! -f "$COMPOSE_ENV_FILE" ]]; then
@@ -240,10 +240,27 @@ if [ -f "$ENV_PROD" ]; then
   done < "$ENV_PROD"
 fi
 
+# set production nginx.conf with nginx.production.conf
+# expand only our env vars, keep nginx runtime $vars intact
+# load needed vars from .env.production and render nginx.conf from template
+
+# export only the vars used in nginx.production.conf
+NGINX_KEYS=(WORKER_PROCESSES WORKER_CONNECTIONS UPSTREAM_HOST UPSTREAM_PORT SERVER_NAME SSL_CERT SSL_KEY STATIC_ROOT MEDIA_ROOT)
+for k in "${NGINX_KEYS[@]}"; do
+  if grep -qE "^${k}=" "$ENV_PROD"; then
+    export "$k=$(grep -E "^${k}=" "$ENV_PROD" | tail -n1 | cut -d= -f2-)"
+  fi
+done
+
+# substitute only our placeholders; keep nginx $host/$scheme/etc. intact
+envsubst '${WORKER_PROCESSES} ${WORKER_CONNECTIONS} ${UPSTREAM_HOST} ${UPSTREAM_PORT} ${SERVER_NAME} ${SSL_CERT} ${SSL_KEY} ${STATIC_ROOT} ${MEDIA_ROOT}' \
+  < nginx/nginx.production.conf > nginx/nginx.conf
+
+echo "nginx.conf overwritten"
 
 # Set environment variables
 echo "🚀 Rebuilding and starting fresh containers..."
-docker compose --env-file .env.production -f docker-compose-dev.yaml up -d --build
+docker compose --env-file .env.production -f docker-compose-production.yaml up -d --build
 
 echo "⌛ Waiting for PostgreSQL to be ready..."
 until docker exec "$DB_CONTAINER" pg_isready -U $POSTGRES_USER; do
@@ -252,7 +269,7 @@ done
 echo "✅ PostgreSQL is ready!"
 
 echo "⌛ Waiting for the Django webapp container to be ready..."
-until docker logs "$WEBAPP_CONTAINER" 2>&1 | grep -q "Note: Debugging will proceed"; do
+until docker logs "$WEBAPP_CONTAINER" 2>&1 | grep -q "Booting worker with pid:"; do
     sleep 2
 done
 echo "✅ Django webapp is ready!"

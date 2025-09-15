@@ -7,7 +7,11 @@ DEBUG = True
 SECURE_SSL_REDIRECT = True
 
 # Define allowed domains for your application
+print(f"allowed hosts: {os.environ.get('DECOS_ALLOWED_HOSTS')}")
+      
 ALLOWED_HOSTS = os.environ.get('DECOS_ALLOWED_HOSTS', 'localhost').split(',')
+print(f"allowed hosts true: {ALLOWED_HOSTS}")
+
 # Get WAGTAILADMIN_BASE_URL from environment variable
 WAGTAILADMIN_BASE_URL = os.environ.get('WAGTAILADMIN_BASE_URL')
 
@@ -15,7 +19,11 @@ if not WAGTAILADMIN_BASE_URL:
     raise ValueError("WAGTAILADMIN_BASE_URL environment variable is not set")
 
 # SECRET_KEY should always be read from an environment variable
-SECRET_KEY = os.environ.get('DECOS_SECRET_KEY')
+# Secret read
+from pathlib import Path
+path = Path("/app/",os.getenv("DECOS_SECRET_KEY_HOST_FILE"))
+with path.open("r", encoding="utf-8") as f:
+    SECRET_KEY = f.read().strip()
 if not SECRET_KEY:
     raise ValueError("DECOS_SECRET_KEY environment variable is not set")
 
