@@ -226,7 +226,7 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # Secret read
 import json
-path = Path("/app") / os.getenv("AUTHENTIK_SECRET_HOST_FILE")
+path = Path("/app/",os.getenv("AUTHENTIK_SECRET_HOST_FILE"))
 with path.open("r", encoding="utf-8") as f:
     AUTHENTIK_SECRET = json.load(f)
 

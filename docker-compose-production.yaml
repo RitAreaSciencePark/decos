@@ -20,7 +20,8 @@ services:
       DECOS_SECRET_KEY_FILE: /run/secrets/decos_secret_key
       SUPERUSER_PASSWORD_FILE: /run/secrets/superuser_password
       POSTGRES_PASSWORD_FILE: /run/secrets/postgres_password
-      MINIO_SECRET_KEY_FILE: /run/secrets/minio_secret_token    
+      AUTHENTIK_SECRETS: /run/secrets/authentik_secret
+      MINIO_SECRET_KEY_FILE: /run/secrets/minio_secret
     secrets:
       - source: decos_secret_key
         target: decos_secret_key
@@ -28,8 +29,10 @@ services:
         target: superuser_password
       - source: postgres_password
         target: postgres_password
-      - source: minio_secret_token
-        target: minio_secret_token
+      - source: authentik_secret
+        target: authentik_secret
+      - source: minio_secret
+        target: minio_secret
     volumes:
       - ./decos/decos_webapp/staticfiles:/app/decos/decos_webapp/staticfiles
       - ./decos/decos_webapp/media:/app/decos/decos_webapp/media
@@ -81,5 +84,7 @@ secrets:
     file: ${SUPERUSER_PASSWORD_HOST_FILE:-.secrets/superuser_password.txt}
   postgres_password:
     file: ${POSTGRES_PASSWORD_HOST_FILE:-.secrets/postgres_password.txt}
-  minio_secret_token:
-    file: ${MINIO_SECRET_KEY_HOST_FILE:-.secrets/minio_secret_token.txt}
+  authentik_secret:
+    file: ${AUTHENTIK_SECRET_HOST_FILE:-.secrets/authentik_secret.txt}
+  minio_secret:
+    file: ${MINIO_SECRET_HOST_FILE:-.secrets/minio_secret.txt}
