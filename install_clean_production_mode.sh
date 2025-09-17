@@ -149,8 +149,9 @@ prompt_secret() {
 }
 
 # ---- end helpers ----
-
 echo "🔐 Preparing .env.production…"
+
+HOST_VALUE=""  # will cache the replacement for 'localhost'
 
 if [ -f "$ENV_PROD" ]; then
   echo "ℹ️ $ENV_PROD already exists. Skipping interactive creation."
@@ -167,43 +168,65 @@ else
     key="${line%%=*}"
     default="${line#*=}"
 
-    # Decide if we should prompt or just copy
     if [[ "$default" == "changeme" ]] || [[ "$default" == *"localhost"* ]]; then
       case "$key" in
+        # treat secrets the same as you already do
         *PASSWORD*|*SECRET*|*TOKEN*|*KEY*)
           value="$(prompt_secret "$key" "$default")"
 
-          # make a safe filename like: superuser_password.txt, decos_secret_key.txt, etc.
           file_base="$(printf '%s' "$key" | tr '[:upper:]' '[:lower:]' | tr -c 'a-z0-9_' '_')"
           host_secret_path="$SECRETS_DIR/${file_base}.txt"
-
-          # save secret to file
           printf '%s' "$value" > "$host_secret_path"
-          chmod 600 "$host_secret_path" || true
+          chmod 600 "$host_secret_path" 2>/dev/null || true
 
-          # write only a pointer to the secret into .env.production
           printf "%s_HOST_FILE=%s\n" "$key" "$host_secret_path" >> "$ENV_PROD"
-
-          # also export for current shell (useful later in the script)
           export "${key}_HOST_FILE=$host_secret_path"
           export "$key=$value"
-
           continue
           ;;
+
+        # SPECIAL HOST-FORMATTED KEYS
+        WAGTAIL_HOSTNAME|SERVER_NAME|DECOS_ALLOWED_HOSTS)
+          if [[ -z "$HOST_VALUE" ]]; then
+            HOST_VALUE="$(prompt_var "HOST (replace 'localhost' everywhere)" "localhost")"
+          fi
+          value="${HOST_VALUE}"
+          ;;
+
+        WAGTAILADMIN_BASE_URL)
+          if [[ -z "$HOST_VALUE" ]]; then
+            HOST_VALUE="$(prompt_var "HOST (replace 'localhost' everywhere)" "localhost")"
+          fi
+          value="https://${HOST_VALUE}"
+          ;;
+
+        CSRF_TRUSTED_ORIGINS)
+          if [[ -z "$HOST_VALUE" ]]; then
+            HOST_VALUE="$(prompt_var "HOST (replace 'localhost' everywhere)" "localhost")"
+          fi
+          value="['https://${HOST_VALUE}']"
+          ;;
+
         *)
-          value="$(prompt_var "$key" "$default")"
+          # Generic handling:
+          # - If default mentions localhost, replace it with cached HOST_VALUE (ask once)
+          # - Else if it's 'changeme', prompt normally
+          if [[ "$default" == *"localhost"* ]]; then
+            if [[ -z "$HOST_VALUE" ]]; then
+              HOST_VALUE="$(prompt_var "HOST (replace 'localhost' everywhere)" "localhost")"
+            fi
+            value="${default//localhost/${HOST_VALUE}}"
+          else
+            value="$(prompt_var "$key" "$default")"
+          fi
           ;;
       esac
     else
       value="$default"
     fi
 
-# non-secrets still get written as KEY=value lines
-printf "%s=%s\n" "$key" "$value" >> "$ENV_PROD"
-
-
+    printf "%s=%s\n" "$key" "$value" >> "$ENV_PROD"
   done < "$ENV_SETUP"
-
   echo "✅ Wrote $ENV_PROD"
 fi
 
