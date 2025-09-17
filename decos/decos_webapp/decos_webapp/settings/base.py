@@ -221,10 +221,14 @@ ACCOUNT_USERNAME_MIN_LENGTH = 2
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # OpenID Connect authentication via Allauth
-from .secrets_minIO import SECRETS_MINIO
-
 
 # REDIRECT URL IN AUTHENTIK: http[s]://<host>:<port>/oidc/authentik/login/callback/
+
+# Secret read
+import json
+path = Path("/app") / os.getenv("AUTHENTIK_SECRET_HOST_FILE")
+with path.open("r", encoding="utf-8") as f:
+    AUTHENTIK_SECRET = json.load(f)
 
 SOCIALACCOUNT_PROVIDERS = {
     "openid_connect": {
@@ -235,8 +239,8 @@ SOCIALACCOUNT_PROVIDERS = {
                 "server_url": "https://orfeo-auth.areasciencepark.it/application/o/decos/.well-known/openid-configuration",
                 "token_auth_method": "client_secret_basic",
                 "APP": { # FIXME: CHANGE THE SECRETS WITH THE SECRETS_FILE...!!!!!!
-                    "client_id": f"{SECRETS_MINIO.client_id}",
-                    "secret": f"{SECRETS_MINIO.secret_token}"
+                    "client_id": f"{AUTHENTIK_SECRET['client_id']}",
+                    "secret": f"{AUTHENTIK_SECRET['secret_token']}"
                 },
             }
         ]
