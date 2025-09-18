@@ -2,7 +2,7 @@ from .base import *
 import os
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 # This tells Django that HTTPS is being used even if a proxy (e.g., Nginx) handles it
 SECURE_SSL_REDIRECT = True
 
@@ -28,7 +28,7 @@ CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
 if not CSRF_TRUSTED_ORIGINS:
     raise ValueError("CSRF_TRUSTED_ORIGINS environment variable is not set")
 
-# CSRF_TRUSTED_ORIGINS = ["https://10.128.8.14"]
+# CSRF_TRUSTED_ORIGINS = ["https://..."]
 
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
