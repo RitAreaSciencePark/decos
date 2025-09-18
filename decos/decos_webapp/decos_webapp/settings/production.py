@@ -17,12 +17,8 @@ if not WAGTAILADMIN_BASE_URL:
 
 # SECRET_KEY should always be read from an environment variable
 # Secret read
-from pathlib import Path
-path = Path("/app/",os.getenv("DECOS_SECRET_KEY_HOST_FILE"))
-with path.open("r", encoding="utf-8") as f:
-    SECRET_KEY = f.read().strip()
-if not SECRET_KEY:
-    raise ValueError("DECOS_SECRET_KEY environment variable is not set")
+from .base import load_secret
+SECRET_KEY = load_secret("DECOS_SECRET_KEY_HOST_FILE")
 
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
 if not CSRF_TRUSTED_ORIGINS:

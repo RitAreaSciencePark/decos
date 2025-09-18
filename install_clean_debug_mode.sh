@@ -198,14 +198,14 @@ else
           if [[ -z "$HOST_VALUE" ]]; then
             HOST_VALUE="$(prompt_var "HOST (replace 'localhost' everywhere)" "localhost")"
           fi
-          value="https://${HOST_VALUE}"
+          value="http://${HOST_VALUE}"
           ;;
 
         CSRF_TRUSTED_ORIGINS)
           if [[ -z "$HOST_VALUE" ]]; then
             HOST_VALUE="$(prompt_var "HOST (replace 'localhost' everywhere)" "localhost")"
           fi
-          value="['https://${HOST_VALUE}']"
+          value="[http://${HOST_VALUE}, https://${HOST_VALUE}']"
           ;;
 
         *)

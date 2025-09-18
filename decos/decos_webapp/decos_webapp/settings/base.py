@@ -12,11 +12,71 @@
 # database connections, authentication settings, static file management, and Wagtail-specific settings.
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
+import os, json
 import django
+import logging
+
+from pathlib import Path
+from typing import Union
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
+
+def load_secret(
+    env_var: str,
+    base_dir: str = "/app/",
+    default_secret: str = "",
+    isJson: bool = False
+):
+    """
+    Load a JSON secret from a file path defined in an ENV variable.
+    
+    Args:
+        env_var (str): Required ENV variable name that must contain the filename or absolute path.
+        base_dir (str): Base directory for secrets (used only if the ENV value is not absolute).
+        default_secret (dict | str): Fallback if file is missing or invalid.
+    
+    Behavior:
+        * If env_var is not set -> raises ValueError.
+        * If file does not exist:
+            - If default_secret is dict -> create file with it.
+            - If default_secret is str -> return it (no file created).
+        * If JSON invalid -> logs error, uses default_secret, file untouched.
+    """
+    filename = os.getenv(env_var)
+    if not filename:
+        raise ValueError(f"❌ Required environment variable '{env_var}' is not set.")
+
+    # Use absolute path if provided, otherwise join with base_dir
+    path = Path(filename) if Path(filename).is_absolute() else Path(base_dir) / filename
+
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            if isJson:
+                try:
+                    secret = json.load(f)
+                except json.JSONDecodeError as e:
+                    logger.error(f"❌ Invalid JSON in {path}: {e}. Using default values (file left untouched).")
+                    secret = default_secret
+            else:
+                secret = f.read().strip()
+    except FileNotFoundError:
+        if isinstance(default_secret, dict):
+            with path.open("w", encoding="utf-8") as f:
+                json.dump(default_secret, f, indent=2)
+            logger.warning(f"⚠️ File not found. Created new secret file at: {path}")
+        else:
+            logger.warning(f"⚠️ File not found. Using default secret as string (no file created).")
+        secret = default_secret
+
+
+    return secret
+
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
@@ -120,10 +180,8 @@ import os, pathlib
 # load env
 POSTGRES_USER = os.getenv("POSTGRES_USER","decos")
 # Secret read
-from pathlib import Path
-path = Path("/app/",os.getenv("POSTGRES_PASSWORD_HOST_FILE"))
-with path.open("r", encoding="utf-8") as f:
-    POSTGRES_PASSWORD = f.read().strip()
+
+POSTGRES_PASSWORD = load_secret("POSTGRES_PASSWORD_HOST_FILE")
 
 DATABASES = {
     "default": {
@@ -226,9 +284,13 @@ SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # Secret read
 import json
-path = Path("/app/",os.getenv("AUTHENTIK_SECRET_HOST_FILE"))
-with path.open("r", encoding="utf-8") as f:
-    AUTHENTIK_SECRET = json.load(f)
+import os
+import json
+from pathlib import Path
+
+# Build the path from ENV
+
+AUTHENTIK_SECRET = load_secret("AUTHENTIK_SECRET_HOST_FILE", default_secret="{'client_id': '','secret_token': ''}", isJson=True)
 
 SOCIALACCOUNT_PROVIDERS = {
     "openid_connect": {
@@ -238,7 +300,7 @@ SOCIALACCOUNT_PROVIDERS = {
                 "name": "Authentik",
                 "server_url": "https://orfeo-auth.areasciencepark.it/application/o/decos/.well-known/openid-configuration",
                 "token_auth_method": "client_secret_basic",
-                "APP": { # FIXME: CHANGE THE SECRETS WITH THE SECRETS_FILE...!!!!!!
+                "APP": { # secret: {'client_id':'...', ''}
                     "client_id": f"{AUTHENTIK_SECRET['client_id']}",
                     "secret": f"{AUTHENTIK_SECRET['secret_token']}"
                 },

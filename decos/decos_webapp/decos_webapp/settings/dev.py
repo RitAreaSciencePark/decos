@@ -23,10 +23,8 @@ WAGTAILADMIN_BASE_URL = os.getenv("WAGTAILADMIN_BASE_URL", "http://localhost:808
 # Secret key used for cryptographic signing (sessions, CSRF, etc.).
 # OK to hardcode for local development, but NEVER hardcode or reuse in prod.
 # Secret read
-from pathlib import Path
-path = Path("/app/",os.getenv("DECOS_SECRET_KEY_HOST_FILE"))
-with path.open("r", encoding="utf-8") as f:
-    SECRET_KEY = f.read().strip()
+from .base import load_secret
+SECRET_KEY = load_secret("DECOS_SECRET_KEY_HOST_FILE")
 
 # Hostnames the app will serve. In development, `*` is convenient.
 # In production, restrict this to explicit hostnames/domains.
