@@ -249,7 +249,10 @@ if [ -f "$ENV_PROD" ]; then
         if [ -f "$f" ]; then
           export "$k=$(cat "$f")"
         else
-          echo "⚠️  Secret file not found for $k: $f" >&2
+          # ensure .secrets/ directory exists
+          mkdir -p "$(dirname "$f")"
+          : > "$f"   # create empty file
+          echo "⚠️  Secret file not found for $k: $f → created empty one" >&2
         fi
         ;;
       DB_CONTAINER=*|WEBAPP_CONTAINER=*|DJANGO_DIR=*|POSTGRES_DB=*|POSTGRES_USER=*|POSTGRES_PASSWORD=*|POSTGRES_VOLUME=*|WEB_APP_PORT=*|DEBUGPY_PORT=*|SUPERUSER_NAME=*|SUPERUSER_PASSWORD=*|SUPERUSER_EMAIL=*|WAGTAILADMIN_BASE_URL=*)

@@ -62,17 +62,21 @@ def load_secret(
                     secret = json.load(f)
                 except json.JSONDecodeError as e:
                     logger.error(f"❌ Invalid JSON in {path}: {e}. Using default values (file left untouched).")
-                    secret = default_secret
+                    with path.open("w", encoding="utf-8") as f:
+                        f.write(default_secret)
+                    secret = json.loads(default_secret)
             else:
                 secret = f.read().strip()
     except FileNotFoundError:
-        if isinstance(default_secret, dict):
-            with path.open("w", encoding="utf-8") as f:
-                json.dump(default_secret, f, indent=2)
-            logger.warning(f"⚠️ File not found. Created new secret file at: {path}")
-        else:
-            logger.warning(f"⚠️ File not found. Using default secret as string (no file created).")
-        secret = default_secret
+        with path.open("w", encoding="utf-8") as f:
+            if isJson:
+                f.write(default_secret)
+                secret = json.loads(default_secret)
+            else:
+                f.write(default_secret)
+                secret = default_secret
+            
+        logger.warning(f"⚠️ File not found. Created new secret file at: {path}")
 
 
     return secret
@@ -290,7 +294,7 @@ from pathlib import Path
 
 # Build the path from ENV
 
-AUTHENTIK_SECRET = load_secret("AUTHENTIK_SECRET_HOST_FILE", default_secret="{'client_id': '','secret_token': ''}", isJson=True)
+AUTHENTIK_SECRET = load_secret("AUTHENTIK_SECRET_HOST_FILE", default_secret='{"client_id": "","secret_token": ""}', isJson=True)
 
 SOCIALACCOUNT_PROVIDERS = {
     "openid_connect": {
