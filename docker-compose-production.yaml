@@ -1,7 +1,7 @@
 
 services:
   webapp:
-    container_name: ${WEBAPP_CONTAINER:-decos_webapp}
+    container_name: ${WEBAPP_CONTAINER:-decos_webapp_production}
     build:
       context: .
       dockerfile: ./decos/Dockerfile
@@ -55,7 +55,7 @@ services:
       - webapp
 
   db:
-    container_name: ${DB_CONTAINER:-decos_webapp}
+    container_name: ${DB_CONTAINER:-decos_db_production}
     image: decos_postgres_db
     build:
       context: .
