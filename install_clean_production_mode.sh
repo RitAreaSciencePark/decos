@@ -18,6 +18,7 @@ delete_env() {
       fi
 }
 
+
 # ARGS MANAGEMENT
 for arg in "$@"; do
   case "$arg" in
@@ -34,6 +35,7 @@ for arg in "$@"; do
       if [[ ! -f "$COMPOSE_FILE" ]]; then
         echo "⚠️  Compose file not found: $COMPOSE_FILE"
       fi
+
 
       # Bring the stack down, remove images and volumes
       docker compose --env-file "$COMPOSE_ENV_FILE" -f "$COMPOSE_FILE" down --rmi all --volumes || {

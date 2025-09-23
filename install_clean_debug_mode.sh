@@ -8,12 +8,12 @@ SECRETS_DIR=".secrets"
 
 # Delete enviromental variable (but first make a .bak)
 delete_env() {
-      if [ -f "$ENV_PROD" ]; then
-        echo "♻️  --reinit specified: removing $ENV_PROD"
-        cp "$ENV_PROD" "$ENV_PROD.bak"
-        rm -f "$ENV_PROD"
+      if [ -f "$ENV_DEV" ]; then
+        echo "♻️  --reinit specified: removing $ENV_DEV"
+        cp "$ENV_DEV" "$ENV_DEV.bak"
+        rm -f "$ENV_DEV"
       else
-        echo "♻️  --reinit specified: nothing to remove ($ENV_PROD not found)"
+        echo "♻️  --reinit specified: nothing to remove ($ENV_DEV not found)"
       fi
 }
 
@@ -24,18 +24,18 @@ for arg in "$@"; do
       "--rmall")
       echo "🧹  --rmall specified: stopping containers and removing images + volumes"
       # Safety: ensure compose files exist
-      COMPOSE_ENV_FILE="${COMPOSE_ENV_FILE:-.env.production}"
-      COMPOSE_FILE="${COMPOSE_FILE:-docker-compose-production.yaml}"
+      ENV_FILE="${ENV_FILE:-.env.dev}"
+      COMPOSE_FILE="${COMPOSE_FILE:-docker-compose-dev.yaml}"
 
-      if [[ ! -f "$COMPOSE_ENV_FILE" ]]; then
-        echo "⚠️  Env file not found: $COMPOSE_ENV_FILE"
+      if [[ ! -f "$ENV_FILE" ]]; then
+        echo "⚠️  Env file not found: $ENV_FILE"
       fi
       if [[ ! -f "$COMPOSE_FILE" ]]; then
         echo "⚠️  Compose file not found: $COMPOSE_FILE"
       fi
 
       # Bring the stack down, remove images and volumes
-      docker compose --env-file "$COMPOSE_ENV_FILE" -f "$COMPOSE_FILE" down --rmi all --volumes || {
+      docker compose --env-file "$ENV_FILE" -f "$COMPOSE_FILE" down --rmi all --volumes || {
         exit_code=$?
         echo "ℹ️  'docker compose down' returned non-zero (stack may not be running). REMOVE CONTAINERS and VOLUMES MANUALLY. exit code: $exit_code"
         exit $exit_code
