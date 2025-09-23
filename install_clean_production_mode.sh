@@ -5,57 +5,25 @@ ENV_SETUP=".env.production.setup"
 ENV_PROD=".env.production"
 
 SECRETS_DIR=".secrets"
-SECRETS_BUNDLE="$SECRETS_DIR/bundle.env"
-SECRETS_RUNTIME_DIR="$SECRETS_DIR/.runtime"
-
-mkdir -p "$SECRETS_DIR" "$SECRETS_RUNTIME_DIR"
-chmod 700 "$SECRETS_DIR" "$SECRETS_RUNTIME_DIR" 2>/dev/null || true
 
 
-## -- NOT USED (for now)
-
-b64enc() { printf '%s' "$1" | base64 | tr -d '\n'; }
-b64dec() { printf '%s' "$1" | base64 -d; }
-
-# write or update KEY_B64=... in bundle.env
-bundle_set() {
-  local key="$1" val="$2" b64
-  b64="$(b64enc "$val")"
-  touch "$SECRETS_BUNDLE"
-  grep -v -E "^${key}_B64=" "$SECRETS_BUNDLE" > "$SECRETS_BUNDLE.tmp" || true
-  printf '%s_B64=%s\n' "$key" "$b64" >> "$SECRETS_BUNDLE.tmp"
-  mv "$SECRETS_BUNDLE.tmp" "$SECRETS_BUNDLE"
-  chmod 600 "$SECRETS_BUNDLE" || true
+# Delete enviromental variable (but first make a .bak)
+delete_env() {
+      if [ -f "$ENV_PROD" ]; then
+        echo "♻️  --reinit specified: removing $ENV_PROD"
+        cp "$ENV_PROD" "$ENV_PROD.bak"
+        rm -f "$ENV_PROD"
+      else
+        echo "♻️  --reinit specified: nothing to remove ($ENV_PROD not found)"
+      fi
 }
 
-# read KEY_B64=… and decode
-bundle_get() {
-  local key="$1" b64
-  b64="$(grep -E "^${key}_B64=" "$SECRETS_BUNDLE" | head -n1 | cut -d= -f2- || true)"
-  [ -n "$b64" ] && b64dec "$b64"
-}
-
-# materialize a plain-text secret file from bundle to .runtime and export both *_HOST_FILE and value
-materialize_secret() {
-  local key="$1" fname="$SECRETS_RUNTIME_DIR/${key,,}.txt"
-  local val
-  val="$(bundle_get "$key")"
-  [ -z "$val" ] && return 0
-  printf '%s' "$val" > "$fname"
-  chmod 600 "$fname" || true
-  export "${key}_HOST_FILE=$fname"
-  export "$key=$val"
-}
-## -- END NOT USED (for now)
-
-
-
+# ARGS MANAGEMENT
 for arg in "$@"; do
   case "$arg" in
       # --> args handle --rmall flag, remove containers and volumes
       "--rmall")
       echo "🧹  --rmall specified: stopping containers and removing images + volumes"
-
       # Safety: ensure compose files exist
       COMPOSE_ENV_FILE="${COMPOSE_ENV_FILE:-.env.production}"
       COMPOSE_FILE="${COMPOSE_FILE:-docker-compose-production.yaml}"
@@ -68,8 +36,11 @@ for arg in "$@"; do
       fi
 
       # Bring the stack down, remove images and volumes
-      docker compose --env-file "$COMPOSE_ENV_FILE" -f "$COMPOSE_FILE" down --rmi all --volumes || \
-        echo "ℹ️  'docker compose down' returned non-zero (stack may not be running)."
+      docker compose --env-file "$COMPOSE_ENV_FILE" -f "$COMPOSE_FILE" down --rmi all --volumes || {
+        exit_code=$?
+        echo "ℹ️  'docker compose down' returned non-zero (stack may not be running). REMOVE CONTAINERS and VOLUMES MANUALLY. exit code: $exit_code"
+        exit $exit_code
+        }
 
       # Optionally remove the named container if it exists
       if [[ -n "${WEBAPP_CONTAINER:-}" ]] && docker ps -a --format '{{.Names}}' | grep -qx "$WEBAPP_CONTAINER"; then
@@ -78,19 +49,14 @@ for arg in "$@"; do
       else
         echo "ℹ️  \$WEBAPP_CONTAINER not set or container not found."
       fi
-
+      echo "Removing env file"
+      delete_env
       # Networks created by Compose are removed by 'down' automatically (unless external)
       echo "✅  Completed --rmall."
     ;;
     # --> args handle --reinit flag, rewrite env.production 
     "--reinit")
-      if [ -f "$ENV_PROD" ]; then
-        echo "♻️  --reinit specified: removing $ENV_PROD"
-        cp "$ENV_PROD" "$ENV_PROD.bak"
-        rm -f "$ENV_PROD"
-      else
-        echo "♻️  --reinit specified: nothing to remove ($ENV_PROD not found)"
-      fi
+      delete_env
     ;;
   esac
 done
