@@ -6,6 +6,8 @@ ENV_PROD=".env.production"
 
 SECRETS_DIR=".secrets"
 
+mkdir -p ./$SECRETS_DIR
+
 
 # Delete enviromental variable (but first make a .bak)
 delete_env() {
