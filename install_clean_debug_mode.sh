@@ -1,4 +1,18 @@
 #!/bin/bash
+# Copyright (c) 2025 Marco Prenassi
+# Laboratory of Data Engineering, Istituto di ricerca per l'innovazione tecnologica (RIT),
+# Area Science Park, Trieste, Italy.
+# Licensed under the MIT License. See LICENSE file in the project root for full license information.
+#
+# Author: Marco Prenassi
+# Date: 2025-02-17
+# Description: This script initializes and manages the DECOS development environment,
+# including secret generation, environment setup, container orchestration,
+# and database initialization for the PRP@CERIC DECOS system.
+#
+# Decos Webapp - Dev Environment Setup
+# Relative Path: setup_dev.sh
+
 set -euo pipefail
 
 ENV_SETUP=".env.dev.setup"

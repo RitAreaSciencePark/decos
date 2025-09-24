@@ -1,4 +1,17 @@
 #!/usr/bin/env bash
+# Copyright (c) 2025 Marco Prenassi
+# Laboratory of Data Engineering, Istituto di ricerca per l'innovazione tecnologica (RIT),
+# Area Science Park, Trieste, Italy.
+# Licensed under the MIT License. See LICENSE file in the project root for full license information.
+#
+# Author: Marco Prenassi
+# Date: 2025-02-17
+# Description: This script applies Django migrations for the DECOS system in a running container,
+# including a faked migration for `auth.0013_group_laboratory`, ensuring schema consistency
+# between user groups and laboratory groups.
+#
+# Decos Webapp - Migration Utility
+# Relative Path: apply_migrations.sh
 # apply_migrations.sh
 # Usage: ./apply_migrations.sh [path/to/.env.dev]
 # Loads only DJANGO_DIR and WEBAPP_CONTAINER from the env file
