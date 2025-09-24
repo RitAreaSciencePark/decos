@@ -38,6 +38,9 @@
       {% if sample|classname == "bio_open_lab_unisalentosamples" %}
         {% include "home/sample_pages/includes/bio_open_lab_unisalento_report.html" %}
       {% endif %}
+      {% if sample|classname == "nanoinnovation_laboratorysamples" %}
+        {% include "home/sample_pages/includes/nanoinnovation_laboratory_report.html" %}
+      {% endif %}
 </div>
 
 

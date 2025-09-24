@@ -104,6 +104,14 @@ def form_factory(form_model, widgets_list=None, request=None, filerequest=None, 
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
+            for name, field in self.fields.items():
+                if isinstance(field.widget, (forms.TextInput, forms.Textarea)):
+                    # Default to 256 if not specified
+                    maxlen = getattr(field, 'max_length', 256)
+                    field.widget.attrs.update({
+                        'maxlength': maxlen,
+                        'class': field.widget.attrs.get('class', '') + ' char-count'
+                    })
 
     # Handle if request is data (e.g., QueryDict) or an actual request object
     if isinstance(request, dict) or isinstance(request, QueryDict):

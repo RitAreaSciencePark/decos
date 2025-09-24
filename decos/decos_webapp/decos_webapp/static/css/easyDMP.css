@@ -174,6 +174,11 @@ footer {
   padding-right: 80px;
 }
 
+footer img {
+  width: auto;
+  height: 100px;
+}
+
 h1 {
   color: var(--text-black);
   font-size: 5 px;
@@ -233,4 +238,17 @@ h1 {
 .btn-link {
   color: var(--text-black);
   text-decoration: none !important;
+}
+
+
+textarea {
+  width: 100%;
+  min-height: 12em;
+  height: auto;
+  overflow: hidden; /* optional for smooth resize */
+}
+
+input[type="text"] {
+  width: 100%;
+  overflow: hidden; /* optional for smooth resize */
 }

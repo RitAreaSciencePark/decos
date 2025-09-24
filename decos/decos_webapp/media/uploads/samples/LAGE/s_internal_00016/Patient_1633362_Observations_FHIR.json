@@ -1,0 +1,696 @@
+{
+  "resourceType": "Bundle",
+  "id": "ab5b249b-913f-4698-b404-d51da6d6ac2a",
+  "meta": {
+    "lastUpdated": "2025-05-12T08:36:32.286+00:00"
+  },
+  "type": "searchset",
+  "link": [ {
+    "relation": "self",
+    "url": "https://hapi.fhir.org/baseR4/Observation?subject=Patient%2F1633362"
+  }, {
+    "relation": "next",
+    "url": "https://hapi.fhir.org/baseR4?_getpages=ab5b249b-913f-4698-b404-d51da6d6ac2a&_getpagesoffset=20&_count=20&_pretty=true&_bundletype=searchset"
+  } ],
+  "entry": [ {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633385",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633385",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Body Temperature, 36.9 C</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8310-5"
+        } ],
+        "text": "Body Temperature"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-11-04T14:35:26-08:00",
+      "valueQuantity": {
+        "value": 36.9,
+        "unit": "C"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633386",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633386",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Heart Rate, 88 bpm</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8867-4"
+        } ],
+        "text": "Heart Rate"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-11-04T14:35:26-08:00",
+      "valueQuantity": {
+        "value": 88,
+        "unit": "bpm"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633387",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633387",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Respiratory Rate, 33 resp/min</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "9279-1"
+        } ],
+        "text": "Respiratory Rate"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-11-04T14:35:26-08:00",
+      "valueQuantity": {
+        "value": 33,
+        "unit": "resp/min"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633388",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633388",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Height, 90 cm</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8302-2"
+        } ],
+        "text": "Height"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-11-04T14:35:26-08:00",
+      "valueQuantity": {
+        "value": 90,
+        "unit": "cm"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633389",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633389",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Weight, 71.4 Kg</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "3141-9"
+        } ],
+        "text": "Weight"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-11-04T14:35:26-08:00",
+      "valueQuantity": {
+        "value": 71.4,
+        "unit": "Kg"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633390",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633390",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Body Temperature, 36.8 C</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8310-5"
+        } ],
+        "text": "Body Temperature"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-28T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 36.8,
+        "unit": "C"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633391",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633391",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Heart Rate, 89 bpm</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8867-4"
+        } ],
+        "text": "Heart Rate"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-28T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 89,
+        "unit": "bpm"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633392",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633392",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Respiratory Rate, 32 resp/min</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "9279-1"
+        } ],
+        "text": "Respiratory Rate"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-28T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 32,
+        "unit": "resp/min"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633393",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633393",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Height, 90 cm</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8302-2"
+        } ],
+        "text": "Height"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-28T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 90,
+        "unit": "cm"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633394",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633394",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Weight, 73.8 Kg</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "3141-9"
+        } ],
+        "text": "Weight"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-28T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 73.8,
+        "unit": "Kg"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633395",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633395",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Body Temperature, 36.2 C</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8310-5"
+        } ],
+        "text": "Body Temperature"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-21T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 36.2,
+        "unit": "C"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633396",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633396",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Heart Rate, 77 bpm</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8867-4"
+        } ],
+        "text": "Heart Rate"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-21T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 77,
+        "unit": "bpm"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633397",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633397",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Respiratory Rate, 25 resp/min</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "9279-1"
+        } ],
+        "text": "Respiratory Rate"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-21T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 25,
+        "unit": "resp/min"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633398",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633398",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Height, 90 cm</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8302-2"
+        } ],
+        "text": "Height"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-21T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 90,
+        "unit": "cm"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633399",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633399",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Weight, 79.1 Kg</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "3141-9"
+        } ],
+        "text": "Weight"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-21T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 79.1,
+        "unit": "Kg"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633400",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633400",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Body Temperature, 36.2 C</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8310-5"
+        } ],
+        "text": "Body Temperature"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-14T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 36.2,
+        "unit": "C"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633401",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633401",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Heart Rate, 74 bpm</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8867-4"
+        } ],
+        "text": "Heart Rate"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-14T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 74,
+        "unit": "bpm"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633402",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633402",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Respiratory Rate, 33 resp/min</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "9279-1"
+        } ],
+        "text": "Respiratory Rate"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-14T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 33,
+        "unit": "resp/min"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633403",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633403",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Height, 90 cm</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "8302-2"
+        } ],
+        "text": "Height"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-14T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 90,
+        "unit": "cm"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  }, {
+    "fullUrl": "https://hapi.fhir.org/baseR4/Observation/1633404",
+    "resource": {
+      "resourceType": "Observation",
+      "id": "1633404",
+      "meta": {
+        "versionId": "1",
+        "lastUpdated": "2020-11-04T22:35:27.064+00:00",
+        "source": "#TbF0WVXUf9qxuC6x"
+      },
+      "text": {
+        "status": "generated",
+        "div": "<div xmlns=\"http://www.w3.org/1999/xhtml\">Weight, 77.3 Kg</div>"
+      },
+      "status": "final",
+      "code": {
+        "coding": [ {
+          "system": "http://loinc.org",
+          "code": "3141-9"
+        } ],
+        "text": "Weight"
+      },
+      "subject": {
+        "reference": "Patient/1633362"
+      },
+      "effectiveDateTime": "2020-10-14T14:35:26-07:00",
+      "valueQuantity": {
+        "value": 77.3,
+        "unit": "Kg"
+      }
+    },
+    "search": {
+      "mode": "match"
+    }
+  } ]
+}

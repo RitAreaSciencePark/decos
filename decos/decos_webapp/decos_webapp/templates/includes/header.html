@@ -153,7 +153,7 @@
                 <!-- stub -->
                 {% endif %}
                     {% if request.session.lab_selected == None %}
-                        <a class="btn btn-link" id="dropdownMenuButton" href="{{ current_site.root_url }}/switch-laboratory">Switch
+                        <a class="btn btn-link" id="dropdownMenuButton" href="/switch-laboratory">Switch
                             lab</a>
                         </button>
                         {% else %}
@@ -171,7 +171,7 @@
                     <input type="hidden" name="next" value="{{ request.path }}">
             {% else %}
             <div class="no-user-login-container">
-                <a href="{{ current_site.root_url }}/login" id="login-a">Login</a>
+                <a href="/login" id="login-a">Login</a>
             </div>
             {% endif %}
             </p>

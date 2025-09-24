@@ -2,12 +2,13 @@ from .base import *
 import os
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 # This tells Django that HTTPS is being used even if a proxy (e.g., Nginx) handles it
 SECURE_SSL_REDIRECT = True
 
 # Define allowed domains for your application
 ALLOWED_HOSTS = os.environ.get('DECOS_ALLOWED_HOSTS', 'localhost').split(',')
+
 # Get WAGTAILADMIN_BASE_URL from environment variable
 WAGTAILADMIN_BASE_URL = os.environ.get('WAGTAILADMIN_BASE_URL')
 
@@ -15,15 +16,15 @@ if not WAGTAILADMIN_BASE_URL:
     raise ValueError("WAGTAILADMIN_BASE_URL environment variable is not set")
 
 # SECRET_KEY should always be read from an environment variable
-SECRET_KEY = os.environ.get('DECOS_SECRET_KEY')
-if not SECRET_KEY:
-    raise ValueError("DECOS_SECRET_KEY environment variable is not set")
+# Secret read
+from .base import load_secret
+SECRET_KEY = load_secret("DECOS_SECRET_KEY_HOST_FILE")
 
 CSRF_TRUSTED_ORIGINS = os.environ.get("CSRF_TRUSTED_ORIGINS", "").split(",")
 if not CSRF_TRUSTED_ORIGINS:
     raise ValueError("CSRF_TRUSTED_ORIGINS environment variable is not set")
 
-# CSRF_TRUSTED_ORIGINS = ["https://10.128.8.14"]
+# CSRF_TRUSTED_ORIGINS = ["https://..."]
 
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

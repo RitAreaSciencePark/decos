@@ -12,11 +12,74 @@
 # database connections, authentication settings, static file management, and Wagtail-specific settings.
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
-import os
+import os, json
 import django
+import logging
+
+from pathlib import Path
+from typing import Union
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
+
+def load_secret(
+    env_var: str,
+    base_dir: str = "/app/",
+    default_secret: str = "",
+    isJson: bool = False
+):
+    """
+    Load a JSON secret from a file path defined in an ENV variable.
+    
+    Args:
+        env_var (str): Required ENV variable name that must contain the filename or absolute path.
+        base_dir (str): Base directory for secrets (used only if the ENV value is not absolute).
+        default_secret (dict | str): Fallback if file is missing or invalid.
+    
+    Behavior:
+        * If env_var is not set -> raises ValueError.
+        * If file does not exist:
+            - If default_secret is dict -> create file with it.
+            - If default_secret is str -> return it (no file created).
+        * If JSON invalid -> logs error, uses default_secret, file untouched.
+    """
+    filename = os.getenv(env_var)
+    if not filename:
+        raise ValueError(f"❌ Required environment variable '{env_var}' is not set.")
+
+    # Use absolute path if provided, otherwise join with base_dir
+    path = Path(filename) if Path(filename).is_absolute() else Path(base_dir) / filename
+
+    try:
+        with path.open("r", encoding="utf-8") as f:
+            if isJson:
+                try:
+                    secret = json.load(f)
+                except json.JSONDecodeError as e:
+                    logger.error(f"❌ Invalid JSON in {path}: {e}. Using default values (file left untouched).")
+                    with path.open("w", encoding="utf-8") as f:
+                        f.write(default_secret)
+                    secret = json.loads(default_secret)
+            else:
+                secret = f.read().strip()
+    except FileNotFoundError:
+        with path.open("w", encoding="utf-8") as f:
+            if isJson:
+                f.write(default_secret)
+                secret = json.loads(default_secret)
+            else:
+                f.write(default_secret)
+                secret = default_secret
+            
+        logger.warning(f"⚠️ File not found. Created new secret file at: {path}")
+
+
+    return secret
 
 
 # Quick-start development settings - unsuitable for production
@@ -114,20 +177,30 @@ WSGI_APPLICATION = "decos_webapp.wsgi.application"  # Entry point for WSGI serve
 # DATABASE ROUTING: crucial for handling multiple databases, ensures queries are directed correctly.
 DATABASE_ROUTERS = ["decos_webapp.db_routers.ExternalDbRouter"]  # Custom database router located in db_routers.py.
 
+
+import os, pathlib
+# This is an override of getenv to check if you need to read a file (like for the secrets)
+
+# load env
+POSTGRES_USER = os.getenv("POSTGRES_USER","decos")
+# Secret read
+
+POSTGRES_PASSWORD = load_secret("POSTGRES_PASSWORD_HOST_FILE")
+
 DATABASES = {
     "default": {
         'ENGINE': 'django.db.backends.postgresql',  # PostgreSQL database engine.
         'NAME': 'decos_webapp_db',  # Main database for storing application data.
-        'USER': 'decos',  # Database username.
-        'PASSWORD': 'postgres', # FIXME: Update with a secure password before deployment.
+        'USER': POSTGRES_USER,  # Database username from .env.XX (dev or production or test)
+        'PASSWORD': POSTGRES_PASSWORD, # Database password from .env.XX
         'HOST': 'db',  # Database server hostname.
         'PORT': '5432',  # Default PostgreSQL port.
     },
     "prpmetadata-db": {
         'ENGINE': 'django.db.backends.postgresql',  # PostgreSQL database engine for metadata storage.
         'NAME': 'decos_metadata_db',  # Database storing metadata for the PRP system.
-        'USER': 'decos',  # Database username.
-        'PASSWORD': 'postgres', # FIXME: Update with a secure password before deployment.
+        'USER': POSTGRES_USER,  # Database username from .env.XX (dev or production or test)
+        'PASSWORD': POSTGRES_PASSWORD, # Database password from .env.XX
         'HOST': 'db',  # Database server hostname.
         'PORT': '5432',  # Default PostgreSQL port.
     }
@@ -210,10 +283,18 @@ ACCOUNT_USERNAME_MIN_LENGTH = 2
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
 # OpenID Connect authentication via Allauth
-from .secrets_minIO import SECRETS_MINIO
-
 
 # REDIRECT URL IN AUTHENTIK: http[s]://<host>:<port>/oidc/authentik/login/callback/
+
+# Secret read
+import json
+import os
+import json
+from pathlib import Path
+
+# Build the path from ENV
+
+AUTHENTIK_SECRET = load_secret("AUTHENTIK_SECRET_HOST_FILE", default_secret='{"client_id": "","secret_token": ""}', isJson=True)
 
 SOCIALACCOUNT_PROVIDERS = {
     "openid_connect": {
@@ -223,9 +304,9 @@ SOCIALACCOUNT_PROVIDERS = {
                 "name": "Authentik",
                 "server_url": "https://orfeo-auth.areasciencepark.it/application/o/decos/.well-known/openid-configuration",
                 "token_auth_method": "client_secret_basic",
-                "APP": {
-                    "client_id": f"{SECRETS_MINIO.client_id}",
-                    "secret": f"{SECRETS_MINIO.secret_token}"
+                "APP": { # secret: {'client_id':'...', ''}
+                    "client_id": f"{AUTHENTIK_SECRET['client_id']}",
+                    "secret": f"{AUTHENTIK_SECRET['secret_token']}"
                 },
             }
         ]

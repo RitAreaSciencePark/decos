@@ -1,3 +1,3 @@
 class SECRETS_MINIO:
-    client_id = "Hhx9cVfd39MTiQepD0qQGe30czO2hsmnwMkF2Uah"
-    secret_token = "tYFhFUmTFQmlT2CuqXwcK4EfcvsJHE9rbkjVR8tMJ2W02EORfeGHtrfs5unw8QMRdUTiDu2yEm2dhbL0aew2uY2s3IWE9OhNuuH7bnrQRgZBnG0VKSnPzeATo90C9Bmy"
+    client_id = "[INSERT CLIENT ID HERE]"
+    secret_token = "[INSERT SECRET TOKEN HERE]"

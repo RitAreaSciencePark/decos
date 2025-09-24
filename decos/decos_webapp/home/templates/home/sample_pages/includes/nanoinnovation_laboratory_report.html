@@ -1,0 +1,197 @@
+<div class="card mt-4">
+  <div class="card-header bg-info">
+    <h4 class="mb-0">NanoInnovation Laboratory Sample Information</h4>
+  </div>
+  <div class="card-body">
+    {% if sample.type %}
+      <p><b>Sample Type:</b> {{ sample.type }}</p>
+    {% endif %}
+    {% if sample.type == "animal_tissue" %}
+      {% if sample.origin %}
+        <p><b>Origin:</b> {{ sample.origin }}</p>
+      {% endif %}
+      {% if sample.is_fixed %}
+        <p><b>Is Fixed:</b> {{ sample.is_fixed }}</p>
+      {% endif %}
+      {% if sample.embedding_medium %}
+        <p><b>Embedding Medium:</b> {{ sample.embedding_medium }}</p>
+      {% endif %}
+      {% if sample.slice_thickness %}
+        <p><b>Slice Thickness [μm]:</b> {{ sample.slice_thickness }}</p>
+      {% endif %}
+      {% if sample.support %}
+        <p><b>Support:</b> {{ sample.support }}</p>
+      {% endif %}
+      {% if sample.other %}
+        <p><b>Other:</b> {{ sample.other }}</p>
+      {% endif %}
+    {% elif sample.type == "cultured_cells" %}
+      {% if sample.origin %}
+        <p><b>Origin:</b> {{ sample.origin }}</p>
+      {% endif %}
+      {% if sample.bio_safety_level %}
+        <p><b>Bio Safety Level:</b> {{ sample.bio_safety_level }}</p>
+      {% endif %}
+      {% if sample.is_fixed %}
+        <p><b>Is Fixed:</b> {{ sample.is_fixed }}</p>
+      {% endif %}
+      {% if sample.adherent_or_suspended %}
+        <p><b>Adherent or Suspended:</b> {{ sample.adherent_or_suspended }}</p>
+      {% endif %}
+      {% if sample.buffer_medium %}
+        <p><b>Buffer Medium:</b> {{ sample.buffer_medium }}</p>
+      {% endif %}
+      {% if sample.support %}
+        <p><b>Support:</b> {{ sample.support }}</p>
+      {% endif %}
+      {% if sample.other %}
+        <p><b>Other:</b> {{ sample.other }}</p>
+      {% endif %}
+    {% elif sample.type == "bacteria" %}
+      {% if sample.origin %}
+        <p><b>Origin:</b> {{ sample.origin }}</p>
+      {% endif %}
+      {% if sample.adherent_or_suspended %}
+        <p><b>Adherent or Suspended:</b> {{ sample.adherent_or_suspended }}</p>
+      {% endif %}
+      {% if sample.buffer_medium %}
+        <p><b>Buffer Medium:</b> {{ sample.buffer_medium }}</p>
+      {% endif %}
+      {% if sample.support %}
+        <p><b>Support:</b> {{ sample.support }}</p>
+      {% endif %}
+      {% if sample.other %}
+        <p><b>Other:</b> {{ sample.other }}</p>
+      {% endif %}
+    {% elif sample.type == "virus" %}
+      {% if sample.origin %}
+        <p><b>Origin:</b> {{ sample.origin }}</p>
+      {% endif %}
+      {% if sample.adherent_or_suspended %}
+        <p><b>Adherent or Suspended:</b> {{ sample.adherent_or_suspended }}</p>
+      {% endif %}
+      {% if sample.buffer_medium %}
+        <p><b>Buffer Medium:</b> {{ sample.buffer_medium }}</p>
+      {% endif %}
+      {% if sample.culture_medium %}
+        <p><b>Culture Medium:</b> {{ sample.culture_medium }}</p>
+      {% endif %}
+      {% if sample.support %}
+        <p><b>Support:</b> {{ sample.support }}</p>
+      {% endif %}
+      {% if sample.other %}
+        <p><b>Other:</b> {{ sample.other }}</p>
+      {% endif %}
+    {% elif sample.type == "powder" %}
+      {% if sample.pure_or_mixture %}
+        <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
+      {% endif %}
+      {% if sample.chemical_name %}
+        <p><b>Chemical Name:</b> {{ sample.chemical_name }}</p>
+      {% endif %}
+      {% if sample.form %}
+        <p><b>Form:</b> {{ sample.form }}</p>
+      {% endif %}
+      {% if sample.chemical_hazard %}
+        <p><b>Chemical Hazard:</b> {{ sample.chemical_hazard }}</p>
+      {% endif %}
+      {% if sample.other %}
+        <p><b>Other:</b> {{ sample.other }}</p>
+      {% endif %}
+    {% elif sample.type == "thin_film" %}
+      {% if sample.support %}
+        <p><b>Support:</b> {{ sample.support }}</p>
+      {% endif %}
+      {% if sample.film_thickness %}
+        <p><b>Film Thickness [nm]:</b> {{ sample.film_thickness }}</p>
+      {% endif %}
+      {% if sample.pure_or_mixture %}
+        <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
+      {% endif %}
+      {% if sample.chemical_name_CAS_list %}
+        <p><b>Chemical Name and CAS:</b> {{ sample.chemical_name_CAS_list }}</p>
+      {% endif %}
+      {% if sample.self_standing_or_free_standing %}
+        <p><b>Self-standing or Free-standing:</b> {{ sample.self_standing_or_free_standing }}</p>
+      {% endif %}
+      {% if sample.other %}
+        <p><b>Other:</b> {{ sample.other }}</p>
+      {% endif %}
+    {% elif sample.type == "non_bio_slice" %}
+      {% if sample.origin %}
+        <p><b>Origin:</b> {{ sample.origin }}</p>
+      {% endif %}
+      {% if sample.self_standing_or_free_standing %}
+        <p><b>Self-standing or Free-standing:</b> {{ sample.self_standing_or_free_standing }}</p>
+      {% endif %}
+      {% if sample.support %}
+        <p><b>Support:</b> {{ sample.support }}</p>
+      {% endif %}
+      {% if sample.embedding_medium %}
+        <p><b>Embedding Medium:</b> {{ sample.embedding_medium }}</p>
+      {% endif %}
+      {% if sample.slice_thickness %}
+        <p><b>Slice Thickness:</b> {{ sample.slice_thickness }}</p>
+      {% endif %}
+      {% if sample.polishing %}
+        <p><b>Polishing:</b> {{ sample.polishing }}</p>
+      {% endif %}
+      {% if sample.other %}
+        <p><b>Other:</b> {{ sample.other }}</p>
+      {% endif %}
+    {% elif sample.type == "gel" %}
+      {% if sample.pure_or_mixture %}
+        <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
+      {% endif %}
+      {% if sample.chemical_name_CAS_list %}
+        <p><b>Chemical Name and CAS:</b> {{ sample.chemical_name_CAS_list }}</p>
+      {% endif %}
+      {% if sample.stiffness_and_roughness_ranges %}
+        <p><b>Stiffness and Roughness Ranges:</b> {{ sample.stiffness_and_roughness_ranges }}</p>
+      {% endif %}
+      {% if sample.other %}
+        <p><b>Other:</b> {{ sample.other }}</p>
+      {% endif %}
+    {% elif sample.type == "solid" %}
+      {% if sample.pure_or_mixture %}
+        <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
+      {% endif %}
+      {% if sample.chemical_name_CAS_list %}
+        <p><b>Chemical Name, CAS Register Number and Chemical Hazard:</b> {{ sample.chemical_name_CAS_list }}</p>
+      {% endif %}
+      {% if sample.chemical_hazard %}
+        <p><b>Chemical Hazard:</b> {{ sample.chemical_hazard }}</p>
+      {% endif %}
+      {% if sample.other %}
+        <p><b>Other:</b> {{ sample.other }}</p>
+      {% endif %}
+    {% elif sample.type == "other" %}
+      {% if sample.other %}
+        <p><b>Other:</b> {{ sample.other }}</p>
+      {% endif %}
+    {% endif %}
+
+  </div>
+  <div class="card mt-4">
+  <div class="card-header bg-secondary text-white">
+    <h4 class="mb-0">Attached Files</h4>
+  </div>
+  <div class="card-body">
+    <p><strong>Sample Sheet (if present):</strong>
+      {% if sample.sample_sheet_filename %}
+        <a href="{{ sample.sample_sheet_filename.url }}" target="_blank">{{ sample.sample_sheet_filename.name }}</a>
+      {% else %}
+        No file uploaded
+      {% endif %}
+    </p>
+    <p><strong>Additional Files (ZIP/TAR if more than one):</strong>
+      {% if sample.additional_filename %}
+        <a href="{{ sample.additional_filename.url }}" target="_blank">{{ sample.additional_filename.name }}</a>
+      {% else %}
+        No file uploaded
+      {% endif %}
+    </p>
+  </div>
+</div>
+
+  </div>
