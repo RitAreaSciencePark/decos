@@ -91,28 +91,23 @@ Before setting up the **DECOS Webapp**, ensure you have the following installed:
    cd decos
    ```
 
-2. **Start the Development Environment**  
-   ```bash
-   docker compose up -d
-   ```
-
-3. **Run the Installation Script**  
+2. **Run the Installation Script**  
    For a **clean setup** (wiping databases and rebuilding containers), run:
    ```bash
    sh install_clean_debug_mode.sh
    ```
 
-4. **Start Debugging**  
+3. **Start Debugging**  
    Open **VS Code**, go to **Run and Debug** (`Ctrl+Shift+D`), and select **Python Debugger: Remote Attach** to start the server. When successful, you will see:
    ```
    Starting development server at http://0.0.0.0:8080/
    Quit the server with CONTROL-C.
    ```
 
-5. **Access the Web Application**  
+4. **Access the Web Application**  
    Visit the application at:
    ```
-   http://easydmp.localhost:8080
+   http://decos.localhost:8080
    ```
 
 ---
@@ -124,10 +119,109 @@ The **DECOS Webapp** implements **Role-Based Access Control (RBAC)** to ensure s
 - **Django Groups**: Laboratories are linked to specific **Django Groups**, enforcing access control for different users.
 - **Role Assignments**:
   - **Admins**: Full access to the **Django Admin Panel** for managing roles, metadata, and system-wide settings.
-  - **Researchers**: Access to their assigned laboratory’s data and research workflows.
-  - **Guests**: Limited access to public metadata and the homepage.
+  - **Data_Curators**: Access to their assigned laboratory’s data, with permission to delete and modify existing metadata.
+  - **Pipelines**: Access to pipeline interface (Jenkins) (Work in Progress).
+  - **Guests**: Limited access to public metadata and the homepage, and create new metadata (like add a sample).
 
 ---
+
+## **Adding a New Laboratory Model and Custom Sample Page**
+
+To extend the **PRP CDM app** with a new laboratory and connect it with a custom sample form and report page in the **Home app**, follow these steps:
+
+### **0. Pull Request Setup**
+- Clone the repository and create a **meaningful feature branch** dedicated to your laboratory addition in this form add_laboratory/name_of_the_lab.
+
+### **1. Create the Laboratory Model**
+- In `decos/decos_webapp/PRP_CDM_app/models/laboratory_models/`, create a new file with a name like:
+```
+name_of_the_laboratory.py
+```
+
+- Use lowercase letters, no special characters; replace spaces with underscores.  
+- Inside the file, define two classes:
+  - `Name_Of_The_LaboratorySamples(Samples)` → for custom sample metadata.
+  - `Name_Of_The_LaboratoryMetadata(models.Model)` → for metadata read from the formatted JSON file (WIP).  
+- Add all required custom fields, using the existing laboratory models as examples.
+
+### **2. Apply Database Migrations**
+- Update the PRP-CDM database schema:
+
+```bash
+./dev_make_and_apply_migrations.sh
+```
+
+or manually:
+
+```bash
+python manage.py makemigrations
+python manage.py migrate --database prpmetadata-db
+```
+
+### **3. Create Custom Sample Templates**
+
+* Add a sample input form in:
+
+  ```
+  decos/decos_webapp/home/templates/home/forms/name_of_the_lab_form.html
+  ```
+
+* Add a report include template in:
+
+  ```
+  decos/decos_webapp/home/templates/home/sample_pages/includes/name_of_the_lab_report.html
+  ```
+
+* Use existing laboratory templates as references.
+
+### **4. Register the Laboratory in the Admin Interface**
+
+* Access the Django Admin: `http://<your-instance>/admin`.
+* In the sidebar, select **Add Laboratory**, then provide:
+
+  * **Name of the laboratory** (must match the filenames and class names, e.g. `"Name of the Lab"`).
+
+    * Note: `_sanitize_lab_title(title: str)` in `decos/decos_webapp/home/forms.py` provides some normalization.
+  * **Short description**.
+* Assign the laboratory to the appropriate **user roles** in:
+  [https://decos.areasciencepark.it/admin/users/](https://decos.areasciencepark.it/admin/users/)
+
+### **5. Test the Laboratory**
+
+* Switch to the new laboratory context.
+* Create a new sample and verify:
+
+  * It appears in the **sample list**.
+  * The sample detail view renders correctly with the custom report template.
+
+### **6. Deploy to Pre-Stage Production for testing**
+
+* Bring down the development stack:
+
+  ```bash
+  docker compose -f docker-compose-dev.yaml down
+  ```
+
+* Install clean production mode:
+
+  ```bash
+  ./install_clean_production_mode.sh
+  ```
+
+* If debugging is required, temporarily set:
+
+  ```python
+  DEBUG = True
+  ```
+
+  in `settings/production.py`.
+
+### **7. Pull Request**
+
+* Commit your changes to the feature branch.
+* Open a **Pull Request** on GitHub for review and integration.
+* A code maintainer will review the code and if approved integrated in the main dev/production pipeline
+
 
 ## **6. License**
 
