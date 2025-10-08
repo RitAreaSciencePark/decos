@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags django_tables2 %}
+
+{% block body_class %}template-form{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/forms/mass_spectroscopy_infrastructure.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<h1><b>SAMPLE ENTRY FORM</b></h1>
+
+{{ page.intro | richtext }}
+
+{% if table %}
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+      <div class="card-body">
+        <i>It is an internal entry or a service request?</i>
+        <form id="sr_selection" method="get" action="">
+            <input type="hidden" id="sr_id_hidden" name="sr_id" value="internal">
+            <div class="sr_id_selection" id="dropMenu">
+                <div class="dropdown">
+                    <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
+                        Service Request
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
+                        <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText"
+                            placeholder="filter...">
+                        <button type="submit" class="btn btn-primary">search</button>
+
+                        <div class="dropdown-item" type="div" id="dropdown-div">
+                            {% render_table table %}
+                        </div>
+                    </div>
+                </div>
+                <div class="sr_id_selection">
+                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="sr_id" value="internal"
+                        aria-haspopup="true" aria-expanded="true">
+                        Internal Request
+                    </button>
+                </div>
+            </div>
+        </form>
+        <i>Service Request: </i> {{ sr_id }}
+      </div>
+    </div>
+{% endif %}
+
+<div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+    <div class="card-body">
+    <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
+    {% csrf_token %}
+    {% if "sr_" in sr_id %}
+    <input type="hidden" name="sr_id_hidden" value='{{ sr_id }}' />
+    {% else %}
+    <input type="hidden" name="sr_id_hidden" value="internal" />
+    {% endif %}
+    <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
+    </p>
+    <p>
+        <i>Please insert a brief descriptive title of your experiment (max 64 characters):</i> <br>
+        {{ Mass_Spectroscopy_InfrastructureSamples.sample_short_description }}
+    </p>
+    <p>
+        <!-- <i>sr_id*</i>: <br> {{ .dmptitle }} <br> !-->
+        <i>Please describe in a few words the experiment (max 500 characters)*</i>: <br> {{  Mass_Spectroscopy_InfrastructureSamples.sample_description }} <br>
+    </p>
+    <br>
+    </div>
+</div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>SAMPLE TYPE</b></div>
+      <div class="card-body">
+        <p>
+            <i>Type of sample</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.type }} <br>
+        </p>
+      </div>
+    </div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>SAMPLE QUALITY</b></div>
+      <div class="card-body">
+        <p>
+            <i>Volume/Weight</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.volume_weight }} <br>
+            <i>Biological Replicates (minimum 5 suggested)</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.biological_replicates }} <br>
+        </p>
+      </div>
+    </div>
+        <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>Solubilization & Buffer</b></div>
+      <div class="card-body">
+        <p>
+            <i>Is the sample solubilized?</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.solubilized }} <br>
+            <i>Buffer name</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.buffer_name }} <br>
+        </p>
+      </div>
+    </div>
+
+    
+</form>
+<script>
+    var QueryString = (new URL(location.href)).searchParams.get('filter');
+    if (QueryString != '')
+        $('#dropMenu .dropdown .dropdown-menu').show();
+</script>
+
+
+{% endblock %}
