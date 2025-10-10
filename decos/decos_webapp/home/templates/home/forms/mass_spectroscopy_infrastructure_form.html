@@ -5,7 +5,7 @@
 
 {% block content %}
 
-<link rel="stylesheet" href="{% static 'css/forms/mass_spectroscopy_infrastructure.css' %}">
+<link rel="stylesheet" href="{% static 'css/forms/lage_form.css' %}">
 <link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
@@ -76,7 +76,7 @@
       <div class="card-header"><b>SAMPLE TYPE</b></div>
       <div class="card-body">
         <p>
-            <i>Type of sample</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.type }} <br>
+            <p><i>Type of sample</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.type }} </p>
         </p>
       </div>
     </div>
@@ -90,7 +90,7 @@
       </div>
     </div>
         <div class="card mb-4 shadow-sm">
-      <div class="card-header"><b>Solubilization & Buffer</b></div>
+      <div class="card-header"><b>SOLUBILIZATION & BUFFER</b></div>
       <div class="card-body">
         <p>
             <i>Is the sample solubilized?</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.solubilized }} <br>
@@ -98,6 +98,38 @@
         </p>
       </div>
     </div>
+
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>SAMPLE DELIVERY</b></div>
+      <div class="card-body">
+        <p>
+            <i>Expected date (YYYY-MM-DD)</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.sample_date }} <br>
+            <i>Dry ice needed?</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.dry_ice }} <br>
+        </p>
+      </div>
+    </div>
+       
+   <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>QUALITY CHECK</b></div>
+      <div class="card-body">
+        <p>
+            <i>Cell counting</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.cell_counting }} <br>
+            <i>Bradford/BCA assay needed?</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.bradford}} <br>
+        </p>
+      </div>
+    </div>    
+   <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b> FINAL REQUESTS</b></div>
+      <div class="card-body">
+        <p>
+            <i>Results deadline (YYYY-MM-DD)</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.results_deadline}} <br>
+            <i>Should the samples return back?</i>: <br> {{ Mass_Spectroscopy_InfrastructureSamples.sample_return }} <br>
+        </p>
+      </div>
+      <p><input type="submit" value="Insert data" class="btn btn-primary"></p>
+    </div>
+    
+  
 
     
 </form>

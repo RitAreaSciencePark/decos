@@ -15,9 +15,45 @@ class Mass_Spectroscopy_InfrastructureSamples(Samples):
     #sample_id = models.CharField(max_length=50, primary_key=True) # also FK table samples
     volume_weight = models.CharField(max_length=255)
     biological_replicates = models.CharField(max_length=255)
-    solubilized = models.CharField(max_length=255, blank=True)
-    widgets["solubized"] = BooleanIfWhat(yes_or_no=False)
+    ##solubilized = models.BooleanField(default=False)
+    solubilized = models.CharField(
+        max_length=3,
+        choices=[("yes", "Yes"), ("no", "No")],
+        blank=True,
+        null=True,
+    )
     buffer_name = models.CharField(max_length=255)
+    sample_date = models.DateField(blank=True, null=True)
+    dry_ice = models.CharField(
+        max_length=3,
+        choices=[("yes", "Yes"), ("no", "No")],
+        blank=True,
+        null=True,
+    )
+
+    cell_counting = models.CharField(
+        max_length=3,
+        choices=[("yes", "Yes"), ("no", "No")],
+        blank=True,
+        null=True,
+    )
+
+    bradford = models.CharField(
+        max_length=3,
+        choices=[("yes", "Yes"), ("no", "No")],
+        blank=True,
+        null=True,
+    )
+
+    sample_return = models.CharField(
+        max_length=3,
+        choices=[("yes", "Yes"), ("no", "No")],
+        blank=True,
+        null=True,
+    )
+    results_deadline = models.DateField(blank=True, null=True)
+
+
 
     
     
