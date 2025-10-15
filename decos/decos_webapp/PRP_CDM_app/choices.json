@@ -57,6 +57,21 @@
             ["biopsy","biopsy"]
         ]
     },
+    "Mass_Spectroscopy_Infrastructure" :
+    {
+        "type_choices" :
+        [
+            ["Plasma","Plasma"],
+            ["Serum","Serum"],
+            ["Urine","Urine"],
+            ["Feces","Feces"],
+            ["Cells","Cells"],
+            ["Tissues","Tissues"],
+            ["Organoids","Organoids"],
+            ["Plant","Plant extracts"],
+            ["Drugs","Drugs"]
+        ]
+    },
     "Bio_Open_Lab_Unisalento" :
     {
             "sample_purpose" :
