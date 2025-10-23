@@ -14,7 +14,12 @@
 from PRP_CDM_app.models.common_data_model import *  # Import shared data models
 from PRP_CDM_app.models.laboratory_models.lage import LageSamples  # Import LAGE-specific sample model
 from PRP_CDM_app.models.laboratory_models.bio_open_lab_unisalento import Bio_Open_Lab_UnisalentoSamples  # Import LAME-specific sample model
+<<<<<<< HEAD
 
+=======
+from PRP_CDM_app.models.laboratory_models.nanoinnovation_laboratory import Nanoinnovation_LaboratorySamples
+from PRP_CDM_app.models.laboratory_models.mass_spectroscopy_infrastructure import Mass_Spectroscopy_InfrastructureSamples
+>>>>>>> add_laboratory/MSI
 
 class FormsDefinition:
     # Defines form structures for different laboratories, specifying included models and excluded fields
@@ -40,6 +45,20 @@ class FormsDefinition:
 
         # Fields to be excluded from the form to ensure only relevant data is collected
         exclude = { 'Bio_Open_Lab_UnisalentoSamples': ['sr_id',
+                                    'sample_id',
+                                    'lab_id',
+                                    'sample_feasibility',
+                                    'sample_status',
+                                    'sample_location']
+                   }
+        
+    class Mass_Spectroscopy_InfrastructureForm:
+        # Form definition for MSI samples
+        lab = 'Mass Spectroscopy Infrastructure'
+        content = [Mass_Spectroscopy_InfrastructureSamples]  # Defines the model used in the form
+
+        # Fields to be excluded from the form to ensure only relevant data is collected
+        exclude = { 'Mass_Spectroscopy_InfrastructureSamples': ['sr_id',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
