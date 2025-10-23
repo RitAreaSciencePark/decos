@@ -16,6 +16,7 @@ from PRP_CDM_app.models.laboratory_models.lage import LageSamples  # Import LAGE
 from PRP_CDM_app.models.laboratory_models.bio_open_lab_unisalento import Bio_Open_Lab_UnisalentoSamples  # Import LAME-specific sample model
 from PRP_CDM_app.models.laboratory_models.nanoinnovation_laboratory import Nanoinnovation_LaboratorySamples
 from PRP_CDM_app.models.laboratory_models.mass_spectroscopy_infrastructure import Mass_Spectroscopy_InfrastructureSamples
+from PRP_CDM_app.models.laboratory_models.sissi_bio import Sissi_BioSamples
 
 class FormsDefinition:
     # Defines form structures for different laboratories, specifying included models and excluded fields
@@ -76,3 +77,16 @@ class FormsDefinition:
                                     'sample_location']
                    }
         
+    class Sissi_BioForm:
+        # Form definition for sissi-bio samples
+        lab = 'SISSI-Bio'
+        content = [Sissi_BioSamples]  # Defines the model used in the form
+
+        # Fields to be excluded from the form to ensure only relevant data is collected
+        exclude = { 'Sissi_BioSamples': ['sr_id',
+                                    'sample_id',
+                                    'lab_id',
+                                    'sample_feasibility',
+                                    'sample_status',
+                                    'sample_location']
+                   }
