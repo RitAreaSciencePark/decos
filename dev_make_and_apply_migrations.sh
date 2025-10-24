@@ -68,7 +68,7 @@ docker exec -w "$DJANGO_DIR" "$WEBAPP_CONTAINER" python3 manage.py migrate --noi
 docker exec -w "$DJANGO_DIR" "$WEBAPP_CONTAINER" python3 manage.py migrate --database=prpmetadata-db --noinput --verbosity=0
 
 
-echo "♻️  Restarting container '$WEBAPP_CONTAINER'..."
+echo "♻️  Restarting container s'$WEBAPP_CONTAINER'..."
 docker restart "$WEBAPP_CONTAINER" >/dev/null
 
 echo "✅ Migrations applied (with auth.0013_group_laboratory faked) and container restarted successfully!"

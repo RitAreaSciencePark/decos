@@ -26,7 +26,7 @@ class FormsDefinition:
         content = [LageSamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to avoid unnecessary or internal data
-        exclude = { 'LageSamples': ['sr_id',
+        exclude = { 'LageSamples': ['proposal_id',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
@@ -40,7 +40,7 @@ class FormsDefinition:
         content = [Bio_Open_Lab_UnisalentoSamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to ensure only relevant data is collected
-        exclude = { 'Bio_Open_Lab_UnisalentoSamples': ['sr_id',
+        exclude = { 'Bio_Open_Lab_UnisalentoSamples': ['proposal_id',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
@@ -54,7 +54,7 @@ class FormsDefinition:
         content = [Nanoinnovation_LaboratorySamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to ensure only relevant data is collected
-        exclude = { 'Nanoinnovation_LaboratorySamples': ['sr_id',
+        exclude = { 'Nanoinnovation_LaboratorySamples': ['proposal_id',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
@@ -68,7 +68,7 @@ class FormsDefinition:
         content = [Mass_Spectroscopy_InfrastructureSamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to ensure only relevant data is collected
-        exclude = { 'Mass_Spectroscopy_InfrastructureSamples': ['sr_id',
+        exclude = { 'Mass_Spectroscopy_InfrastructureSamples': ['proposal_id',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',

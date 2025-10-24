@@ -61,7 +61,6 @@ from .forms import (  # Project-specific forms
     InstrumentsForm,
     LabSwitchForm,
     ResultsForm,
-    SRSubmissionForm,
     UserDataForm,
     ProposalSubmissionForm,
     form_orchestrator,  # Orchestrates form handling
@@ -85,7 +84,7 @@ from PRP_CDM_app.code_generation import (  # ID code generators for various enti
     proposal_id_generation,
     result_id_generation,
     sample_id_generation,
-    sr_id_generation,
+    proposal_id_generation,
     xid_code_generation,
 )
 
@@ -209,9 +208,9 @@ class SampleFormHandlerMixin:
         return sample, sample.lab_id
     
     # Assigns a ServiceRequest object to the data if a valid service request ID is provided
-    def assign_service_request(self, data, sr_id):
-        if sr_id and sr_id != 'internal':
-            data.sr_id = ServiceRequests.objects.get(pk=sr_id)
+    def assign_service_request(self, data, proposal_id):
+        if proposal_id and proposal_id != 'internal':
+            data.proposal_id = ServiceRequests.objects.get(pk=proposal_id)
 
     # Validates and saves data from multiple forms, linking to sample, lab, and optionally generating sample ID
     def process_forms(self, forms, sample=None, lab=None, request=None, generate_sample_id=False):
@@ -223,13 +222,13 @@ class SampleFormHandlerMixin:
             data = form.save(commit=False)
 
             if request:
-                self.assign_service_request(data, request.POST.get("sr_id_hidden"))
+                self.assign_service_request(data, request.POST.get("proposal_id_hidden"))
 
             if sample:
                 data.sample_id = sample.sample_id
                 data.sample_location = sample.sample_location
             elif generate_sample_id:
-                data.sample_id = sample_id_generation(data.sr_id)
+                data.sample_id = sample_id_generation(data.proposal_id)
 
             data.lab_id = lab
             data.sample_status = 'Submitted'
@@ -271,7 +270,7 @@ class EditSamplePage(Page, SampleFormHandlerMixin):
             
             # Reinitialize forms with existing sample data upon validation failure
             forms = form_orchestrator(user_lab=lab.lab_id, request=request, filerequest=None, get_instance=True)
-            context = {'page': self, 'lab': lab.lab_id, 'sr_id': sample.sr_id, 'sample_id': sample.sample_id, 'forms': forms, 'errors': result}
+            context = {'page': self, 'lab': lab.lab_id, 'proposal_id': sample.proposal_id, 'sample_id': sample.sample_id, 'forms': forms, 'errors': result}
             for form in forms:
                 context[form.Meta.model.__name__] = form
 
@@ -281,7 +280,7 @@ class EditSamplePage(Page, SampleFormHandlerMixin):
         sample, lab = self.get_sample_and_lab(request.GET['sample_id'])
         forms = form_orchestrator(user_lab=lab.lab_id, request=request, filerequest=None, get_instance=True)
 
-        context = {'page': self, 'lab': lab.lab_id, 'sr_id': sample.sr_id, 'sample_id': sample.sample_id, 'forms': forms}
+        context = {'page': self, 'lab': lab.lab_id, 'proposal_id': sample.proposal_id, 'sample_id': sample.sample_id, 'forms': forms}
         for form in forms:
             context[form.Meta.model.__name__] = form
 
@@ -305,7 +304,7 @@ class SamplePage(Page, SessionHandlerMixin, SampleFormHandlerMixin):
             request.session['return_page'] = request.get_full_path()
             return redirect('/switch-laboratory')
 
-        sr_id = request.GET.get("sr_id", "internal")
+        proposal_id = request.GET.get("proposal_id", "internal")
         filter_term = request.GET.get("filter", "")
 
         if request.method == 'POST':
@@ -314,20 +313,21 @@ class SamplePage(Page, SessionHandlerMixin, SampleFormHandlerMixin):
 
             if success:
                 return render(request, 'home/thank_you_page.html', {'page': self, 'data': result})
-            
             # Retains selected service request ID and displays errors upon validation failure
-            sr_id = request.POST.get("sr_id_hidden", "internal")
-            context = {'page': self, 'forms': forms, 'lab': lab.lab_id, 'sr_id': sr_id, 'table': None, 'errors': result}
+            proposal_id = request.POST.get("proposal_id_hidden", "internal")
+
+            context = {'page': self, 'forms': forms, 'lab': lab.lab_id, 'proposal_id': proposal_id, 'table': None, 'errors': result}
         else:
             forms = form_orchestrator(user_lab=lab.lab_id, request=None, filerequest=None, get_instance=False)
-            sr_query = ServiceRequests.objects.filter(lab_id=lab.lab_id)
+            proposal = Proposals.objects.filter(labs__lab_id=lab.lab_id).distinct()
+            
             if filter_term:
-                sr_query = sr_query.filter(sr_id__icontains=filter_term)
+                proposal = proposal_id.filter(proposal_id__icontains=filter_term)
 
-            sr_table = ServiceRequestTable(sr_query)
-            RequestConfig(request).configure(sr_table)
+            proposal_table = ProposalsTable(proposal)
+            RequestConfig(request).configure(proposal_table)
 
-            context = {'page': self, 'forms': forms, 'lab': lab.lab_id, 'sr_id': sr_id, 'table': sr_table}
+            context = {'page': self, 'forms': forms, 'lab': lab.lab_id, 'proposal_id': proposal_id, 'table': proposal_table}
 
         for form in forms:
             context[form.Meta.model.__name__] = form
@@ -602,7 +602,7 @@ class InstrumentsPage(Page): # EASYDMP STUB! EPIRO WILL TAKE THIS FUNCTIONALITY
                 # to work with a normal django object insert a line: data = form.save(commit=False) and then data is a basic model: e.g., you can use data.save(using=external_generic_db)
                 # In our example the routing takes care of the external db save
                 data = form.save(commit=False)
-                data.instrument_id = instrument_id_generation(form['vendor'].data, form['model'].data)
+                data.instrument_id = instrument_id_generation(form['sql_id'].data, form['instrument_name'].data)
                 data.save()
                 labxinstrument = LabXInstrument()
                 labxinstrument.lab_id = Laboratories.objects.get(pk = lab)
@@ -1352,95 +1352,6 @@ class ProposalListPage(Page): # DIMMT
             'page': self,
             'table': table,
         })
-
-class ServiceRequestSubmissionPage(Page): # DIMMT
-
-    intro = RichTextField(blank=True)
-    thankyou_page_title = models.CharField(
-        max_length=255, help_text="Title text to use for the 'thank you' page")
-    # Note that there's nothing here for specifying the actual form fields -
-    # those are still defined in forms.py. There's no benefit to making these
-    # editable within the Wagtail admin, since you'd need to make changes to
-    # the code to make them work anyway.
-
-    # drop down
-
-    content_panels = Page.content_panels + [
-        FieldPanel('intro', classname="full"),
-        #FieldPanel('Proposals', widget=forms.Select(choices=Proposals.objects.all().order_by('proposal_id'))),
-        FieldPanel('thankyou_page_title'),
-    ]
-
-    def serve(self,request):
-
-        if request.user.is_authenticated:
-            username = request.user.username
-
-        if "filter" in request.GET:
-            filter = request.GET.get("filter","")
-        else:
-            filter = ""
-            request.GET = request.GET.copy()
-            request.GET["filter"]= filter
-
-        if request.method == 'POST':
-            filter = request.POST.get("filter","")
-            request.GET = request.GET.copy()
-            request.GET["filter"] = request.POST.get("filter","")
-        
-
-        dataQuery = Proposals.objects.filter(user_id=username)
-        dataQuery = dataQuery.filter(proposal_id__contains = filter)
-        table = ProposalsTable(dataQuery)
-        RequestConfig(request).configure(table)
-        table.paginate(page=request.GET.get("page",1), per_page=25)
-        if request.method == 'POST':
-            # If the method is POST, validate the data and perform a save() == INSERT VALUE INTO
-            form = SRSubmissionForm(data=request.POST, user=username)
-            if form.is_valid():
-                # BEWARE: This is a modelForm and not a object/model, "save" do not have some arguments of the same method, like using=db_tag
-                # to work with a normal django object insert a line: data = form.save(commit=False) and then data is a basic model: e.g., you can use data.save(using=external_generic_db)
-                # In our example the routing takes care of the external db save
-                data = form.save(commit=False)
-                data.proposal_id = Proposals.objects.get(pk=request.POST.get('proposalId'))
-                data.sr_id = sr_id_generation(proposal=data.proposal_id, lab=form.cleaned_data["lab_id"])
-                data.sr_status = 'Submitted'
-                
-                #debug = data.proposal_filename
-
-                data.save()
-                return render(request, 'home/thank_you_sr_page.html', {
-                    'page': self,
-                    # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                    'data': data,
-                })
-            else:
-                #debug = form.errors
-                return render(request, 'home/error_page.html', {
-                        'page': self,
-                        # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                        'errors': form.errors, # TODO: improve this
-                    })
-
-        else:
-            #form = UserRegistrationForm()
-            try:
-                if ServiceRequests.objects.get(pk=username) is not None:
-                    form = SRSubmissionForm(instance=ServiceRequests.objects.get(pk=username), user=username)
-                else:
-                    form = SRSubmissionForm(user=username)
-            except Exception as e: # TODO Properly catch this
-                form = SRSubmissionForm(user=username)
-
-
-        return render(request, 'home/sr_submission_page.html', {
-
-                'page': self,
-                'table': table,
-                # We pass the data to the thank you page, data.datavarchar and data.dataint!
-                'data': form,
-                # keep the selection form open or not ("true" or "false")
-            })
     
 class NewTestPage(Page): # Test
     intro = RichTextField(blank=True)

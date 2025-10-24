@@ -45,8 +45,14 @@ class BaseInteractiveTable(tables.Table):
         }
 
 # Table for displaying Proposals with custom rendering
+
 class ProposalsTable(tables.Table):
-    proposal_id = Column(empty_values=(), attrs={"th": {"id": "foo"}}, verbose_name="id of the proposal")
+    # Custom column example (optional styling kept)
+    proposal_id = tables.Column(
+        empty_values=(),
+        attrs={"th": {"id": "foo"}},
+        verbose_name="Proposal ID"
+    )
 
     def render_proposal_id(self, record):
         return f"uuid: {record.proposal_id}"
@@ -57,16 +63,29 @@ class ProposalsTable(tables.Table):
     class Meta:
         model = Proposals
         template_name = "django_tables2/bootstrap.html"
-        fields = ("proposal_date", "proposal_filename", "proposal_id", "proposal_status", "proposal_feasibility")
+
+        # Show only the new fields (excluding scheduled_instrument_ids)
+        fields = (
+            "proposal_id",
+            "title",
+            "submission_date",
+            "team_leader_first_name",
+            "team_leader_last_name",
+        )
+
         row_attrs = {
-            "onClick": lambda record: f"document.getElementById('proposalIdBox').value = '{record.proposal_id}';"
+            "onClick": lambda record: (
+                f"document.getElementById('proposal_id_hidden').value = '{record.proposal_id}'; document.getElementById('proposal_selection').submit();"
+            )
         }
+
         orderable = True
 
-# Table for Service Requests supporting row selection
+
+# Table for Proposals supporting row selection
 class ServiceRequestTable(BaseInteractiveTable):
     class Meta:
-        model = ServiceRequests
+        model = Proposals
         template_name = "django_tables2/bootstrap-responsive.html"
         fields = ("sr_id", "proposal_id", "lab_id", "sr_status", "output_delivery_date")
 
