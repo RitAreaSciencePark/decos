@@ -176,7 +176,7 @@ class Samples(models.Model):
     sample_id = models.CharField(max_length=50, primary_key=True)
 
     # Reference to the related service request; can be null in cases where the sample is internal.
-    proposal_id = models.ForeignKey(Proposals, on_delete=models.PROTECT, null=True)
+    proposal = models.ForeignKey(Proposals, on_delete=models.PROTECT, null=True)
 
     # Reference to the laboratory responsible for the sample.
     lab_id = models.ForeignKey(Laboratories, on_delete=models.PROTECT)

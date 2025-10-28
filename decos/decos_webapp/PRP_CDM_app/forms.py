@@ -26,7 +26,7 @@ class FormsDefinition:
         content = [LageSamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to avoid unnecessary or internal data
-        exclude = { 'LageSamples': ['proposal_id',
+        exclude = { 'LageSamples': ['proposal',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',

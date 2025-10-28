@@ -208,9 +208,9 @@ class SampleFormHandlerMixin:
         return sample, sample.lab_id
     
     # Assigns a ServiceRequest object to the data if a valid service request ID is provided
-    def assign_service_request(self, data, proposal_id):
+    def assign_proposal(self, data, proposal_id):
         if proposal_id and proposal_id != 'internal':
-            data.proposal_id = ServiceRequests.objects.get(pk=proposal_id)
+            data.proposal = Proposals.objects.get(pk=proposal_id)
 
     # Validates and saves data from multiple forms, linking to sample, lab, and optionally generating sample ID
     def process_forms(self, forms, sample=None, lab=None, request=None, generate_sample_id=False):
@@ -222,13 +222,14 @@ class SampleFormHandlerMixin:
             data = form.save(commit=False)
 
             if request:
-                self.assign_service_request(data, request.POST.get("proposal_id_hidden"))
+                self.assign_proposal(data, request.POST.get("proposal_id_hidden"))
 
             if sample:
                 data.sample_id = sample.sample_id
                 data.sample_location = sample.sample_location
             elif generate_sample_id:
                 data.sample_id = sample_id_generation(data.proposal_id)
+
 
             data.lab_id = lab
             data.sample_status = 'Submitted'
