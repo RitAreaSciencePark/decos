@@ -13,6 +13,7 @@ from typing import Any, Dict, Iterable, Optional, Union
 import requests
 
 
+
 class EPIROAPI:
     """Simple EPIRO REST client encapsulating the common read operations."""
 

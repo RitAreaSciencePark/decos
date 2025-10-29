@@ -13,73 +13,19 @@
 
 {{ page.intro | richtext }}
 
-{% if table %}
-    <div class="card mb-4 shadow-sm">
-      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
-      <div class="card-body">
-        <i>It is an internal entry or a EPIRO Proposal?</i>
-        <form id="proposal_selection" method="get" action="">
-            <input type="hidden" id="proposal_id_hidden" name="proposal_id" value="internal">
-            <div class="proposal_id_selection" id="dropMenu">
-                <div class="proposal_id_selection">
-                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="proposal_id" value="internal"
-                        aria-haspopup="true" aria-expanded="true">
-                        Internal Request
-                    </button>
-                </div>
-                <div class="dropdown">
-                    <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
-                        data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
-                        Proposal selection
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
-                        <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText"
-                            placeholder="filter...">
-                        <button type="submit" class="btn btn-primary">search</button>
-
-                        <div class="dropdown-item" type="div" id="dropdown-div">
-                            {% render_table table %}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <i>Proposal selected: </i> {{ proposal_id }}
-      </div>
-    </div>
-{% endif %}
-
-<div class="card mb-4 shadow-sm">
-      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
-    <div class="card-body">
-    <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
-    {% csrf_token %}
-    <input type="hidden" name="proposal_id_hidden" value='{{ proposal_id }}' />
-    <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
-    </p>
-    <p>
-        <i>Please insert a brief descriptive title of your experiment (max 64 characters):</i> <br>
-        {{ LageSamples.sample_short_description }}
-    </p>
-    <p>
-        <!-- <i>proposal_id*</i>: <br> {{ .dmptitle }} <br> !-->
-        <i>Please describe in a few words the experiment (max 500 characters)*</i>: <br> {{ LageSamples.sample_description }} <br>
-    </p>
-    <br>
-    </div>
-</div>
+{% include "home/forms/includes/common_sample_template.html" %}
     <div class="card mb-4 shadow-sm">
       <div class="card-header"><b>LAGE SAMPLE INFORMATION</b></div>
       <div class="card-body">
         <p>
-            <i>Type of sample</i>: <br> {{ LageSamples.type }} <br>
+            <i>Type of sample</i>: <br> {{ samples.type }} <br>
             <i>In the list of samples, have you included the volume expressed in µl? (if not, specify why)</i>: <br>
-            Yes? {{ LageSamples.is_volume_in_ul }} <br>
-            <i>In the list of samples, have you included the Buffer used? (if not, specify why)</i>: <br> Yes? {{ LageSamples.is_buffer_used }} <br>
-            <i>Expected date of delivery ("YYYY-MM-DD")</i>: <br> {{ LageSamples.sample_date_of_delivery }} <br>
+            Yes? {{ samples.is_volume_in_ul }} <br>
+            <i>In the list of samples, have you included the Buffer used? (if not, specify why)</i>: <br> Yes? {{ samples.is_buffer_used }} <br>
+            <i>Expected date of delivery ("YYYY-MM-DD")</i>: <br> {{ samples.sample_date_of_delivery }} <br>
             <i>[Not Mandatory] In the list of samples, have you specified the quality (if available RIN in case of RNA,
-                DIN in case of DNA, and/or 260/280nm ratio)?</i>: <br> Yes? {{ LageSamples.is_quality }} <br>
-            <i>only for scientific collaborations: do you want the rest of the sample back?</i> Yes: {{ LageSamples.sample_back }} <br>
+                DIN in case of DNA, and/or 260/280nm ratio)?</i>: <br> Yes? {{ samples.is_quality }} <br>
+            <i>only for scientific collaborations: do you want the rest of the sample back?</i> Yes: {{ samples.sample_back }} <br>
 
             <br>
         </p>
@@ -90,9 +36,9 @@
       <div class="card-body">
         <br>
         <p>
-            <i>Include the sample sheet if present</i>: {{ LageSamples.sample_sheet_filename }} <br>
+            <i>Include the sample sheet if present</i>: {{ samples.sample_sheet_filename }} <br>
             <i>Include additional file: <br> (FOR THIS VERSION OF EASYDMP: if more than one compress the files in a
-                single zip or tar format)</i> {{ LageSamples.additional_filename }}
+                single zip or tar format)</i> {{ samples.additional_filename }}
 
         </p>
       <br>

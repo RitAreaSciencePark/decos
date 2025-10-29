@@ -1,0 +1,67 @@
+{% load static wagtailcore_tags django_tables2 %}
+
+<i> Synchronize EPIRO: </i>
+<form method="post" action="" id="refresh_form" name="refresh" value="true" >
+    {% csrf_token %}
+    <input type="hidden" name="epiro_get_proposals" value="true">
+    <button type="submit" class="btn btn-light" id="refresh_btn" value="refresh">
+        <i class="fa fa-rotate-right"></i>
+        </button>
+</form>
+<p>
+
+{% if table %}
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+      <div class="card-body">
+        <i>It is an internal entry or a EPIRO Proposal?</i>
+        <form id="proposal_selection" method="get" action="">
+            <input type="hidden" id="proposal_id_hidden" name="proposal_id" value="internal">
+            <div class="proposal_id_selection" id="dropMenu">
+                <div class="proposal_id_selection">
+                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="proposal_id" value="internal"
+                        aria-haspopup="true" aria-expanded="true">
+                        Internal Request
+                    </button>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
+                        Proposal selection
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
+                        <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText"
+                            placeholder="filter...">
+                        <button type="submit" class="btn btn-primary">search</button>
+
+                        <div class="dropdown-item" type="div" id="dropdown-div">
+                            {% render_table table %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <i>Proposal selected: </i> {{ proposal_id }}
+      </div>
+    </div>
+{% endif %}
+
+<div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+    <div class="card-body">
+    <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
+    {% csrf_token %}
+    <input type="hidden" name="proposal_id_hidden" value='{{ proposal_id }}' />
+    <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
+    </p>
+    <p>
+        <i>Please insert a brief descriptive title of your experiment (max 64 characters):</i> <br>
+        {{ samples.sample_short_description }}
+    </p>
+    <p>
+        <!-- <i>proposal_id*</i>: <br> {{ .dmptitle }} <br> !-->
+        <i>Please describe in a few words the experiment (max 500 characters)*</i>: <br> {{ samples.sample_description }} <br>
+    </p>
+    <br>
+    </div>
+</div>

@@ -289,6 +289,85 @@ class EditSamplePage(Page, SampleFormHandlerMixin):
         return render(request, template, context)
 
 # Add new samples, supporting service request linking and laboratory-specific forms within a session-based workflow.
+# put this where convenient (e.g., app/utils/epiro_sync.py)
+
+from django.db import transaction
+from django.utils.dateparse import parse_datetime
+from .models import Proposals  # adjust import to your app
+
+import json
+from django.db import transaction
+from django.utils.dateparse import parse_datetime
+from .models import Proposals  # adjust import to your app
+
+from django.db import transaction
+from django.utils.dateparse import parse_datetime
+from .models import Proposals  # adjust the import to your app
+
+def sync_proposals_from_epiro(new_proposals):
+    """
+    Takes a list of proposals (each a dict) from epiro.retrieve_proposal_list()
+    and upserts them into the database.
+    Returns counts of created/updated entries.
+    """
+    if not isinstance(new_proposals, list):
+        raise TypeError(f"Expected list of proposals, got {type(new_proposals)}")
+
+    created, updated = 0, 0
+
+    with transaction.atomic():
+        for p in new_proposals:
+            # Skip any non-dict entries
+            if not isinstance(p, dict):
+                print(f"⚠️ Skipping invalid entry (not a dict): {p}")
+                continue
+
+            tl = p.get("team_leader", {}) or {}
+            sched_ids = p.get("scheduled_instrument_ids") or []
+            # Normalize to list of ints
+            sched_ids = [
+                int(x) for x in sched_ids
+                if isinstance(x, (int, str)) and str(x).isdigit()
+            ]
+
+            defaults = {
+                "title": p.get("title", ""),
+                "status": p.get("status", ""),
+                "submission_date": parse_datetime(p.get("submission_date", "")),
+                "scheduled_instrument_ids": sched_ids,
+                "team_leader_username": tl.get("username", ""),
+                "team_leader_first_name": tl.get("first_name", ""),
+                "team_leader_last_name": tl.get("last_name", ""),
+                "team_leader_email": tl.get("email", ""),
+            }
+
+            # LAB TO INSTRUMENT MATCH
+            lab_list = []
+            for instrument_id in p.get("scheduled_instrument_ids",[]):
+                try:
+                    instrument = Instruments.objects.get(pk=instrument_id)
+                    lab = instrument.labs[0]
+                    if lab:
+                        lab_list.append(lab)
+                except ObjectDoesNotExist:
+                    logger.info("Instruments not Found!")
+
+
+            obj, was_created = Proposals.objects.update_or_create(
+                proposal_id=int(p["proposal_id"]),
+                defaults=defaults,
+            )
+            # if your model defines labs = models.ManyToManyField(Labs)
+            obj.labs.set(lab_list)
+            obj.save()
+
+            if was_created:
+                created += 1
+            else:
+                updated += 1
+
+    return {"created": created, "updated": updated}
+
 class SamplePage(Page, SessionHandlerMixin, SampleFormHandlerMixin):
     intro = RichTextField(blank=True)
     thankyou_page_title = RichTextField(blank=True)
@@ -309,6 +388,20 @@ class SamplePage(Page, SessionHandlerMixin, SampleFormHandlerMixin):
         filter_term = request.GET.get("filter", "")
 
         if request.method == 'POST':
+            from APIs.decos_EPIRO_API.decos_EPIRO_API import EPIROAPI
+            from APIs.epiro_secrets import EPIRO_SECRETS
+            if request.POST.get("epiro_get_proposals",False):
+                # TO DO: a layer to manage this API, this is hardcoded == BAD!!!
+                client_id = EPIRO_SECRETS.CLIENT_ID
+                username = EPIRO_SECRETS.USERNAME
+                password = EPIRO_SECRETS.PASSWORD
+                base_url = "https://preprod.pathogen-ri.eu/"
+                epiro = EPIROAPI(base_url=base_url, client_id=client_id, username=username, password=password)
+                # TODO: CATCH ALL EXCEPTIONS, THIS WAS DONE MY LAST WORK HOUR FOR RIT!!!!
+                new_proposals = epiro.retrieve_proposal_list()['items']
+                sync_proposals_from_epiro(new_proposals=new_proposals)
+                return redirect(".")
+
             forms = form_orchestrator(user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, get_instance=False)
             success, result = self.process_forms(forms, lab=lab, request=request, generate_sample_id=True)
 
@@ -331,7 +424,9 @@ class SamplePage(Page, SessionHandlerMixin, SampleFormHandlerMixin):
             context = {'page': self, 'forms': forms, 'lab': lab.lab_id, 'proposal_id': proposal_id, 'table': proposal_table}
 
         for form in forms:
-            context[form.Meta.model.__name__] = form
+            # Use this for multi forms, it writes them as the name of the sub-class, e.g., LageSamples
+            # context[form.Meta.model.__name__] = form
+            context["samples"] = form
 
         template = self.get_form_template(lab.lab_id)
         return render(request, template, context)

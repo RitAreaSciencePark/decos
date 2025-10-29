@@ -17,3 +17,6 @@ nginx/certs/
 .env.production.bak
 .env
 .gitignore
+decos/decos_webapp/APIs/.epiro_secrets.txt
+decos/decos_webapp/APIs/.epiro_secrets.py
+decos/decos_webapp/APIs/epiro_secrets.py

@@ -69,18 +69,30 @@ def sr_id_generation(proposal, lab):
 
 # Generates a unique sample ID based on the service request (SR) ID or assigns an internal ID
 def sample_id_generation(proposal_id):
+    from django.db.models import Max, Func
+    from django.db.models.functions import Substr, Cast
     try:
-        last_sample = Samples.objects.latest('sample_id')
-        match = re.search(r'_(\d+)$', last_sample.sample_id)
-        last_progressive = int(match.group(1)) if match else 0
+        last_sample = (
+            Samples.objects
+            .filter(sample_id__startswith=f"s_{proposal_id}_")
+            .annotate(num_part=Func(
+                Substr('sample_id', len(f"s_{proposal_id}_") + 1, 5),
+                function='CAST', template="CAST(%(expressions)s AS INTEGER)"
+            )).order_by('-num_part').first())
+        if not last_sample:
+            last_progressive = 0
+        else:
+            last_progressive=int(last_sample.pk[-5:])
     except Samples.DoesNotExist:
         last_progressive = 0
     except Exception as e:
         logger.error(f"Unexpected error in sample_id_generation: {e}")
         raise
 
-    if proposal_id and len(str(proposal_id)) > 3:
-        return f"s_{str(proposal_id)[3:]}_{last_progressive + 1:05d}"
+    if proposal_id and len(str(proposal_id)) > 6:
+        return f"s_{str(proposal_id)[6:]}_{last_progressive + 1:05d}"
+    else:
+        return f"s_{proposal_id}_{last_progressive + 1:05d}"
     return f"s_internal_{last_progressive + 1:05d}"
 
 # Generates a UUID-based result ID (ignores 'data' but allows it as an optional parameter)
