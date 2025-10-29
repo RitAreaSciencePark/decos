@@ -54,11 +54,7 @@
     <div class="card-body">
     <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
     {% csrf_token %}
-    {% if "proposal_" in proposal_id %}
     <input type="hidden" name="proposal_id_hidden" value='{{ proposal_id }}' />
-    {% else %}
-    <input type="hidden" name="proposal_id_hidden" value="internal" />
-    {% endif %}
     <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
     </p>
     <p>

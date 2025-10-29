@@ -320,12 +320,12 @@ class SamplePage(Page, SessionHandlerMixin, SampleFormHandlerMixin):
             context = {'page': self, 'forms': forms, 'lab': lab.lab_id, 'proposal_id': proposal_id, 'table': None, 'errors': result}
         else:
             forms = form_orchestrator(user_lab=lab.lab_id, request=None, filerequest=None, get_instance=False)
-            proposal = Proposals.objects.filter(labs__lab_id=lab.lab_id).distinct()
+            proposal_list = Proposals.objects.filter(labs__lab_id=lab.lab_id).distinct()
             
             if filter_term:
-                proposal = proposal_id.filter(proposal_id__icontains=filter_term)
+                proposal_list = proposal_id.filter(proposal_id__icontains=filter_term)
 
-            proposal_table = ProposalsTable(proposal)
+            proposal_table = ProposalsTable(proposal_list)
             RequestConfig(request).configure(proposal_table)
 
             context = {'page': self, 'forms': forms, 'lab': lab.lab_id, 'proposal_id': proposal_id, 'table': proposal_table}
