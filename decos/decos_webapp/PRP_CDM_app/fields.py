@@ -96,8 +96,17 @@ class BooleanIfWhat(forms.MultiWidget):
         return context['widget']['subwidgets']
 
     def get_context(self, name, value, attrs):
-        # Generates widget context with additional attributes
         attrs = attrs or {}
         attrs['yes_or_no'] = self.yes_or_no
+    
+        # Ensure unique IDs for each widget instance
+        if 'id' not in attrs:
+            attrs['id'] = f'id_{name}'  # Django normally does this
         context = super().get_context(name, value, attrs)
+    
+        # Also propagate the name to subwidgets for JS targeting
+        for i, sub in enumerate(context['widget']['subwidgets']):
+            sub['attrs']['id'] = f"{attrs['id']}_{i}"
+            sub['attrs']['data-parent'] = attrs['id']  # optional, useful for JS
+    
         return context
