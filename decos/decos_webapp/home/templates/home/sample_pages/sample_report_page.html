@@ -21,6 +21,7 @@
         <div class="alert alert-danger">{{ error }}</div>
       {% else %}
         <p class="card-text"><strong>Description:</strong> {{ sample.sample_short_description }}</p>
+        {% if sample.proposal %}<p class="card-text"><strong>Proposal:</strong> {{ sample.proposal.proposal_id }} - {{ sample.proposal.title }}</p>{% endif %}
         {% if sample.sample_description %}<p class="card-text"><strong>Details:</strong> {{ sample.sample_description }}</p>{% endif %}
         {% if sample.sample_feasibility %}<p class="card-text"><strong>Feasibility:</strong> {{ sample.sample_feasibility }}</p>{% endif %}
         {% if sample.sample_status %}<p class="card-text"><strong>Status:</strong> {{ sample.sample_status }}</p>{% endif %}

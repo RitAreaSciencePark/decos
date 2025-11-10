@@ -17,14 +17,20 @@
     <div class="card mb-4 shadow-sm">
       <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
       <div class="card-body">
-        <i>It is an internal entry or a service request?</i>
-        <form id="sr_selection" method="get" action="">
-            <input type="hidden" id="sr_id_hidden" name="sr_id" value="internal">
-            <div class="sr_id_selection" id="dropMenu">
+        <i>It is an internal entry or a EPIRO Proposal?</i>
+        <form id="proposal_selection" method="get" action="">
+            <input type="hidden" id="proposal_id_hidden" name="proposal_id" value="internal">
+            <div class="proposal_id_selection" id="dropMenu">
+                <div class="proposal_id_selection">
+                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="proposal_id" value="internal"
+                        aria-haspopup="true" aria-expanded="true">
+                        Internal Request
+                    </button>
+                </div>
                 <div class="dropdown">
                     <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
-                        Service Request
+                        Proposal selection
                     </button>
                     <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
                         <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText"
@@ -36,15 +42,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="sr_id_selection">
-                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="sr_id" value="internal"
-                        aria-haspopup="true" aria-expanded="true">
-                        Internal Request
-                    </button>
-                </div>
             </div>
         </form>
-        <i>Service Request: </i> {{ sr_id }}
+        <i>Proposal selected: </i> {{ proposal_id }}
       </div>
     </div>
 {% endif %}
@@ -54,11 +54,7 @@
     <div class="card-body">
     <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
     {% csrf_token %}
-    {% if "sr_" in sr_id %}
-    <input type="hidden" name="sr_id_hidden" value='{{ sr_id }}' />
-    {% else %}
-    <input type="hidden" name="sr_id_hidden" value="internal" />
-    {% endif %}
+    <input type="hidden" name="proposal_id_hidden" value='{{ proposal_id }}' />
     <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
     </p>
     <p>
@@ -66,7 +62,7 @@
         {{ LageSamples.sample_short_description }}
     </p>
     <p>
-        <!-- <i>sr_id*</i>: <br> {{ .dmptitle }} <br> !-->
+        <!-- <i>proposal_id*</i>: <br> {{ .dmptitle }} <br> !-->
         <i>Please describe in a few words the experiment (max 500 characters)*</i>: <br> {{ LageSamples.sample_description }} <br>
     </p>
     <br>

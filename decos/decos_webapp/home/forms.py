@@ -27,14 +27,12 @@ from PRP_CDM_app.forms import FormsDefinition
 from PRP_CDM_app.models.common_data_model import (
     Users, 
     Proposals, 
-    ServiceRequests, 
     Laboratories, 
     Samples,
     Instruments, 
     Results, 
     labDMP,
     ExperimentDMP
-
 )
 
 
@@ -159,7 +157,7 @@ class InstrumentsForm(forms.ModelForm):
         
         class Meta:
             model = Instruments
-            fields = ['vendor', 'model', 'description']
+            fields = ['sql_id', 'instrument_name', 'institution']
 
 # to store the core elements of the results
 class ResultsForm(forms.ModelForm):
@@ -225,47 +223,3 @@ class ProposalSubmissionForm(forms.ModelForm):
                        'proposal_feasibility',
                        #'proposal_submission_date'
                        ]
-            
-class SRSubmissionForm(forms.ModelForm):
-    class Meta:
-            model = ServiceRequests
-            exclude = ['sr_id',
-                       'sr_status',
-                       'proposal_id',
-                       ]
-    
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super(SRSubmissionForm, self).__init__(*args, **kwargs)
-        # if user is not None:
-          #  self.fields['proposal_id'].queryset = Proposals.objects.filter(user_id=user)
-
-class SRForSampleForm(forms.ModelForm):
-    class Meta:
-        model = Samples
-        fields =  ['sr_id']
-        
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super(SRForSampleForm, self).__init__(*args, **kwargs)
-        if user is not None:
-            # Ottieni tutti i proposal_id associati all'utente loggato
-            user_proposals = Proposals.objects.filter(user_id=user)
-            # Filtra i sr_id basati su questi proposal_id
-            self.fields['sr_id'].queryset = ServiceRequests.objects.filter(proposal_id__in=user_proposals)
-
-class SRForSampleForm(forms.ModelForm):
-    class Meta:
-        model = Samples
-        fields =  ['sr_id']
-        
-    def __init__(self, *args, **kwargs):
-        user = kwargs.pop('user', None)
-        super(SRForSampleForm, self).__init__(*args, **kwargs)
-        if user is not None:
-            # Ottieni tutti i proposal_id associati all'utente loggato
-            user_proposals = Proposals.objects.filter(user_id=user)
-            # Filtra i sr_id basati su questi proposal_id
-            self.fields['sr_id'].queryset = ServiceRequests.objects.filter(proposal_id__in=user_proposals)
-# <----
-
