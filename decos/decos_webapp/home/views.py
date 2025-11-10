@@ -194,3 +194,47 @@ def delete_result_entry(request):
         messages.error(request, "No Result ID provided.")
 
     return redirect(request.META.get('HTTP_REFERER', '/'))
+
+
+from django.http import HttpResponse
+from APIs.decos_EPIRO_API.decos_EPIRO_API import EPIROAPI
+
+@login_required
+def get_epiro_data(request):
+        
+    # --- Configuration ---
+    BASE_URL = "https://preprod.pathogen-ri.eu/" 
+    CLIENT_ID  = "decosClientId"
+    USERNAME   = "decos"
+    PASSWORD   = "supersecretdecospassword"
+
+    # --- Initialize client ---
+    epiro = EPIROAPI(
+        base_url=BASE_URL,
+        client_id=CLIENT_ID,
+        username=USERNAME,
+        password=PASSWORD,
+    )
+
+    # --- Retrieve instrument dump ---
+    try:
+        instruments = epiro.retrieve_instrument_dump()
+        print("Instruments:", instruments)
+    except Exception as e:
+        print("Failed to retrieve instruments:", e)
+
+    # --- Retrieve all proposals ---
+    try:
+        proposals = epiro.retrieve_proposal_list(params={"page": 0})
+        print("Proposals:", proposals)
+    except Exception as e:
+        print("Failed to retrieve proposals:", e)
+
+    # --- Retrieve a single proposal by ID ---
+    try:
+        print(proposals)
+        proposal = epiro.retrieve_proposals(proposal_list=proposals)
+        print("Proposal details:", proposal)
+    except Exception as e:
+        print("Failed to retrieve proposal:", e)
+    return HttpResponse("Updated")

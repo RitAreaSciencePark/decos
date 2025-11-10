@@ -65,10 +65,10 @@ def sr_id_generation(proposal, lab):
         logger.error(f"Unexpected error in sr_id_generation: {e}")
         raise
 
-    return f"sr_{proposal.proposal_id[2:]}_{lab.lab_id}_{last_progressive + 1:05d}"
+    return f"sr_{str(proposal.proposal_id)[2:]}_{lab.lab_id}_{last_progressive + 1:05d}"
 
 # Generates a unique sample ID based on the service request (SR) ID or assigns an internal ID
-def sample_id_generation(sr_id):
+def sample_id_generation(proposal_id):
     try:
         last_sample = Samples.objects.latest('sample_id')
         match = re.search(r'_(\d+)$', last_sample.sample_id)
@@ -79,8 +79,8 @@ def sample_id_generation(sr_id):
         logger.error(f"Unexpected error in sample_id_generation: {e}")
         raise
 
-    if sr_id and len(sr_id) > 3:
-        return f"s_{sr_id[3:]}_{last_progressive + 1:05d}"
+    if proposal_id and len(str(proposal_id)) > 3:
+        return f"s_{str(proposal_id)[3:]}_{last_progressive + 1:05d}"
     return f"s_internal_{last_progressive + 1:05d}"
 
 # Generates a UUID-based result ID (ignores 'data' but allows it as an optional parameter)

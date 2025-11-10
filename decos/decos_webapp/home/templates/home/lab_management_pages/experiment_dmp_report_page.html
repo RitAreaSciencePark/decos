@@ -47,7 +47,7 @@
             <div class="card-title"><h5>Instruments</h5></div>
             <p>
               {% for instrument in instrument_list %}
-                {{ instrument.model }} ({{ instrument.vendor }}){% if instrument.description %} - {{ instrument.description }}{% endif %}<br>
+                {{ instrument.sql_id }} ({{ instrument.instrument_name }}){% if instrument.institution %}{% endif %}<br>
               {% endfor %}
             </p>
           </div>

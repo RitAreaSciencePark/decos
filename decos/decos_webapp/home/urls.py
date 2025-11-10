@@ -10,7 +10,7 @@
 from django.urls import path
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.views.decorators.http import require_POST
-from .views import user_data_view, switch_lab_view, delete_sample_entry, delete_experiment_dmp_entry, delete_result_entry
+from .views import user_data_view, switch_lab_view, delete_sample_entry, delete_experiment_dmp_entry, delete_result_entry, get_epiro_data
 
 def in_data_curator_group(user):
     return user.groups.filter(name="Data_Curator").exists()
@@ -43,5 +43,12 @@ urlpatterns = [
         'delete-result-entry/',
         login_required(user_passes_test(in_data_curator_group)(require_POST(delete_result_entry))),
         name='delete_result_entry'
+    ),
+
+    #URL pattern to update from EPIRO
+    path(
+        'epiro-update/',
+        login_required(get_epiro_data),
+        name='epiro-update'
     )
 ]

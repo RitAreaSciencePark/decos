@@ -104,24 +104,25 @@ class Laboratories(models.Model):
 # This model represents research proposals submitted by external users within the laboratory ecosystem.
 # It is currently a stub and will be fully implemented once the EPIRO system is ready.
 class Proposals(models.Model):
-    # Primary key representing the proposal identifier.
-    proposal_id = models.CharField(max_length=50, primary_key=True)
+    proposal_id = models.IntegerField(primary_key=True)
 
-    # Reference to the submitting user; external user from the Users model.
-    user_id = models.ForeignKey(Users, on_delete=models.PROTECT)
+    title = models.CharField(max_length=255)
 
-    # Status of the proposal (e.g., Submitted, Under Review).
-    proposal_status = models.CharField(default='Submitted')
+    status = models.CharField(max_length=50)
 
-    # Predefined choices dictionary for this model, sourced externally.
-    proposalschoices = choices["Proposals"]
+    submission_date = models.DateTimeField()
+    # Stored as a JSON list of integers to keep it schema-light and exact.
+    scheduled_instrument_ids = models.JSONField(default=list)
 
-    # Proposal feasibility evaluation (e.g., feasible, not feasible); optional field.
-    proposal_feasibility_choices = tupleConvert(proposalschoices["proposal_feasibility_choices"])
-    proposal_feasibility = models.CharField(choices=proposal_feasibility_choices, blank=True)
+    # Team leader fields (expanded from nested JSON)
+    team_leader_username = models.CharField(max_length=150)
+    team_leader_first_name = models.CharField(max_length=150)
+    team_leader_last_name = models.CharField(max_length=150)
+    team_leader_email = models.EmailField()
+    
+    # A proposal is linked through the steps to many laboratories (in this version the steps relation are not utilized)
+    labs = models.ManyToManyField('Laboratories', through='LabXProposal')
 
-    # Date the proposal was submitted; defaults to the current date.
-    proposal_date = models.DateField(blank=False, default=datetime.date.today)
 
     # Defines the upload path for proposal-related files.
     def user_directory_path(instance, filename):
@@ -133,6 +134,14 @@ class Proposals(models.Model):
     class Meta:
         # Explicit table name in lowercase for PostgreSQL compatibility.
         db_table = 'proposals'.lower()
+
+class LabXProposal(models.Model):
+    lab_id = models.ForeignKey(Laboratories, on_delete=models.CASCADE, related_name='lab_proposal')
+    instrument_id = models.ForeignKey(Proposals, on_delete=models.CASCADE, related_name='proposal_lab')
+
+    class Meta:
+        # Explicit table name in lowercase for PostgreSQL compatibility.
+        db_table = 'lab_x_proposal'.lower()
 
 # This model represents service requests submitted to a specific laboratory within the multicentric laboratory ecosystem.
 # Service requests are generally linked to research proposals from external users but can also originate internally from the laboratory itself.
@@ -167,7 +176,7 @@ class Samples(models.Model):
     sample_id = models.CharField(max_length=50, primary_key=True)
 
     # Reference to the related service request; can be null in cases where the sample is internal.
-    sr_id = models.ForeignKey(ServiceRequests, on_delete=models.PROTECT, null=True)
+    proposal = models.ForeignKey(Proposals, on_delete=models.PROTECT, null=True)
 
     # Reference to the laboratory responsible for the sample.
     lab_id = models.ForeignKey(Laboratories, on_delete=models.PROTECT)
@@ -204,16 +213,50 @@ class Instruments(models.Model):
     # Primary key representing the instrument identifier.
     instrument_id = models.CharField(max_length=50, primary_key=True)
 
-    # Vendor or manufacturer of the instrument.
-    vendor = models.CharField(max_length=50)
+    # Optional reference to the source SQL identifier used in external systems.
+    sql_id = models.IntegerField(blank=True, null=True, unique=True)
 
-    # Model name or number of the instrument.
-    model = models.CharField(max_length=50)
+    # Contact information for the scientist responsible for the instrument.
+    instrument_scientist_username = models.CharField(max_length=128, blank=True)
+    instrument_scientist_first_name = models.CharField(max_length=128, blank=True)
+    instrument_scientist_last_name = models.CharField(max_length=128, blank=True)
+    instrument_scientist_email = models.EmailField(max_length=254, blank=True)
 
-    # Brief description of the instrument; optional.
-    description = models.CharField(max_length=50, blank=True)
+    # High-level instrument metadata matching the PRP@CERIC instrument registry schema.
+    instrument_name = models.CharField(max_length=256)
+    nano_or_lsf = models.CharField(max_length=64, blank=True)
+    published = models.BooleanField(default=False)
+    data_management_plan_url = models.URLField(blank=True)
+    technique = models.CharField(max_length=256, blank=True)
+    institution = models.CharField(max_length=256, blank=True)
+    site = models.CharField(max_length=256, blank=True)
+    family = models.CharField(max_length=256, blank=True)
+    installation = models.CharField(max_length=256, blank=True)
+    manufacturer_and_model = models.CharField(max_length=256, blank=True)
+
+    # Detailed capability metadata (stored as free text to accommodate structured or semi-structured data).
+    applications = models.TextField(blank=True)
+    source = models.TextField(blank=True)
+    source_energy_range = models.CharField(max_length=256, blank=True)
+    detection = models.TextField(blank=True)
+    detection_energy_range = models.CharField(max_length=256, blank=True)
+    overall_energy_resolution = models.CharField(max_length=256, blank=True)
+    overall_spatial_resolution = models.CharField(max_length=256, blank=True)
+    scanning_positioning = models.CharField(max_length=256, blank=True)
+    sample = models.TextField(blank=True)
+    environment = models.TextField(blank=True)
+    monitors = models.TextField(blank=True)
+    interoperability_features = models.TextField(blank=True)
+    other_capabilities = models.TextField(blank=True)
+    additional_tools = models.TextField(blank=True)
+    remote_or_ira = models.CharField(max_length=128, blank=True)
+    remote_control = models.CharField(max_length=128, blank=True)
+    raw_data_propetary_file_formats = models.CharField(max_length=256, blank=True)
+    raw_data_open_file_formats = models.CharField(max_length=256, blank=True)
+    average_data_for_8hrs = models.CharField(max_length=128, blank=True)
+    metadata_schema = models.CharField(max_length=256, blank=True)
     labs = models.ManyToManyField('Laboratories', through='LabXInstrument')
-    
+
     class Meta:
         # Explicit table name in lowercase for PostgreSQL compatibility.
         db_table = 'instruments'.lower()
@@ -469,4 +512,3 @@ class ExperimentDMPxLab(models.Model):
 
     class Meta:
         db_table = 'experiment_dmp_x_lab'.lower()
-

@@ -1,0 +1,225 @@
+[
+  {
+    "_id": 1044,
+    "id": 1044,
+    "status": [
+      {
+        "value": "draft",
+        "timestamp": {
+          "$date": "2025-07-23T13:19:20.887Z"
+        },
+        "user_sub": "4113c816-36a1-4fe3-8dfb-35a5e632c419",
+        "comment": null
+      },
+      {
+        "value": "submitted",
+        "timestamp": {
+          "$date": "2025-07-23T13:19:21.074Z"
+        },
+        "user_sub": "4113c816-36a1-4fe3-8dfb-35a5e632c419",
+        "comment": null
+      },
+      {
+        "value": "under evaluation",
+        "timestamp": {
+          "$date": "2025-07-23T13:19:47.029Z"
+        },
+        "user_sub": "4113c816-36a1-4fe3-8dfb-35a5e632c419",
+        "comment": null
+      },
+      {
+        "value": "accepted",
+        "timestamp": {
+          "$date": "2025-07-23T13:21:37.060Z"
+        },
+        "user_sub": "4113c816-36a1-4fe3-8dfb-35a5e632c419",
+        "comment": null
+      },
+      {
+        "value": "scheduling",
+        "timestamp": {
+          "$date": "2025-07-23T13:21:44.385Z"
+        },
+        "user_sub": "4113c816-36a1-4fe3-8dfb-35a5e632c419",
+        "comment": null
+      }
+    ],
+    "call": 1,
+    "title": "1st proposal",
+    "proposal_type": "service",
+    "scientific_domain": "Chemistry",
+    "erc_sectors": [
+      {
+        "id": "LS.02.03",
+        "name": "Quantitative genetics"
+      },
+      {
+        "id": "SH.05.04",
+        "name": "Visual and performing arts, film, design"
+      }
+    ],
+    "application": "a",
+    "keywords": [
+      "a",
+      "v",
+      "b"
+    ],
+    "abstract": "Error from global error handler TypeError: can't access property \"map\", i.site_list is null\n    handleResults http://prp-test.promoscience.com/ar/main-es2019.b96d46684b31836ae03c.js:1\n    ini\nQuesto sito utilizza un effetto di posizionamento “scroll-linked” che potrebbe non funzionare correttamente in combinazione con il panning asincrono. Consultare https://firefox-source-docs.mozilla.org/perfError from global error handler TypeError: can't access property \"map\", i.site_list is null\n    handleResults http://prp-test.promoscience.com/ar/main-es2019.b96d46684b31836ae03c.js:1\n    ini\nQuesto sito utilizza un effetto di posizionamento “scroll-linked” che potrebbe non funzionare correttamente in combinazione con il panning asincrono. Consultare https://firefox-source-docs.mozilla.org/perfError from global error handler TypeError: can't access property \"map\", i.site_list is null\n    handleResults http://prp-test.promoscience.com/ar/main-es2019.b96d46684b31836ae03c.js:1\n    ini\nQuesto sito utilizza un effetto di posizionamento “scroll-linked” che potrebbe non funzionare correttamente in combinazione con il panning asincrono. Consultare https://firefox-source-docs.mozilla.org/perf",
+    "state_of_art": "Error from global error handler TypeError: can't access property \"map\", i.site_list is null\n    handleResults http://prp-test.promoscience.com/ar/main-es2019.b96d46684b31836ae03c.js:1\n    ini\nQuesto sito utilizza un effetto di posizionamento “scroll-linked” che potrebbe non funzionare correttamente in combinazione con il panning asincrono. Consultare https://firefox-source-docs.mozilla.org/perfQuesto sito utilizza un effetto di posizionamento “scroll-linked” che potrebbe non funzionare correttamente in combinazione con il panning asincrono. Consultare https://firefox-source-docs.mozilla.org/perfQuesto sito utilizza un effetto di posizionamento “scroll-linked” che potrebbe non funzionare correttamente in combinazione con il panning asincrono. Consultare https://firefox-source-docs.mozilla.org/perf",
+    "objectives": "Error from global error handler TypeError: can't access property \"map\", i.site_list is null\n    handleResults http://prp-test.promoscience.com/ar/main-es2019.b96d46684b31836ae03c.js:1\n    ini\nQuesto sito utilizza un effetto di posizionamento “scroll-linked” che potrebbe non funzionare correttamente in combinazione con il panning asincrono. Consultare https://firefox-source-docs.mozilla.org/perfQuesto sito utilizza un effetto di posizionamento “scroll-linked” che potrebbe non funzionare correttamente in combinazione con il panning asincrono. Consultare https://firefox-source-docs.mozilla.org/perfQuesto sito utilizza un effetto di posizionamento “scroll-linked” che potrebbe non funzionare correttamente in combinazione con il panning asincrono. Consultare https://firefox-source-docs.mozilla.org/perf",
+    "references": "a",
+    "proposal_steps": [
+      {
+        "id": {
+          "$oid": "6880e1585ec4c79860f3d15c"
+        },
+        "admin_added": false,
+        "removed": false,
+        "technique": {
+          "sql_id": 11330,
+          "name": "Technique A",
+          "acronym": "TA",
+          "unavailable": false,
+          "is_nano_lab": false,
+          "is_large_scale_facility": false,
+          "is_standard_service": false,
+          "parent_installation": {
+            "sql_id": 11323,
+            "name": "Installation A",
+            "acronym": "IA",
+            "id": {
+              "$oid": "6880dc3e5ec4c79860f3d13e"
+            },
+            "wp_leader_sub": null
+          },
+          "sites": [
+            {
+              "sql_id": 11339,
+              "name": "Institution A",
+              "short_name": "IA",
+              "is_nano_lab": false,
+              "is_large_scale_facility": false,
+              "country": "France"
+            }
+          ]
+        },
+        "purpose": "a",
+        "process_plan": "a",
+        "technical_specifications": "a",
+        "equipments": false,
+        "equipment_description": null,
+        "technique_facility_type": null,
+        "preferred_site": {
+          "sql_id": 11339,
+          "name": "Institution A",
+          "short_name": "IA",
+          "is_nano_lab": false,
+          "is_large_scale_facility": false,
+          "country": "France"
+        },
+        "reasons": null
+      },
+      {
+        "id": {
+          "$oid": "6880e1585ec4c79860f3d15d"
+        },
+        "admin_added": false,
+        "removed": false,
+        "technique": {
+          "sql_id": 11344,
+          "name": "Technique B",
+          "acronym": "TB",
+          "unavailable": false,
+          "is_nano_lab": false,
+          "is_large_scale_facility": false,
+          "is_standard_service": false,
+          "parent_installation": {
+            "sql_id": 11323,
+            "name": "Installation A",
+            "acronym": "IA",
+            "id": {
+              "$oid": "6880dc3e5ec4c79860f3d13e"
+            },
+            "wp_leader_sub": null
+          },
+          "sites": [
+            {
+              "sql_id": 11342,
+              "name": "Institution B",
+              "short_name": "IB",
+              "is_nano_lab": false,
+              "is_large_scale_facility": false,
+              "country": "Chad"
+            }
+          ]
+        },
+        "purpose": "b",
+        "process_plan": "b",
+        "technical_specifications": "b",
+        "equipments": false,
+        "equipment_description": null,
+        "technique_facility_type": null,
+        "preferred_site": {
+          "sql_id": 11342,
+          "name": "Institution B",
+          "short_name": "IB",
+          "is_nano_lab": false,
+          "is_large_scale_facility": false,
+          "country": "Chad"
+        },
+        "reasons": null
+      }
+    ],
+    "gender_dimension": false,
+    "notes": null,
+    "team_members": [
+      {
+        "user_sub": "4113c816-36a1-4fe3-8dfb-35a5e632c419",
+        "proposal_role": "primary investigator",
+        "proposal_user_status": "approved",
+        "is_ppp_or_industry_employee": false
+      }
+    ],
+    "has_industry_involvement": false,
+    "industry_involvement": null,
+    "industry_involvement_type": null,
+    "industry_type": null,
+    "samples": [
+      {
+        "substance": "a",
+        "physical_state": "Liquid",
+        "has_hazards": true,
+        "chemical_formula": null,
+        "hazards": [
+          "Radioactive"
+        ],
+        "size_x": null,
+        "size_y": null,
+        "size_z": null,
+        "nano": false,
+        "nano_morph_aspect_ratio": null,
+        "nano_morph_particle_distribution": null,
+        "nano_morph_specific_surface": null,
+        "nano_material_surface_chem": null,
+        "nano_material_crystalline_phases": null,
+        "nano_material_density": null,
+        "nano_solution_zeta_potential": null,
+        "nano_solution_hydrophobicity": null,
+        "nano_solution_water_solubility": null,
+        "volume": "1"
+      }
+    ],
+    "has_related_programme": false,
+    "related_programme": null,
+    "previous_work": null,
+    "is_resubmission": false,
+    "is_previous": false,
+    "resubmission_proposal_id": null,
+    "previous_proposal_id": null,
+    "resubmission_description": null,
+    "continuation_description": null,
+    "accept_terms": true,
+    "images": [],
+    "is_hidden": false
+  }
+]

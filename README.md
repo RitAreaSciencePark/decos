@@ -144,7 +144,11 @@ name_of_the_laboratory.py
   - `Name_Of_The_LaboratoryMetadata(models.Model)` → for metadata read from the formatted JSON file (WIP).  
 - Add all required custom fields, using the existing laboratory models as examples.
 
-### **2. Apply Database Migrations**
+### **2. Update PRP_CDM_app/forms.py**
+- Update the file /decos/decos_webapp/PRP_CDM_app/forms.py in order to define the class name_of_my_labForm
+
+
+### **3. Apply Database Migrations**
 - Update the PRP-CDM database schema:
 
 ```bash
@@ -158,7 +162,7 @@ python manage.py makemigrations
 python manage.py migrate --database prpmetadata-db
 ```
 
-### **3. Create Custom Sample Templates**
+### **4. Create Custom Sample Templates**
 
 * Add a sample input form in:
 
@@ -174,7 +178,7 @@ python manage.py migrate --database prpmetadata-db
 
 * Use existing laboratory templates as references.
 
-### **4. Register the Laboratory in the Admin Interface**
+### **5. Register the Laboratory in the Admin Interface**
 
 * Access the Django Admin: `http://<your-instance>/admin`.
 * In the sidebar, select **Add Laboratory**, then provide:
@@ -186,7 +190,7 @@ python manage.py migrate --database prpmetadata-db
 * Assign the laboratory to the appropriate **user roles** in:
   [https://decos.areasciencepark.it/admin/users/](https://decos.areasciencepark.it/admin/users/)
 
-### **5. Test the Laboratory**
+### **6. Test the Laboratory**
 
 * Switch to the new laboratory context.
 * Create a new sample and verify:
@@ -194,7 +198,7 @@ python manage.py migrate --database prpmetadata-db
   * It appears in the **sample list**.
   * The sample detail view renders correctly with the custom report template.
 
-### **6. Deploy to Pre-Stage Production for testing**
+### **7. Deploy to Pre-Stage Production for testing**
 
 * Bring down the development stack:
 
@@ -216,14 +220,14 @@ python manage.py migrate --database prpmetadata-db
 
   in `settings/production.py`.
 
-### **7. Pull Request**
+### **8. Pull Request**
 
 * Commit your changes to the feature branch.
 * Open a **Pull Request** on GitHub for review and integration.
 * A code maintainer will review the code and if approved integrated in the main dev/production pipeline
 
 
-## **6. License**
+## **9. License**
 
 The **DECOS Webapp** is licensed under the **MIT License**.
 
