@@ -1,0 +1,250 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags django_tables2 %}
+
+{% block body_class %}template-form{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/forms/lage_form.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<h1><b>SAMPLE ENTRY FORM</b></h1>
+
+{{ page.intro | richtext }}
+
+{% if table %}
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+      <div class="card-body">
+        <i>It is an internal entry or a service request?</i>
+        <form id="sr_selection" method="get" action="">
+            <input type="hidden" id="sr_id_hidden" name="sr_id" value="internal">
+            <div class="sr_id_selection" id="dropMenu">
+                <div class="dropdown">
+                    <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
+                        Service Request
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
+                        <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText"
+                            placeholder="filter...">
+                        <button type="submit" class="btn btn-primary">search</button>
+
+                        <div class="dropdown-item" type="div" id="dropdown-div">
+                            {% render_table table %}
+                        </div>
+                    </div>
+                </div>
+                <div class="sr_id_selection">
+                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="sr_id" value="internal"
+                        aria-haspopup="true" aria-expanded="true">
+                        Internal Request
+                    </button>
+                </div>
+            </div>
+        </form>
+        <i>Service Request: </i> {{ sr_id }}
+      </div>
+    </div>
+{% endif %}
+
+<div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+    <div class="card-body">
+    <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
+    {% csrf_token %}
+    {% if "sr_" in sr_id %}
+    <input type="hidden" name="sr_id_hidden" value='{{ sr_id }}' />
+    {% else %}
+    <input type="hidden" name="sr_id_hidden" value="internal" />
+    {% endif %}
+    <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
+    </p>
+    <p>
+        <i>Please insert a brief descriptive title of your experiment (max 64 characters):</i> <br>
+        {{ Sissi_BioSamples.sample_short_description }}
+    </p>
+    <p>
+        <!-- <i>sr_id*</i>: <br> {{ .dmptitle }} <br> !-->
+        <i>Please describe in a few words the experiment (max 500 characters)*</i>: <br> {{ Sissi_BioSamples.sample_description }} <br>
+    </p>
+    <br>
+    </div>
+</div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>SISSI-BIO LABORATORY SAMPLE INFORMATION</b></div>
+      <div class="card-body">
+        <p>
+          <p><i>Submitted at</i>: {{ Sissi_BioSamples.submitted_at|date:"Y-m-d H:i" }}</p>
+
+          <i>Type of sample</i>: <br>
+            <p><i>{{ Sissi_BioSamples.type }}</i></p>
+
+          <!-- Sample-specific sections -->
+          <div class="sample-section" id="section-animal_tissue" style="display:none">
+            <p><i>Origin (which animal/vegetal)</i>: {{ Sissi_BioSamples.origin }}</p>
+            <p><i>Fixed (If yes, specify fixation method)</i>: {{ Sissi_BioSamples.is_fixed }}</p>
+            <p style="display:none"><i>Fixation method</i>: {{ Sissi_BioSamples.fixation_method }}</p>
+            <p><i>Embedding medium</i>: {{ Sissi_BioSamples.embedding_medium }}</p>
+            <p><i>Slice thickness [μm]</i>: {{ Sissi_BioSamples.slice_thickness }}</p>
+            <p><i>Support [material, measures]</i>: {{ Sissi_BioSamples.support }}</p>
+            <p><i>Other</i>: {{ Sissi_BioSamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-cultured_cells" style="display:none">
+            <p><i>Origin (ATTC code or source)</i>: {{ Sissi_BioSamples.origin }}</p>
+            <p><i>Bio Safety Level</i>: {{ Sissi_BioSamples.bio_safety_level }}</p>
+            <p><i>Fixed (If yes, specify fixation method)</i>: {{ Sissi_BioSamples.is_fixed }}</p>
+            <p style="display:none"><i>Fixation method</i>: {{ Sissi_BioSamples.fixation_method }}</p>
+            <p><i>Adherent or Suspended</i>: {{ Sissi_BioSamples.adherent_or_suspended }}</p>
+            <p style="display:none"><i>Buffer medium</i>: {{ Sissi_BioSamples.buffer_medium }}</p>
+            <p><i>Support [material, measures]</i>: {{ Sissi_BioSamples.support }}</p>
+            <p><i>Other</i>: {{ Sissi_BioSamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-bacteria" style="display:none">
+            <p><i>Origin (Gram Stain and Shape)</i>: {{ Sissi_BioSamples.origin }}</p>
+            <p><i>Bio Safety Level</i>: {{ Sissi_BioSamples.bio_safety_level }}</p>
+            <p><i>Fixed (If yes, specify fixation method)</i>: {{ Sissi_BioSamples.is_fixed }}</p>
+            <p style="display:none"><i>Fixation method</i>: {{ Sissi_BioSamples.fixation_method }}</p>
+            <p><i>Adherent or Suspended</i>: {{ Sissi_BioSamples.adherent_or_suspended }}</p>
+            <p style="display:none"><i>Buffer medium</i>: {{ Sissi_BioSamples.buffer_medium }}</p>
+            <p><i>Support</i>: {{ Sissi_BioSamples.support }}</p>
+            <p><i>Other</i>: {{ Sissi_BioSamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-virus" style="display:none">
+            <p><i>Origin (Family)</i>: {{ Sissi_BioSamples.origin }}</p>
+            <p><i>Bio Safety Level</i>: {{ Sissi_BioSamples.bio_safety_level }}</p>
+            <p><i>Fixed (If yes, specify fixation method)</i>: {{ Sissi_BioSamples.is_fixed }}</p>
+            <p style="display:none"><i>Fixation method</i>: {{ Sissi_BioSamples.fixation_method }}</p>
+            <p><i>Adherent or Suspended</i>: {{ Sissi_BioSamples.adherent_or_suspended }}</p>
+            <p style="display:none"><i>Buffer medium</i>: {{ Sissi_BioSamples.buffer_medium }}</p>
+            <p><i>Culture medium</i>: {{ Sissi_BioSamples.culture_medium }}</p>
+            <p><i>Support [material, measures]</i>: {{ Sissi_BioSamples.support }}</p>
+            <p><i>Other</i>: {{ Sissi_BioSamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-powder" style="display:none">
+            <p><i>Pure or mixture</i>: {{ Sissi_BioSamples.pure_or_mixture }}</p>
+            <p><i>Chemical name</i>: {{ Sissi_BioSamples.chemical_name }}</p>
+            <p><i>CAS Number</i>: {{ Sissi_BioSamples.cas_number }}</p>
+            <p><i>Form</i>: {{ Sissi_BioSamples.form }}</p>
+            <p><i>Chemical hazard</i>: {{ Sissi_BioSamples.chemical_hazard }}</p>
+            <p><i>Other</i>: {{ Sissi_BioSamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-liquid" style="display:none">
+            <p><i>Pure or mixture</i>: {{ Sissi_BioSamples.pure_or_mixture }}</p>
+            <p><i>Chemical name</i>: {{ Sissi_BioSamples.chemical_name }}</p>
+            <p><i>CAS Number</i>: {{ Sissi_BioSamples.cas_number }}</p>
+            <p><i>Chemical hazard</i>: {{ Sissi_BioSamples.chemical_hazard }}</p>
+            <p><i>Other</i>: {{ Sissi_BioSamples.other }}</p>
+          </div>        
+
+          <div class="sample-section" id="section-thin_film" style="display:none">
+            <p><i>Support [material, measures]</i>: {{ Sissi_BioSamples.support }}</p>
+            <p><i>Film thickness [nm]</i>: {{ Sissi_BioSamples.film_thickness }}</p>
+            <p><i>Pure or mixture</i>: {{ Sissi_BioSamples.pure_or_mixture }}</p>
+            <p><i>Chemical name and CAS number</i>: {{ Sissi_BioSamples.chemical_name_CAS_list }}</p>
+            <p><i>Chemical hazard</i>: {{ Sissi_BioSamples.chemical_hazard }}</p>
+            <p><i>Other</i>: {{ Sissi_BioSamples.other }}</p>
+          </div>
+          
+        <div class="sample-section" id="section-embedded" style="display:none">
+            <p><i>Sample origin</i>: {{ Sissi_BioSamples.origin }}</p>
+            <p><i>Self-standing or free-standing</i>: {{ Sissi_BioSamples.self_standing_or_free_standing }}</p>
+            <p><i>Support [materials, measures]</i>: {{ Sissi_BioSamples.support }}</p>
+            <p><i>Embedding medium</i>: {{ Sissi_BioSamples.embedding_medium }}</p>
+            <p><i>Slice thickness [μm]</i>: {{ Sissi_BioSamples.slice_thickness }}</p>
+            <p><i>Polishing</i>: {{ Sissi_BioSamples.polishing }}</p>
+            <p><i>Other</i>: {{ Sissi_BioSamples.other }}</p>
+          </div>
+
+        <div class="sample-section" id="section-layered" style="display:none">
+            <p><i>Sample origin</i>: {{ Sissi_BioSamples.origin }}</p>
+            <p><i>Self-standing or free-standing</i>: {{ Sissi_BioSamples.self_standing_or_free_standing }}</p>
+            <p><i>Support [materials, measures]</i>: {{ Sissi_BioSamples.support }}</p>
+            <p><i>Embedding medium</i>: {{ Sissi_BioSamples.embedding_medium }}</p>
+            <p><i>Slice thickness [μm]</i>: {{ Sissi_BioSamples.slice_thickness }}</p>
+            <p><i>Polishing</i>: {{ Sissi_BioSamples.polishing }}</p>
+            <p><i>Other</i>: {{ Sissi_BioSamples.other }}</p>
+          </div>
+
+          <div class="sample-section" id="section-other" style="display:none">
+            <p><i>Sample info</i>: {{ Sissi_BioSamples.other }}</p>
+          </div>
+          
+        </p>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>FILES</b></div>
+      <div class="card-body">
+        <br>
+        <p>
+            <i>Include the sample sheet if present</i>: {{ Sissi_BioSamples.sample_sheet_filename }} <br>
+            <i>Include additional file: <br> (FOR THIS VERSION OF DECOS WEBAPP: if more than one compress the files in a
+                single zip or tar format)</i> {{ Sissi_BioSamples.additional_filename }}
+
+        </p>
+      <br>
+      <p><input type="submit" value="Insert data" class="btn btn-primary"></p>
+    </div>
+</form>
+
+<!-- TODO: PUT THESE IN THE RIGHT STATIC JS SECTION! -->
+
+ <!-- initial filtering of internal requests/ proposals -->
+<script>
+    var QueryString = (new URL(location.href)).searchParams.get('filter');
+    if (QueryString != '')
+        $('#dropMenu .dropdown .dropdown-menu').show();
+</script>
+
+
+ <!-- sample type dynamic menu + adherent-supended dynamic menu -->
+<script>
+  $(document).ready(function () {
+    const $sampleType = $('#id_type');
+
+    // Rebind dynamic field logic within the currently visible section
+    function activateDynamicFields($section) {
+      // --- FIXED (If yes, specify fixation method) ---
+      $(document).on('change', 'select[name*="is_fixed"]', function () {
+        const val = $(this).val()?.toLowerCase();
+        const $section = $(this).closest('.sample-section');
+        const $fixationField = $section.find('p:contains("Fixation method")');
+
+        if (val === 'yes') $fixationField.show();
+        else $fixationField.hide();
+      });
+
+      $('select[name*="adherent_or_suspended"]').each(function() {
+        const $this = $(this);
+        const $section = $this.closest('.sample-section');
+        $this.on('change', function() {
+          const val = $this.val()?.toLowerCase();
+          const $bufferField = $section.find('p:contains("Buffer medium")');
+          if (val === 'suspended') $bufferField.show();
+          else $bufferField.hide();
+      }).trigger('change'); // initial state
+});
+    }
+
+    // --- SAMPLE TYPE SWITCHER ---
+    $sampleType.on('change', function () {
+      const selected = $(this).val()?.trim().toLowerCase().replace(/\s+/g, '');
+      $('.sample-section').hide(); // hide all
+      const $section = $('#section-' + selected);
+      $section.show();             // show the chosen one
+      activateDynamicFields($section); // attach logic within it
+    });
+
+    // Initialize on page load
+    $sampleType.trigger('change');
+    $('select[name*="is_fixed"]').trigger('change');
+   
+  });
+</script>
+
+{% endblock %}
