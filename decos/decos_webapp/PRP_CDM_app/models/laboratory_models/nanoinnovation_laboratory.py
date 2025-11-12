@@ -18,7 +18,8 @@ class Nanoinnovation_LaboratorySamples(Samples):
     adherent_or_suspended = models.CharField(max_length=64, blank=True, choices=adherent_or_suspended_choices)
 
     # Bio Safety Level
-    bio_safety_level = models.CharField(max_length=32, blank=True)
+    bio_safety_choices = tupleConvert(nanoinnovation_laboratory_choices["bio_safety"])
+    bio_safety_level = models.CharField(max_length=1, blank=True, choices=bio_safety_choices)
 
     # Buffer Medium
     buffer_medium = models.CharField(max_length=512, blank=True)
