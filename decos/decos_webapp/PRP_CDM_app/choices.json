@@ -120,7 +120,14 @@
             ["thin_film", "Sample in Thin Films"],
             ["non_bio_slice", "Non Biological Slices or Cross-sections"],
             ["gel", "Gels"],
-            ["solid", "Solid Materials"]
+            ["solid", "Solid Materials"],
+            ["other", "other"]
+        ],
+        "bio_safety": [
+            ["1", "1"],
+            ["2", "2"],
+            ["3", "3"],
+            ["4", "4"]
         ],
         "adherent_or_suspended": [
             ["adherent", "Adherent"],
@@ -166,7 +173,8 @@
             ["liquid", "Liquid"],
             ["thin_film", "Sample in Thin Films"],
             ["embedded", "Embedded Materials"],
-            ["layered", "Layered Materials"]
+            ["layered", "Layered Materials"],
+            ["other", "other"]
         ],
         "adherent_or_suspended": [
             ["adherent", "Adherent"],
