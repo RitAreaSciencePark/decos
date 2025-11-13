@@ -215,6 +215,59 @@
         ]
     }
     ,
+    "Iuvs" :
+    {
+        "type_choices": [
+            ["animal_tissue", "Animal/Vegetal Tissue Slides"],
+            ["cultured_cells", "Cultured Animal Eukaryotic Cells"],
+            ["bacteria", "Bacteria"],
+            ["virus", "Virus"],
+            ["powder", "Powder Sample"],
+            ["liquid", "Liquid"],
+            ["thin_film", "Sample in Thin Films"],
+            ["embedded", "Embedded Materials"],
+            ["layered", "Layered Materials"],
+            ["other", "other"]
+        ],
+        "adherent_or_suspended": [
+            ["adherent", "Adherent"],
+            ["suspended", "Suspended"]
+        ],
+        "bio_safety": [
+            ["1", "1"],
+            ["2", "2"],
+            ["3", "3"],
+            ["4", "4"]
+        ],
+        "powder_form": [
+            ["crystals", "Crystals"],
+            ["amorphous", "Amorphous"]
+        ],
+        "thin_film_type": [
+            ["supported", "Supported"],
+            ["self_standing", "Self-standing"]
+        ],
+        "slice_standing": [
+            ["supported", "Supported"],
+            ["free", "Free standing"]
+        ],
+        "pure_or_mixture": [
+            ["pure", "Pure"],
+            ["mixture", "Mixture"]
+        ],
+        "chemical_hazard": [
+            ["asphyxiants", "asphyxiants"],
+            ["corrosives", "corrosives"],
+            ["irritants", "irritants"],
+            ["sensitizers", "sensitizers"],
+            ["carcinogens", "carcinogens"],
+            ["mutagens", "mutagens"],
+            ["teratogens", "teratogens"],
+            ["reactants", "reactants"],
+            ["flammables", "flammables"]
+        ]
+    }
+    ,
 
     "Steps" :
     {
