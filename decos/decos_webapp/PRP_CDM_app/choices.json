@@ -269,6 +269,39 @@
     }
     ,
 
+    "Struct_Bio_Lab" :
+    {
+        "type_choices": [
+            ["cultured_cells", "Cultured Animal Eukaryotic Cells"],
+            ["bacteria", "Bacteria"],
+            ["virus", "Virus"],
+            ["protein", "Protein"],
+            ["nucleic acid", "Nucleic Acid"],
+            ["chemical sample", "Chemical Sample"],
+            ["other", "other"]
+        ],
+        "adherent_or_suspended": [
+            ["adherent", "Adherent"],
+            ["suspended", "Suspended"]
+        ],
+        "bio_safety": [
+            ["1", "1"],
+            ["2", "2"]
+        ],
+        "mycoplasma_test": [
+            ["yes", "Yes"],
+            ["no", "No"]
+        ],
+        "storage": [
+            ["RT","Room Temperature"],
+            ["4C","4 °C"],
+            ["-20C","-20 °C"],
+            ["-80C","-80 °C"],
+            ["nitrogen", "Liquid Nitrogen"]
+        ]
+    }
+    ,
+
     "Steps" :
     {
         "sample_quality_choices" :
