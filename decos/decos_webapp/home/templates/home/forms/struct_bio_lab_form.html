@@ -1,0 +1,267 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags django_tables2 %}
+
+{% block body_class %}template-form{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/forms/lage_form.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<h1><b>SAMPLE ENTRY FORM</b></h1>
+
+{{ page.intro | richtext }}
+
+{% if table %}
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+      <div class="card-body">
+        <i>It is an internal entry or a service request?</i>
+        <form id="sr_selection" method="get" action="">
+            <input type="hidden" id="sr_id_hidden" name="sr_id" value="internal">
+            <div class="sr_id_selection" id="dropMenu">
+                <div class="dropdown">
+                    <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
+                        Service Request
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
+                        <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText"
+                            placeholder="filter...">
+                        <button type="submit" class="btn btn-primary">search</button>
+
+                        <div class="dropdown-item" type="div" id="dropdown-div">
+                            {% render_table table %}
+                        </div>
+                    </div>
+                </div>
+                <div class="sr_id_selection">
+                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="sr_id" value="internal"
+                        aria-haspopup="true" aria-expanded="true">
+                        Internal Request
+                    </button>
+                </div>
+            </div>
+        </form>
+        <i>Service Request: </i> {{ sr_id }}
+      </div>
+    </div>
+{% endif %}
+
+<div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+    <div class="card-body">
+    <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
+    {% csrf_token %}
+    {% if "sr_" in sr_id %}
+    <input type="hidden" name="sr_id_hidden" value='{{ sr_id }}' />
+    {% else %}
+    <input type="hidden" name="sr_id_hidden" value="internal" />
+    {% endif %}
+    <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
+    </p>
+    <p>
+        <i>Please insert a brief descriptive title of your experiment (max 64 characters):</i> <br>
+        {{ Struct_Bio_LabSamples.sample_short_description }}
+    </p>
+    <p>
+        <!-- <i>sr_id*</i>: <br> {{ .dmptitle }} <br> !-->
+        <i>Please describe in a few words the experiment (max 500 characters)*</i>: <br> {{ Struct_Bio_LabSamples.sample_description }} <br>
+    </p>
+    <br>
+    </div>
+</div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>STRUCTURAL BIOLOGY LABORATORY SAMPLE INFORMATION</b></div>
+      <div class="card-body">
+        <p>
+          <p><i>Submitted at</i>: {{ Struct_Bio_LabSamples.submitted_at|date:"Y-m-d H:i" }}</p>
+
+          <i>Type of sample</i>: <br>
+            <p><i>{{ Struct_Bio_LabSamples.type }}</i></p>
+
+
+          <div class="sample-section" id="section-cultured_cells" style="display:none">
+            <p><i>Sample Producer</i>: {{ Struct_Bio_LabSamples.sample_producer }}</p>
+            <p><i>Affiliation</i>: {{ Struct_Bio_LabSamples.affiliation }} </p>
+            <p><i>Sample Purpose</i>: {{ Struct_Bio_LabSamples.sample_purpose }} </p>
+            <p><i>Origin</i>: {{ Struct_Bio_LabSamples.origin }} </p>
+            <p><i>Bio Safety Level</i>: {{ Struct_Bio_LabSamples.bio_safety_level }}</p>
+            <p><i>Fixed (If yes, specify fixation method)</i>: {{ Struct_Bio_LabSamples.is_fixed }}</p>
+            <p style="display:none"><i>Fixation method</i>: {{ Struct_Bio_LabSamples.fixation_method }}</p>
+            <p><i>Adherent or Suspended</i>: {{ Struct_Bio_LabSamples.adherent_or_suspended }}</p>
+            <p style="display:none"><i>Culture medium</i>: {{ Struct_Bio_LabSamples.culture_medium }}</p>
+            <p><i>Mycoplasma Test</i>: {{ Struct_Bio_LabSamples.mycoplasma_test }} </p>
+            <p><i>Storage Conditions</i>: {{ Struct_Bio_LabSamples.storage }} </p>
+            <p><i>Other</i>: {{ Struct_Bio_LabSamples.other }}</p>
+            <p><i>Sample Destination Upon Usage</i>: {{ Struct_Bio_LabSamples.sample_destination_upon_usage }} </p>
+          </div>
+
+          <div class="sample-section" id="section-bacteria" style="display:none">
+            <p><i>Sample Producer</i>: {{ Struct_Bio_LabSamples.sample_producer }}</p>
+            <p><i>Affiliation</i>: {{ Struct_Bio_LabSamples.affiliation }} </p>
+            <p><i>Sample Purpose</i>: {{ Struct_Bio_LabSamples.sample_purpose }} </p>            
+            <p><i>Origin (Gram Stain and Shape)</i>: {{ Struct_Bio_LabSamples.origin }}</p>
+            <p><i>Bio Safety Level</i>: {{ Struct_Bio_LabSamples.bio_safety_level }}</p>
+            <p><i>Transfromed with vectors (If yes, specify vector details)</i>: {{ Struct_Bio_LabSamples.transformed_with_vector }}</p>
+            <p><i>Vectors File</i>: {{ Struct_Bio_LabSamples.vector_file }}</p>
+            <p><i>Antibiotic Resistance</i>: {{ Struct_Bio_LabSamples.antibiotic_resistance }}</p>
+            <p><i>Inclusion Matrix or Culture medium</i>: {{ Struct_Bio_LabSamples.culture_medium }}</p>
+            <p><i>Storage Conditions</i>: {{ Struct_Bio_LabSamples.storage }} </p>
+            <p><i>Other</i>: {{ Struct_Bio_LabSamples.other }}</p>
+            <p><i>Sample Destination Upon Usage</i>: {{ Struct_Bio_LabSamples.sample_destination_upon_usage }} </p>
+          </div>
+
+          <div class="sample-section" id="section-virus" style="display:none">
+            <p><i>Sample Producer</i>: {{ Struct_Bio_LabSamples.sample_producer }}</p>
+            <p><i>Affiliation</i>: {{ Struct_Bio_LabSamples.affiliation }} </p>
+            <p><i>Sample Purpose</i>: {{ Struct_Bio_LabSamples.sample_purpose }} </p>            
+            <p><i>Origin (Family)</i>: {{ Struct_Bio_LabSamples.origin }}</p>
+            <p><i>Bio Safety Level</i>: {{ Struct_Bio_LabSamples.bio_safety_level }}</p>
+            <p><i>Fixed (If yes, specify fixation method)</i>: {{ Struct_Bio_LabSamples.is_fixed }}</p>
+            <p style="display:none"><i>Fixation method</i>: {{ Struct_Bio_LabSamples.fixation_method }}</p>
+            <p><i>Storage Medium</i>: {{ Struct_Bio_LabSamples.culture_medium }}</p>
+            <p><i>Storage Conditions</i>: {{ Struct_Bio_LabSamples.storage }} </p>
+            <p><i>Other</i>: {{ Struct_Bio_LabSamples.other }}</p>
+            <p><i>Sample Destination Upon Usage</i>: {{ Struct_Bio_LabSamples.sample_destination_upon_usage }} </p>
+          </div>
+
+          <div class="sample-section" id="section-protein" style="display:none">
+            <p><i>Sample Producer</i>: {{ Struct_Bio_LabSamples.sample_producer }}</p>
+            <p><i>Affiliation</i>: {{ Struct_Bio_LabSamples.affiliation }} </p>
+            <p><i>Sample Purpose</i>: {{ Struct_Bio_LabSamples.sample_purpose }} </p>
+            <p><i>Name (synonyms)</i>: {{ Struct_Bio_LabSamples.name }} </p>
+            <p><i>GeneBank ID</i>: {{ Struct_Bio_LabSamples.genebank_id }} </p>
+            <p><i>Sequence</i>: {{ Struct_Bio_LabSamples.sequence }} </p>
+            <p><i>Sequence File</i>: {{ Struct_Bio_LabSamples.sequence_file }} </p>
+            <p><i>Molar Weight [Da]</i>: {{ Struct_Bio_LabSamples.molar_weight }} </p>
+            <p><i>Origin</i>: {{ Struct_Bio_LabSamples.origin }}</p>
+            <p><i>Recombinant (If yes, specify source)</i>: {{ Struct_Bio_LabSamples.recombinant }}</p>
+            <p style="display:none"><i>Source</i>: {{ Struct_Bio_LabSamples.recombinant_source }}</p>
+            <p><i>Pure or Mixture</i>: {{ Struct_Bio_LabSamples.pure_or_mixture }} </p>
+            <p><i>Quantity, Concetration, Buffer</i>: {{ Struct_Bio_LabSamples.quantity_concentration_buffer }} </p>
+            <p><i>Quality Control</i>: {{ Struct_Bio_LabSamples.quality_control }} </p>
+            <p><i>Storage Conditions</i>: {{ Struct_Bio_LabSamples.storage }} </p>
+            <p><i>Biological Hazard</i>: {{ Struct_Bio_LabSamples.chemical_hazard }} </p>
+            <p><i>Other</i>: {{ Struct_Bio_LabSamples.other }}</p>
+            <p><i>Sample Destination Upon Usage</i>: {{ Struct_Bio_LabSamples.sample_destination_upon_usage }} </p>
+          </div>
+
+          <div class="sample-section" id="section-nucleic_acid" style="display:none">
+            <p><i>Sample Producer</i>: {{ Struct_Bio_LabSamples.sample_producer }}</p>
+            <p><i>Affiliation</i>: {{ Struct_Bio_LabSamples.affiliation }} </p>
+            <p><i>Sample Purpose</i>: {{ Struct_Bio_LabSamples.sample_purpose }} </p>
+            <p><i>Name (synonyms)</i>: {{ Struct_Bio_LabSamples.name }} </p>
+            <p><i>Gene ID code</i>: {{ Struct_Bio_LabSamples.genebank_id }} </p>
+            <p><i>Type (DNA/RNA, etc): {{ Struct_Bio_LabSamples.type_nucleic }} </p>
+            <p><i>Sequence</i>: {{ Struct_Bio_LabSamples.sequence }} </p>
+            <p><i>Sequence File</i>: {{ Struct_Bio_LabSamples.sequence_file }} </p>
+            <p><i>Form {{ Struct_Bio_LabSamples.form }} </p>
+            <p><i>Quantity, Concetration, Buffer</i>: {{ Struct_Bio_LabSamples.quantity_concentration_buffer }} </p>
+            <p><i>Quality Control</i>: {{ Struct_Bio_LabSamples.quality_control }} </p>
+            <p><i>Pure or mixture</i>: {{ Struct_Bio_LabSamples.pure_or_mixture }}</p>
+            <p><i>Buffer Components</i>: {{ Struct_Bio_LabSamples.buffer_medium }}</p>
+            <p><i>Storage Conditions</i>: {{ Struct_Bio_LabSamples.storage }} </p>
+            <p><i>Biological Hazard</i>: {{ Struct_Bio_LabSamples.chemical_hazard }} </p>
+            <p><i>Other</i>: {{ Struct_Bio_LabSamples.other }}</p>
+            <p><i>Sample Destination Upon Usage</i>: {{ Struct_Bio_LabSamples.sample_destination_upon_usage }} </p>
+          </div>  
+
+          
+        <div class="sample-section" id="section-chemical_sample" style="display:none">
+            <p><i>Sample Producer</i>: {{ Struct_Bio_LabSamples.sample_producer }}</p>
+            <p><i>Affiliation</i>: {{ Struct_Bio_LabSamples.affiliation }} </p>
+            <p><i>Sample Purpose</i>: {{ Struct_Bio_LabSamples.sample_purpose }} </p>
+            <p><i>Name (synonyms)</i>: {{ Struct_Bio_LabSamples.name }} </p>
+            <p><i>Chemical Name/Formula</i>: {{ Struct_Bio_LabSamples.chemical_name }}</p>
+            <p><i>Cas Number</i>: {{ Struct_Bio_LabSamples.cas_number }} </p>
+            <p><i>Structure or Explanation</i>: {{ Struct_Bio_LabSamples.structure }}</p>
+            <p><i>Form</i>: {{ Struct_Bio_LabSamples.form }}</p>
+            <p><i>Quantity, Concentration; Buffer</i>: {{ Struct_Bio_LabSamples.quantity_concentration_buffer }}</p>
+            <p><i>Storage Conditions</i>: {{ Struct_Bio_LabSamples.storage }} </p>
+            <p><i>Buffer Composition</i>: {{ Struct_Bio_LabSamples.buffer_medium }} </p>
+            <p><i>Pure or mixture</i>: {{ Struct_Bio_LabSamples.pure_or_mixture }}</p>
+            <p><i>Biological/Chemical Hazard</i>: {{ Struct_Bio_LabSamples.chemical_hazard }} </p>
+            <p><i>Other</i>: {{ Struct_Bio_LabSamples.other }}</p>
+            <p><i>Sample Destination Upon Usage</i>: {{ Struct_Bio_LabSamples.sample_destination_upon_usage }} </p>
+          </div>
+
+          <div class="sample-section" id="section-other" style="display:none">
+            <p><i>Sample info</i>: {{ Struct_Bio_LabSamples.other }}</p>
+            <p><i>Sample Destination Upon Usage</i>: {{ Struct_Bio_LabSamples.sample_destination_upon_usage }} </p>
+          </div>
+          
+        </p>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>FILES</b></div>
+      <div class="card-body">
+        <br>
+        <p>
+            <i>Include the sample sheet if present</i>: {{ Struct_Bio_LabSamples.sample_sheet_filename }} <br>
+            <i>Include additional file: <br> (FOR THIS VERSION OF DECOS WEBAPP: if more than one compress the files in a
+                single zip or tar format)</i> {{ Struct_Bio_LabSamples.additional_filename }}
+
+        </p>
+      <br>
+      <p><input type="submit" value="Insert data" class="btn btn-primary"></p>
+    </div>
+</form>
+
+<!-- TODO: PUT THESE IN THE RIGHT STATIC JS SECTION! -->
+
+ <!-- initial filtering of internal requests/ proposals -->
+<script>
+    var QueryString = (new URL(location.href)).searchParams.get('filter');
+    if (QueryString != '')
+        $('#dropMenu .dropdown .dropdown-menu').show();
+</script>
+
+
+ <!-- sample type dynamic menu + adherent-supended dynamic menu -->
+<script>
+  $(document).ready(function () {
+    const $sampleType = $('#id_type');
+
+    // Rebind dynamic field logic within the currently visible section
+    function activateDynamicFields($section) {
+      // --- FIXED (If yes, specify fixation method) ---
+      
+      $(document).on('change', 'select[name*="is_fixed"]', function () {
+        const val = $(this).val()?.toLowerCase();
+        const $section = $(this).closest('.sample-section');
+        const $fixationField = $section.find('p:contains("Fixation method")');
+
+        if (val === 'yes') $fixationField.show();
+        else $fixationField.hide();
+      });  
+
+      $('select[name*="adherent_or_suspended"]').each(function() {
+        const $this = $(this);
+        const $section = $this.closest('.sample-section');
+        $this.on('change', function() {
+          const val = $this.val()?.toLowerCase();
+          const $bufferField = $section.find('p:contains("Culture medium")');
+          if (val === 'suspended') $bufferField.show();
+          else $bufferField.hide();
+      }).trigger('change'); // initial state
+});
+    }
+
+    // --- SAMPLE TYPE SWITCHER ---
+    $sampleType.on('change', function () {
+      const selected = $(this).val()?.trim().toLowerCase().replace(/\s+/g, '');
+      $('.sample-section').hide(); // hide all
+      const $section = $('#section-' + selected);
+      $section.show();             // show the chosen one
+      activateDynamicFields($section); // attach logic within it
+    });
+
+    // Initialize on page load
+    $sampleType.trigger('change');
+    $('select[name*="is_fixed"]').trigger('change');
+   
+  });
+</script>
+
+{% endblock %}

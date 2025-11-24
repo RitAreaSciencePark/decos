@@ -18,6 +18,7 @@ from PRP_CDM_app.models.laboratory_models.nanoinnovation_laboratory import Nanoi
 from PRP_CDM_app.models.laboratory_models.mass_spectroscopy_infrastructure import Mass_Spectroscopy_InfrastructureSamples
 from PRP_CDM_app.models.laboratory_models.sissi_bio import Sissi_BioSamples
 from PRP_CDM_app.models.laboratory_models.iuvs import IuvsSamples
+from PRP_CDM_app.models.laboratory_models.struct_bio_lab import Struct_Bio_LabSamples
 
 class FormsDefinition:
     # Defines form structures for different laboratories, specifying included models and excluded fields
@@ -98,6 +99,19 @@ class FormsDefinition:
 
         # Fields to be excluded from the form to ensure only relevant data is collected
         exclude = { 'IuvsSamples': ['sr_id',
+                                    'sample_id',
+                                    'lab_id',
+                                    'sample_feasibility',
+                                    'sample_status',
+                                    'sample_location']
+                   }
+    class Struct_Bio_LabForm:
+        # Form definition for sissi-bio samples
+        lab = 'Structural Biology Lab'
+        content = [Struct_Bio_LabSamples]  # Defines the model used in the form
+
+        # Fields to be excluded from the form to ensure only relevant data is collected
+        exclude = { 'Struct_Bio_LabSamples': ['sr_id',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
