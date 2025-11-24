@@ -47,6 +47,8 @@ class Struct_Bio_LabSamples(Samples):
     # Embedding Medium
     embedding_medium = models.CharField(max_length=256, blank=True)
 
+    form = models.CharField(max_length=512, blank=True)
+
     #GeneBank ID
     genebank_id = models.CharField(max_length=256, blank=True)
 
@@ -61,7 +63,7 @@ class Struct_Bio_LabSamples(Samples):
 
     quality_control = models.CharField(max_length=256, blank=True)
 
-    quantity_concentration_medium = models.CharField(max_length=256, blank=True)
+    quantity_concentration_buffer = models.CharField(max_length=256, blank=True)
 
     # Sample Producer
     sample_producer = models.CharField(max_length=512, blank=True)
@@ -85,9 +87,9 @@ class Struct_Bio_LabSamples(Samples):
     storage_choices = tupleConvert(struct_bio_lab_choices["storage"])
     storage = models.CharField(max_length=10, blank=True, choices=storage_choices)
 
-    # Transformed with vector
-    transformed_with_vector = models.CharField(blank=True)
-    widgets["transformed_with_vector"] = BooleanIfWhat(yes_or_no=True) 
+    structure = models.CharField(max_length=32, blank=True)
+
+    type_nucleic = models.CharField(max_length=512, blank=True)
 
     # Film Thickness
     film_thickness = models.CharField(max_length=32, blank=True)
@@ -132,6 +134,12 @@ class Struct_Bio_LabSamples(Samples):
     sample_sheet_filename = models.FileField(blank=True, upload_to=user_directory_path)
     additional_filename = models.FileField(blank=True, upload_to=user_directory_path)
     sequence_file = models.FileField(upload_to=user_directory_path, blank = True, null=True)
+
+    # Transformed with vector
+    transformed_with_vector = models.CharField(blank=True)
+    vector_file = models.FileField(upload_to=user_directory_path, blank = True, null=True)
+    widgets["transformed_with_vector"] = BooleanIfWhat(yes_or_no=True) 
+   
 
     # give the name of the table, lowercase for postgres (I've put a "lower() to remember")
     class Meta:

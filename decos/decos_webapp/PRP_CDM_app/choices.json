@@ -276,8 +276,8 @@
             ["bacteria", "Bacteria"],
             ["virus", "Virus"],
             ["protein", "Protein"],
-            ["nucleic acid", "Nucleic Acid"],
-            ["chemical sample", "Chemical Sample"],
+            ["nucleic_acid", "Nucleic Acid"],
+            ["chemical_sample", "Chemical Sample"],
             ["other", "other"]
         ],
         "adherent_or_suspended": [
