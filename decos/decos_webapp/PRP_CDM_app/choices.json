@@ -302,6 +302,35 @@
     }
     ,
 
+    "Cnr_Ic" :
+    {
+        "type_choices": [
+            ["protein", "Protein"],
+            ["dna", "DNA"],
+            ["rna", "RNA"],
+            ["peptides", "Peptides"],
+            ["small_molecule", "Small Molecule"]
+        ],
+      
+        "storage": [
+            ["RT","Room Temperature"],
+            ["4C","4 °C"],
+            ["-20C","-20 °C"],
+            ["-80C","-80 °C"],
+            ["nitrogen", "Liquid Nitrogen"]
+        ],
+        "target": [
+            ["yes", "Yes"],
+            ["no", "No"]
+        ],
+        "ligand": [
+            ["yes", "Yes"],
+            ["no", "No"]
+        ]
+    }
+
+    ,
+
     "Steps" :
     {
         "sample_quality_choices" :
