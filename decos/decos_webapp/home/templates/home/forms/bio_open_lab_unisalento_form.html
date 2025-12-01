@@ -16,8 +16,8 @@
     <div class="section_div">
         <i>It is an internal entry or a service request?</i>
         <form id="sr_selection" method="get" action="">
-            <input type="hidden" id="sr_id_hidden" name="sr_id" value="internal">
-            <div class="sr_id_selection" id="dropMenu">
+            <input type="hidden" id="proposal_id_hidden" name="proposal_id" value="internal">
+            <div class="proposal_id_selection" id="dropMenu">
                 <div class="dropdown">
                     <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
@@ -33,15 +33,15 @@
                         </div>
                     </div>
                 </div>
-                <div class="sr_id_selection">
-                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="sr_id" value="internal"
+                <div class="proposal_id_selection">
+                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="proposal_id" value="internal"
                         aria-haspopup="true" aria-expanded="true">
                         Internal Request
                     </button>
                 </div>
             </div>
         </form>
-        <i>Service Request: </i> {{ sr_id }}
+        <i>Service Request: </i> {{ proposal_id }}
 
     </div>
 
@@ -49,10 +49,10 @@
 <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
     {% csrf_token %}
 
-    {% if "sr_" in sr_id %}
-        <input type="hidden" name="sr_id_hidden" value="{{ sr_id }}" />
+    {% if "sr_" in proposal_id %}
+        <input type="hidden" name="proposal_id_hidden" value="{{ proposal_id }}" />
     {% else %}
-        <input type="hidden" name="sr_id_hidden" value="internal" />
+        <input type="hidden" name="proposal_id_hidden" value="internal" />
     {% endif %}
     <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
 
