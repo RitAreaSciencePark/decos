@@ -1,0 +1,133 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags django_tables2 %}
+
+{% block body_class %}template-form{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/forms/lage_form.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<h1><b>SAMPLE ENTRY FORM</b></h1>
+
+{{ page.intro | richtext }}
+
+{% if table %}
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+      <div class="card-body">
+        <i>It is an internal entry or a EPIRO Proposal?</i>
+        <form id="proposal_selection" method="get" action="">
+            <input type="hidden" id="proposal_id_hidden" name="proposal_id" value="internal">
+            <div class="proposal_id_selection" id="dropMenu">
+                <div class="proposal_id_selection">
+                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="proposal_id" value="internal"
+                        aria-haspopup="true" aria-expanded="true">
+                        Internal Request
+                    </button>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
+                        Proposal selection
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
+                        <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText"
+                            placeholder="filter...">
+                        <button type="submit" class="btn btn-primary">search</button>
+
+                        <div class="dropdown-item" type="div" id="dropdown-div">
+                            {% render_table table %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <i>Proposal selected: </i> {{ proposal_id }}
+      </div>
+    </div>
+{% endif %}
+
+<div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+    <div class="card-body">
+    <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
+    {% csrf_token %}
+    <input type="hidden" name="proposal_id_hidden" value='{{ proposal_id }}' />
+    <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
+    </p>
+    <p>
+        <i>Please insert a brief descriptive title of your experiment (max 64 characters):</i> <br>
+        {{ Cnr_IomSamples.sample_short_description }}
+    </p>
+    <p>
+        <!-- <i>proposal_id*</i>: <br> {{ .dmptitle }} <br> !-->
+        <i>Please describe in a few words the experiment (max 500 characters)*</i>: <br> {{ Cnr_IomSamples.sample_description }} <br>
+    </p>
+    <br>
+    </div>
+</div>
+    <div class="card mb-4 shadow-sm">
+        <div class="card-header"><b>CNR-IOM SAMPLE INFORMATION</b></div>
+
+        <div class="card-body">
+
+            <p><i>Sample Name</i>:<br> {{ Cnr_IomSamples.sample_name }}</p>
+            <p><i>Sample Acronym</i>:<br> {{ Cnr_IomSamples.sample_acronym }}</p>
+            <p><i>Organization</i>:<br> {{ Cnr_IomSamples.organization }}</p>
+            <p><i>Purpose of the Experiments</i>:<br> {{ Cnr_IomSamples.purpose }}</p>
+
+            <div class="section_div">
+
+                <h6><b>Biological Material</b></h6>
+                    <p><i>Description</i>:<br> {{ Cnr_IomSamples.biological_material_description }}</p>
+                    <p><i>Expression Methods</i>:<br> {{ Cnr_IomSamples.expression_methods }}</p>
+
+            </div>
+
+            <p><i> Methods used for sample isolation and stabilization (e.g. chromatography, crosslinking, centrifugation gradient) </i>:<br> {{ Cnr_IomSamples.purification_stabilization }}</p>
+            <p><i>Buffer conditions used during sample preparation (pH, ionic strength, additives, etc.)</i>:<br> {{ Cnr_IomSamples.buffering }}</p>
+            <p><i>Sample Concentration (e.g. A280, A260/280, extinction coefficient ε) </i>:<br> {{ Cnr_IomSamples.sample_concentration }}</p>
+
+            <p><i>Sequence (FASTA format)</i>: {{ Cnr_IomSamples.sequence }} </p>
+            <p><i>Sequence File</i>: {{ Cnr_IomSamples.sequence_file }} </p>
+
+            <p><i>Theoretical Molecular Weight</i>: {{ Cnr_IomSamples.molecular_weight }} </p>
+
+            <p><i>Grid Types</i>: {{ Cnr_IomSamples.grid_type }} </p>
+
+            <p><i>Description of substrate surface treatment (e.g. functionalization, coating, plasma cleaning, etc.) </i>: {{ Cnr_IomSamples.substrate_treatement }} </p>
+            <p><i>Fixation Method (e.g. chemical fixation, cryofixation, etc.)</i>: {{ Cnr_IomSamples.fixation_method }} </p>
+            <div class="section_div">
+
+                <h6><b>Labelling Method</b></h6>
+                    <p><i>Category (Details on labelling used for correlated imaging)</i>:<br> {{ Cnr_IomSamples.labelling_method_category }}</p>
+                    <p><i>Fluorescent dyes (name)</i>:<br> {{ Cnr_IomSamples.labelling_method_dyes }}</p>
+                    <p><i>Immunolabeling (primary/secondary antibodies)</i>:<br> {{ Cnr_IomSamples.imunolabelling_method }}</p>
+                    <p><i>Type of Fluorescent Probe or Marker</i>:<br> {{ Cnr_IomSamples.labelling_method_probe }}</p>
+            </div>
+        </div>
+    </div>
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>FILES</b></div>
+      <div class="card-body">
+        <br>
+        <p>
+            <i>Include the sample sheet if present</i>: {{ Cnr_IomSamples.sample_sheet_filename }} <br>
+            <i>Include additional file: <br> (FOR THIS VERSION OF EASYDMP: if more than one compress the files in a
+                single zip or tar format)</i> {{ Cnr_IomSamples.additional_filename }}
+
+        </p>
+      <br>
+      <p><input type="submit" value="Insert data" class="btn btn-primary"></p>
+    </div>
+</form>
+<script>
+    var QueryString = (new URL(location.href)).searchParams.get('filter');
+    if (QueryString != '')
+        $('#dropMenu .dropdown .dropdown-menu').show();
+</script>
+
+
+{% endblock %}

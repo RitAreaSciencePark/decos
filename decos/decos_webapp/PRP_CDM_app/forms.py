@@ -20,6 +20,7 @@ from PRP_CDM_app.models.laboratory_models.sissi_bio import Sissi_BioSamples
 from PRP_CDM_app.models.laboratory_models.iuvs import IuvsSamples
 from PRP_CDM_app.models.laboratory_models.struct_bio_lab import Struct_Bio_LabSamples
 from PRP_CDM_app.models.laboratory_models.cnr_ic import Cnr_IcSamples
+from PRP_CDM_app.models.laboratory_models.cnr_iom import Cnr_IomSamples
 
 class FormsDefinition:
     # Defines form structures for different laboratories, specifying included models and excluded fields
@@ -126,6 +127,20 @@ class FormsDefinition:
 
         # Fields to be excluded from the form to ensure only relevant data is collected
         exclude = { 'Cnr_IcSamples': ['proposal',
+                                    'sample_id',
+                                    'lab_id',
+                                    'sample_feasibility',
+                                    'sample_status',
+                                    'sample_location']
+                   }
+        
+    class Cnr_IomForm:
+        # Form definition for sissi-bio samples
+        lab = 'Cnr Iom'
+        content = [Cnr_IomSamples]  # Defines the model used in the form
+
+        # Fields to be excluded from the form to ensure only relevant data is collected
+        exclude = { 'Cnr_IomSamples': ['proposal',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
