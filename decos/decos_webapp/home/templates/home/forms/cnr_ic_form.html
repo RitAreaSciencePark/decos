@@ -17,14 +17,20 @@
     <div class="card mb-4 shadow-sm">
       <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
       <div class="card-body">
-        <i>It is an internal entry or a service request?</i>
-        <form id="sr_selection" method="get" action="">
-            <input type="hidden" id="sr_id_hidden" name="sr_id" value="internal">
-            <div class="sr_id_selection" id="dropMenu">
+        <i>It is an internal entry or a EPIRO Proposal?</i>
+        <form id="proposal_selection" method="get" action="">
+            <input type="hidden" id="proposal_id_hidden" name="proposal_id" value="internal">
+            <div class="proposal_id_selection" id="dropMenu">
+                <div class="proposal_id_selection">
+                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="proposal_id" value="internal"
+                        aria-haspopup="true" aria-expanded="true">
+                        Internal Request
+                    </button>
+                </div>
                 <div class="dropdown">
                     <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
-                        Service Request
+                        Proposal selection
                     </button>
                     <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
                         <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText"
@@ -36,15 +42,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="sr_id_selection">
-                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="sr_id" value="internal"
-                        aria-haspopup="true" aria-expanded="true">
-                        Internal Request
-                    </button>
-                </div>
             </div>
         </form>
-        <i>Service Request: </i> {{ sr_id }}
+        <i>Proposal selected: </i> {{ proposal_id }}
       </div>
     </div>
 {% endif %}
@@ -54,11 +54,7 @@
     <div class="card-body">
     <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
     {% csrf_token %}
-    {% if "sr_" in sr_id %}
-    <input type="hidden" name="sr_id_hidden" value='{{ sr_id }}' />
-    {% else %}
-    <input type="hidden" name="sr_id_hidden" value="internal" />
-    {% endif %}
+    <input type="hidden" name="proposal_id_hidden" value='{{ proposal_id }}' />
     <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
     </p>
     <p>
@@ -66,7 +62,7 @@
         {{ Cnr_IcSamples.sample_short_description }}
     </p>
     <p>
-        <!-- <i>sr_id*</i>: <br> {{ .dmptitle }} <br> !-->
+        <!-- <i>proposal_id*</i>: <br> {{ .dmptitle }} <br> !-->
         <i>Please describe in a few words the experiment (max 500 characters)*</i>: <br> {{ Cnr_IcSamples.sample_description }} <br>
     </p>
     <br>
@@ -187,7 +183,8 @@
         $('#dropMenu .dropdown .dropdown-menu').show();
 </script>
 
-<!-- sample type dynamic menu + adherent-supended dynamic menu -->
+
+ <!-- sample type dynamic menu + adherent-supended dynamic menu -->
 <script>
   $(document).ready(function () {
     const $sampleType = $('#id_type');
@@ -195,7 +192,6 @@
     // Rebind dynamic field logic within the currently visible section
     function activateDynamicFields($section) {
       // --- FIXED (If yes, specify fixation method) ---
-      
       $(document).on('change', 'select[name*="is_fixed"]', function () {
         const val = $(this).val()?.toLowerCase();
         const $section = $(this).closest('.sample-section');
@@ -203,14 +199,14 @@
 
         if (val === 'yes') $fixationField.show();
         else $fixationField.hide();
-      });  
+      });
 
       $('select[name*="adherent_or_suspended"]').each(function() {
         const $this = $(this);
         const $section = $this.closest('.sample-section');
         $this.on('change', function() {
           const val = $this.val()?.toLowerCase();
-          const $bufferField = $section.find('p:contains("Culture medium")');
+          const $bufferField = $section.find('p:contains("Buffer medium")');
           if (val === 'suspended') $bufferField.show();
           else $bufferField.hide();
       }).trigger('change'); // initial state
@@ -234,4 +230,3 @@
 </script>
 
 {% endblock %}
- 

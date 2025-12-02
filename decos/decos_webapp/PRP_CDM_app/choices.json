@@ -331,6 +331,19 @@
 
     ,
 
+     "Cnr_Iom" :
+    {
+        "purpose": [
+            ["screening", "Screening"],
+            ["sample_optimization", "Sample Optimization"],
+            ["data_collection", "Data Collection"],
+            ["celular_tomography", "Cellular Tomography"],
+            ["cryo_fib", "Cryo-FIB"]
+        ]
+    }
+
+    ,
+
     "Steps" :
     {
         "sample_quality_choices" :

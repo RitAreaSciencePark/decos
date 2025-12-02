@@ -20,6 +20,7 @@ from PRP_CDM_app.models.laboratory_models.sissi_bio import Sissi_BioSamples
 from PRP_CDM_app.models.laboratory_models.iuvs import IuvsSamples
 from PRP_CDM_app.models.laboratory_models.struct_bio_lab import Struct_Bio_LabSamples
 from PRP_CDM_app.models.laboratory_models.cnr_ic import Cnr_IcSamples
+from PRP_CDM_app.models.laboratory_models.cnr_iom import Cnr_IomSamples
 
 class FormsDefinition:
     # Defines form structures for different laboratories, specifying included models and excluded fields
@@ -30,7 +31,7 @@ class FormsDefinition:
         content = [LageSamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to avoid unnecessary or internal data
-        exclude = { 'LageSamples': ['sr_id',
+        exclude = { 'LageSamples': ['proposal',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
@@ -44,7 +45,7 @@ class FormsDefinition:
         content = [Bio_Open_Lab_UnisalentoSamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to ensure only relevant data is collected
-        exclude = { 'Bio_Open_Lab_UnisalentoSamples': ['sr_id',
+        exclude = { 'Bio_Open_Lab_UnisalentoSamples': ['proposal',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
@@ -58,7 +59,7 @@ class FormsDefinition:
         content = [Nanoinnovation_LaboratorySamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to ensure only relevant data is collected
-        exclude = { 'Nanoinnovation_LaboratorySamples': ['sr_id',
+        exclude = { 'Nanoinnovation_LaboratorySamples': ['proposal',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
@@ -72,7 +73,7 @@ class FormsDefinition:
         content = [Mass_Spectroscopy_InfrastructureSamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to ensure only relevant data is collected
-        exclude = { 'Mass_Spectroscopy_InfrastructureSamples': ['sr_id',
+        exclude = { 'Mass_Spectroscopy_InfrastructureSamples': ['proposal',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
@@ -86,7 +87,7 @@ class FormsDefinition:
         content = [Sissi_BioSamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to ensure only relevant data is collected
-        exclude = { 'Sissi_BioSamples': ['sr_id',
+        exclude = { 'Sissi_BioSamples': ['proposal',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
@@ -99,7 +100,7 @@ class FormsDefinition:
         content = [IuvsSamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to ensure only relevant data is collected
-        exclude = { 'IuvsSamples': ['sr_id',
+        exclude = { 'IuvsSamples': ['proposal',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
@@ -112,7 +113,7 @@ class FormsDefinition:
         content = [Struct_Bio_LabSamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to ensure only relevant data is collected
-        exclude = { 'Struct_Bio_LabSamples': ['sr_id',
+        exclude = { 'Struct_Bio_LabSamples': ['proposal',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
@@ -125,7 +126,21 @@ class FormsDefinition:
         content = [Cnr_IcSamples]  # Defines the model used in the form
 
         # Fields to be excluded from the form to ensure only relevant data is collected
-        exclude = { 'Cnr_IcSamples': ['sr_id',
+        exclude = { 'Cnr_IcSamples': ['proposal',
+                                    'sample_id',
+                                    'lab_id',
+                                    'sample_feasibility',
+                                    'sample_status',
+                                    'sample_location']
+                   }
+        
+    class Cnr_IomForm:
+        # Form definition for sissi-bio samples
+        lab = 'Cnr Iom'
+        content = [Cnr_IomSamples]  # Defines the model used in the form
+
+        # Fields to be excluded from the form to ensure only relevant data is collected
+        exclude = { 'Cnr_IomSamples': ['proposal',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
