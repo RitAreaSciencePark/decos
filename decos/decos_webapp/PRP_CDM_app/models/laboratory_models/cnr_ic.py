@@ -12,36 +12,34 @@ class Cnr_IcSamples(Samples):
     type = models.CharField(max_length=255, blank=True, choices=type_choices)
    
 
-    assay_temperature = models.CharField(max_length=55)
+    assay_temperature = models.CharField(max_length=55, blank=True)
 
-    buffer = models.CharField(max_length=255)
+    buffer = models.CharField(max_length=255, blank=True)
     
-    concentration = models.CharField(max_length=25)
+    concentration = models.CharField(max_length=25, blank=True)
 
-    isoelectric_point = models.CharField(max_length=25)
+    isoelectric_point = models.CharField(max_length=25, blank=True)
 
-    kd_technique = models.CharField(max_length=255)
+    kd_technique = models.CharField(max_length=255, blank=True)
 
     ligand_choices = tupleConvert(cnr_ic_choices["ligand"])
     ligand = models.CharField(max_length=255, blank=True, choices=ligand_choices)
 
-    molecular_weight = models.CharField(max_length=55)
+    molecular_weight = models.CharField(max_length=55, blank=True)
 
-    running_buffer = models.CharField(max_length=255)
+    running_buffer = models.CharField(max_length=255, blank=True)
 
-    solubility = models.CharField(max_length=55)
+    solubility = models.CharField(max_length=55, blank=True)
 
     # Storage Conditions
     storage_choices = tupleConvert(cnr_ic_choices["storage"])
     storage = models.CharField(max_length=10, blank=True, choices=storage_choices)
 
-    submitted_at = models.DateTimeField(auto_now_add=True, blank=True)
-
     target_choices = tupleConvert(cnr_ic_choices["target"])
     target = models.CharField(max_length=255, blank=True, choices=target_choices)
 
     
-    tag = models.CharField(max_length=255)
+    tag = models.CharField(max_length=255, blank=True)
     
 
 
@@ -51,8 +49,8 @@ class Cnr_IcSamples(Samples):
     
     def user_directory_path(instance, filename):
         # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
-        if(instance.sr_id):
-            return 'uploads/samples/{0}/{1}/{2}'.format(instance.sr_id.sr_id, instance.sample_id, filename)
+        if(instance.proposal_id):
+            return 'uploads/samples/{0}/{1}/{2}'.format(instance.proposal_id.proposal_id, instance.sample_id, filename)
         else:
             return 'uploads/samples/{0}/{1}/{2}'.format(instance.lab_id, instance.sample_id, filename)
 
