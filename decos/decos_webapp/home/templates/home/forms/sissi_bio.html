@@ -17,14 +17,14 @@
     <div class="card mb-4 shadow-sm">
       <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
       <div class="card-body">
-        <i>It is an internal entry or a service request?</i>
+        <i>It is an internal entry or a EPIRO Proposal?</i>
         <form id="sr_selection" method="get" action="">
             <input type="hidden" id="proposal_id_hidden" name="proposal_id" value="internal">
             <div class="proposal_id_selection" id="dropMenu">
                 <div class="dropdown">
                     <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
-                        Service Request
+                        Proposal selection
                     </button>
                     <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
                         <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText"
@@ -44,7 +44,7 @@
                 </div>
             </div>
         </form>
-        <i>Service Request: </i> {{ proposal_id }}
+        <i>Proposal  selected: </i> {{ proposal_id }}
       </div>
     </div>
 {% endif %}
