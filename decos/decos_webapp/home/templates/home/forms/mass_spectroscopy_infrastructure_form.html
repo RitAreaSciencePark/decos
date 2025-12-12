@@ -128,7 +128,20 @@
       </div>
       <p><input type="submit" value="Insert data" class="btn btn-primary"></p>
     </div>
-    
+     <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>FILES</b></div>
+      <div class="card-body">
+        <br>
+        <p>
+            <i>Include the sample sheet if present</i>: {{ Mass_Spectroscopy_InfrastructureSamples.sample_sheet_filename }} <br>
+            <i>Include additional file: <br> (if more than one compress the files in a
+                single zip or tar format)</i> {{ Mass_Spectroscopy_InfrastructureSamples.additional_filename }}
+
+        </p>
+      <br>
+      <p><input type="submit" value="Insert data" class="btn btn-primary"></p>
+    </div>
+</form>   
   
 
     

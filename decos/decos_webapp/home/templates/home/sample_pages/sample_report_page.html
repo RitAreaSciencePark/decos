@@ -42,6 +42,24 @@
       {% if sample|classname == "nanoinnovation_laboratorysamples" %}
         {% include "home/sample_pages/includes/nanoinnovation_laboratory_report.html" %}
       {% endif %}
+      {% if sample|classname == "sissi_biosamples" %}
+        {% include "home/sample_pages/includes/sissi_bio_report.html" %}
+      {% endif %}
+      {% if sample|classname == "mass_spectroscopy_infrastructuresamples" %}
+        {% include "home/sample_pages/includes/mass_spectroscopy_infrastructure_report.html" %}
+      {% endif %}
+      {% if sample|classname == "iuvssamples" %}
+        {% include "home/sample_pages/includes/iuvs_report.html" %}
+      {% endif %}
+      {% if sample|classname == "cnr_icsamples" %}
+        {% include "home/sample_pages/includes/cnr_ic_report.html" %}
+      {% endif %}
+      {% if sample|classname == "cnr_iomsamples" %}
+        {% include "home/sample_pages/includes/cnr_iom_report.html" %}
+      {% endif %}
+      {% if sample|classname == "struct_bio_labsamples" %}
+        {% include "home/sample_pages/includes/struct_bio_lab_report.html" %}
+      {% endif %}
 </div>
 
 
