@@ -79,7 +79,7 @@ class Nanoinnovation_LaboratorySamples(Samples):
     # Support
     support = models.CharField(max_length=256, blank=True)
     submitted_at = models.DateTimeField(default=timezone.now)
-    #submitted_at = models.DateTimeField(auto_now_add=True, blank=True)
+    
 
     def __str__(self):
         return f"Sample ({self.get_sample_type_display()})"
