@@ -1,9 +1,114 @@
 <div class="card mt-4">
   <div class="card-header bg-info">
-    <h4 class="mb-0">Mass Spectroscopy Infrastructure Sample Information</h4>
+    <h4 class="mb-0">Mass Spectroscopy infrastructure Sample Information</h4>
   </div>
   <div class="card-body">
-    <p><strong>General Description of the Sample (max 500 words):</strong> {{ sample.sample_description }}</p>
-    <p><strong>Type of Sample:</strong> {{ sample.type }}</p>
+<p>
+<b>Sample Type: </b>
+{{ sample.type }} <br>
+<b>Volume/Weight: </b>
+{{ sample.volume_weight }} <br>
+<b>Biological Replicates (minimum 5 suggested): </b>
+{{ sample.biological_replicates }} <br>
+<b>Is the sample solubilized? </b>
+{{ sample.solubilized }} <br>
+<b>Buffer name: </b>
+{{ sample.buffer_name }} <br>
+<b>Expected date: </b>
+{{ sample.sample_date }} <br>
+<b>Dry ice needed? </b>
+{{ sample.dry_ice }} <br>
+<b>Cell counting: </b>
+{{ sample.cell_counting }} <br>
+<b>Bradford/BCA assay needed? </b>
+{{ sample.bradford }} <br>
+<b>Results deadline: </b>
+{{ sample.results_deadline}} <br>
+<b>Should the samples return back? </b>
+{{ sample.sample_return }} <br>
+</p>
+
+<div class="card mt-4">
+  <div class="card-header bg-secondary text-white">
+    <h4 class="mb-0">Attached Files</h4>
+  </div>
+  <div class="card-body">
+    <p><strong>Sample Sheet (if present):</strong>
+      {% if sample.sample_sheet_filename %}
+        <a href="{{ sample.sample_sheet_filename.url }}" target="_blank">{{ sample.sample_sheet_filename.name }}</a>
+      {% else %}
+        No file uploaded
+      {% endif %}
+    </p>
+    <p><strong>Additional Files (ZIP/TAR if more than one):</strong>
+      {% if sample.additional_filename %}
+        <a href="{{ sample.additional_filename.url }}" target="_blank">{{ sample.additional_filename.name }}</a>
+      {% else %}
+        No file uploaded
+      {% endif %}
+    </p>
   </div>
 </div>
+
+  </div>
+
+  <div class="row row-cols-1 row-cols-md-2 g-4 mt-4">
+  {% for exp in metadata_entries %}
+  <div class="col">
+    <div class="card h-100 shadow-sm">
+      <div class="card-header bg-secondary text-white">
+        <b>Metadata Entry ID:</b><br>{{ exp.metadata_id|default:"—" }}
+      </div>
+      <div class="card-body">
+        <dl class="row">
+
+          <dt class="col-sm-5">Device Name</dt>
+          <dd class="col-sm-7">{{ exp.device_name|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Exposure (s)</dt>
+          <dd class="col-sm-7">{{ exp.exposure_s|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Acquisition Date</dt>
+          <dd class="col-sm-7">{{ exp.acquisition_date|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Acquisition Time</dt>
+          <dd class="col-sm-7">{{ exp.acquisition_time|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Formatted Voltage</dt>
+          <dd class="col-sm-7">{{ exp.formatted_voltage|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Formatted Indicated Mag</dt>
+          <dd class="col-sm-7">{{ exp.formatted_indicated_mag|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Stage Alpha</dt>
+          <dd class="col-sm-7">{{ exp.stage_alpha|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Stage Beta</dt>
+          <dd class="col-sm-7">{{ exp.stage_beta|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Stage X</dt>
+          <dd class="col-sm-7">{{ exp.stage_x|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Stage Y</dt>
+          <dd class="col-sm-7">{{ exp.stage_y|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Stage Z</dt>
+          <dd class="col-sm-7">{{ exp.stage_z|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Pixel Size (µm)</dt>
+          <dd class="col-sm-7">{{ exp.pixel_size_um|default:"—"|join:", " }}</dd>
+
+          <dt class="col-sm-5">Pixel Depth</dt>
+          <dd class="col-sm-7">{{ exp.pixel_depth|default:"—" }}</dd>
+
+          <dt class="col-sm-5">Active Size (pixels)</dt>
+          <dd class="col-sm-7">{{ exp.active_size_pixels|default:"—"|join:", " }}</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+  </div>
+

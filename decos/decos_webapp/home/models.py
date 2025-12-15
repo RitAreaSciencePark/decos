@@ -263,8 +263,20 @@ class EditSamplePage(Page, SampleFormHandlerMixin):
     # Handles the HTTP request lifecycle for editing an existing sample's data
     def serve(self, request):
         if request.method == 'POST':
-            sample, lab = self.get_sample_and_lab(request.POST['sample_id_hidden'])
-            forms = form_orchestrator(user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, get_instance=False)
+            # Clean POST data to handle duplicate fields from hidden sections
+            from django.http import QueryDict
+            mutable_post = request.POST.copy()
+            for key in request.POST.keys():
+                values = request.POST.getlist(key)
+                if len(values) > 1:
+                    non_empty = [v for v in values if v != '']
+                    if non_empty:
+                        mutable_post.setlist(key, non_empty)
+                    else:
+                        mutable_post[key] = ''
+            
+            sample, lab = self.get_sample_and_lab(mutable_post['sample_id_hidden'])
+            forms = form_orchestrator(user_lab=lab.lab_id, request=mutable_post, filerequest=request.FILES, get_instance=False)
             success, result = self.process_forms(forms, sample=sample, lab=lab, request=request)
             if success:
                 return render(request, 'home/thank_you_page.html', {'page': self, 'data': result})
@@ -309,7 +321,19 @@ class SamplePage(Page, SessionHandlerMixin, SampleFormHandlerMixin):
         filter_term = request.GET.get("filter", "")
 
         if request.method == 'POST':
-            forms = form_orchestrator(user_lab=lab.lab_id, request=request.POST, filerequest=request.FILES, get_instance=False)
+            # Clean POST data to handle duplicate fields from hidden sections
+            from django.http import QueryDict
+            mutable_post = request.POST.copy()
+            for key in request.POST.keys():
+                values = request.POST.getlist(key)
+                if len(values) > 1:
+                    non_empty = [v for v in values if v != '']
+                    if non_empty:
+                        mutable_post.setlist(key, non_empty)
+                    else:
+                        mutable_post[key] = ''
+
+            forms = form_orchestrator(user_lab=lab.lab_id, request=mutable_post, filerequest=request.FILES, get_instance=False)
             success, result = self.process_forms(forms, lab=lab, request=request, generate_sample_id=True)
 
             if success:

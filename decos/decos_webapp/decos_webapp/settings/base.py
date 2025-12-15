@@ -23,6 +23,9 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
+# Internationalization
+USE_TZ = True
+TIME_ZONE = "Europe/Rome"
 
 PROJECT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_DIR = os.path.dirname(PROJECT_DIR)
@@ -115,6 +118,7 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",  # Framework for generic model relations
     "django.contrib.sessions",  # Session management
     "django.contrib.messages",  # Messaging framework for user notifications
+    "django.contrib.postgres", #added by Valerio Piomponi, needed for SearchVectorField, GinIndex
     "django.contrib.staticfiles",  # Manages static file handling
     "wagtail.contrib.settings",  # Site-wide configurable settings in Wagtail
     "django.forms",  # Enables form customization and rendering
