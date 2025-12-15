@@ -1,5 +1,6 @@
 from django.db import models
 from django.apps import apps
+from django.utils import timezone
 from PRP_CDM_app.utility import choices, tupleConvert
 from PRP_CDM_app.fields import MultiChoicheAndOtherWidget, BooleanIfWhat
 from PRP_CDM_app.models.common_data_model import Samples
@@ -77,7 +78,8 @@ class Nanoinnovation_LaboratorySamples(Samples):
 
     # Support
     support = models.CharField(max_length=256, blank=True)
-    submitted_at = models.DateTimeField(auto_now_add=True, blank=True)
+    submitted_at = models.DateTimeField(default=timezone.now)
+    
 
     def __str__(self):
         return f"Sample ({self.get_sample_type_display()})"
