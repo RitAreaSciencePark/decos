@@ -1,5 +1,6 @@
 from django.db import models
 from django.apps import apps
+from django.utils import timezone
 from PRP_CDM_app.utility import choices, tupleConvert
 from PRP_CDM_app.fields import MultiChoicheAndOtherWidget, BooleanIfWhat
 from PRP_CDM_app.models.common_data_model import Samples
@@ -10,6 +11,7 @@ class Mass_Spectroscopy_InfrastructureSamples(Samples):
     type_choices = tupleConvert(mass_spectroscopy_infrastructure_choices["type_choices"])
     type = models.CharField(max_length=255, blank=True)
     widgets["type"] = MultiChoicheAndOtherWidget(choices=type_choices)
+    submitted_at = models.DateTimeField(default=timezone.now)
 
 
     #sample_id = models.CharField(max_length=50, primary_key=True) # also FK table samples

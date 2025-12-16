@@ -1,5 +1,6 @@
 from django.db import models
 from django.apps import apps
+from django.utils import timezone
 from PRP_CDM_app.utility import choices, tupleConvert
 from PRP_CDM_app.fields import MultiChoicheAndOtherWidget, BooleanIfWhat
 from PRP_CDM_app.models.common_data_model import Samples
@@ -40,6 +41,8 @@ class Cnr_IomSamples(Samples):
     sequence = models.CharField(max_length=255, blank=True)
 
     substrate_treatement = models.CharField(max_length=255, blank=True)
+
+    submitted_at = models.DateTimeField(default=timezone.now)
 
     
     def user_directory_path(instance, filename):
