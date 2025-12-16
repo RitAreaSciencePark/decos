@@ -1,197 +1,106 @@
 <div class="card mt-4">
   <div class="card-header bg-info">
-    <h4 class="mb-0">CNR-IC SAMPLE INFORMATION</h4>
+    <h4 class="mb-0">TARGET–LIGAND INTERACTION STUDIES (CNR-IC) SAMPLE INFORMATION</h4>
   </div>
   <div class="card-body">
+
+    <p><b>Submitted on:</b> {{ sample.submitted_at }}</p>
+
     {% if sample.type %}
-      <p><b>Sample Type:</b> {{ sample.type }}</p>
+    <p><b>Sample Type:</b> {{ sample.type }}</p>
     {% endif %}
-    {% if sample.type == "animal_tissue" %}
-      {% if sample.origin %}
-        <p><b>Origin:</b> {{ sample.origin }}</p>
-      {% endif %}
-      {% if sample.is_fixed %}
-        <p><b>Is Fixed:</b> {{ sample.is_fixed }}</p>
-      {% endif %}
-      {% if sample.embedding_medium %}
-        <p><b>Embedding Medium:</b> {{ sample.embedding_medium }}</p>
-      {% endif %}
-      {% if sample.slice_thickness %}
-        <p><b>Slice Thickness [μm]:</b> {{ sample.slice_thickness }}</p>
-      {% endif %}
-      {% if sample.support %}
-        <p><b>Support:</b> {{ sample.support }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "cultured_cells" %}
-      {% if sample.origin %}
-        <p><b>Origin:</b> {{ sample.origin }}</p>
-      {% endif %}
-      {% if sample.bio_safety_level %}
-        <p><b>Bio Safety Level:</b> {{ sample.bio_safety_level }}</p>
-      {% endif %}
-      {% if sample.is_fixed %}
-        <p><b>Is Fixed:</b> {{ sample.is_fixed }}</p>
-      {% endif %}
-      {% if sample.adherent_or_suspended %}
-        <p><b>Adherent or Suspended:</b> {{ sample.adherent_or_suspended }}</p>
-      {% endif %}
-      {% if sample.buffer_medium %}
-        <p><b>Buffer Medium:</b> {{ sample.buffer_medium }}</p>
-      {% endif %}
-      {% if sample.support %}
-        <p><b>Support:</b> {{ sample.support }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "bacteria" %}
-      {% if sample.origin %}
-        <p><b>Origin:</b> {{ sample.origin }}</p>
-      {% endif %}
-      {% if sample.adherent_or_suspended %}
-        <p><b>Adherent or Suspended:</b> {{ sample.adherent_or_suspended }}</p>
-      {% endif %}
-      {% if sample.buffer_medium %}
-        <p><b>Buffer Medium:</b> {{ sample.buffer_medium }}</p>
-      {% endif %}
-      {% if sample.support %}
-        <p><b>Support:</b> {{ sample.support }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "virus" %}
-      {% if sample.origin %}
-        <p><b>Origin:</b> {{ sample.origin }}</p>
-      {% endif %}
-      {% if sample.adherent_or_suspended %}
-        <p><b>Adherent or Suspended:</b> {{ sample.adherent_or_suspended }}</p>
-      {% endif %}
-      {% if sample.buffer_medium %}
-        <p><b>Buffer Medium:</b> {{ sample.buffer_medium }}</p>
-      {% endif %}
-      {% if sample.culture_medium %}
-        <p><b>Culture Medium:</b> {{ sample.culture_medium }}</p>
-      {% endif %}
-      {% if sample.support %}
-        <p><b>Support:</b> {{ sample.support }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "powder" %}
-      {% if sample.pure_or_mixture %}
-        <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
-      {% endif %}
-      {% if sample.chemical_name %}
-        <p><b>Chemical Name:</b> {{ sample.chemical_name }}</p>
-      {% endif %}
-      {% if sample.form %}
-        <p><b>Form:</b> {{ sample.form }}</p>
-      {% endif %}
-      {% if sample.chemical_hazard %}
-        <p><b>Chemical Hazard:</b> {{ sample.chemical_hazard }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "thin_film" %}
-      {% if sample.support %}
-        <p><b>Support:</b> {{ sample.support }}</p>
-      {% endif %}
-      {% if sample.film_thickness %}
-        <p><b>Film Thickness [nm]:</b> {{ sample.film_thickness }}</p>
-      {% endif %}
-      {% if sample.pure_or_mixture %}
-        <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
-      {% endif %}
-      {% if sample.chemical_name_CAS_list %}
-        <p><b>Chemical Name and CAS:</b> {{ sample.chemical_name_CAS_list }}</p>
-      {% endif %}
-      {% if sample.self_standing_or_free_standing %}
-        <p><b>Self-standing or Free-standing:</b> {{ sample.self_standing_or_free_standing }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "non_bio_slice" %}
-      {% if sample.origin %}
-        <p><b>Origin:</b> {{ sample.origin }}</p>
-      {% endif %}
-      {% if sample.self_standing_or_free_standing %}
-        <p><b>Self-standing or Free-standing:</b> {{ sample.self_standing_or_free_standing }}</p>
-      {% endif %}
-      {% if sample.support %}
-        <p><b>Support:</b> {{ sample.support }}</p>
-      {% endif %}
-      {% if sample.embedding_medium %}
-        <p><b>Embedding Medium:</b> {{ sample.embedding_medium }}</p>
-      {% endif %}
-      {% if sample.slice_thickness %}
-        <p><b>Slice Thickness:</b> {{ sample.slice_thickness }}</p>
-      {% endif %}
-      {% if sample.polishing %}
-        <p><b>Polishing:</b> {{ sample.polishing }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "gel" %}
-      {% if sample.pure_or_mixture %}
-        <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
-      {% endif %}
-      {% if sample.chemical_name_CAS_list %}
-        <p><b>Chemical Name and CAS:</b> {{ sample.chemical_name_CAS_list }}</p>
-      {% endif %}
-      {% if sample.stiffness_and_roughness_ranges %}
-        <p><b>Stiffness and Roughness Ranges:</b> {{ sample.stiffness_and_roughness_ranges }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "solid" %}
-      {% if sample.pure_or_mixture %}
-        <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
-      {% endif %}
-      {% if sample.chemical_name_CAS_list %}
-        <p><b>Chemical Name, CAS Register Number and Chemical Hazard:</b> {{ sample.chemical_name_CAS_list }}</p>
-      {% endif %}
-      {% if sample.chemical_hazard %}
-        <p><b>Chemical Hazard:</b> {{ sample.chemical_hazard }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
+
+    {% if sample.type == "protein" %}
+    <p><b>Target:</b> {{ sample.target }}</p>
+    <p><b>Ligand:</b> {{ sample.ligand }}</p>
+    <p><b>Tag:</b> {{ sample.tag }}</p>
+    <p><b>Molecular Weight [Da]:</b> {{ sample.molecular_weight }}</p>
+    <p><b>Isoelectric Point (pI):</b> {{ sample.isoelectric_point }}</p>
+    <p><b>Concentration [mM]:</b> {{ sample.concentration }}</p>
+    <p><b>Buffer Composition and pH:</b> {{ sample.buffer }}</p>
+    <p><b>Storage Conditions:</b> {{ sample.storage }}</p>
+    <p><b>Solubility [mM/mL]:</b> {{ sample.solubility }}</p>
+    <p><b>Running Buffer (for experiment):</b> {{ sample.running_buffer }}</p>
+    <p><b>Assay Temperature [°C]:</b> {{ sample.assay_temperature }}</p>
+    <p><b>Kd (if known) and Technique Used:</b> {{ sample.kd_technique }}</p>
+
+    {% elif sample.type == "dna" %}
+    <p><b>Target:</b> {{ sample.target }}</p>
+    <p><b>Ligand:</b> {{ sample.ligand }}</p>
+    <p><b>Molecular Weight [Da]:</b> {{ sample.molecular_weight }}</p>
+    <p><b>Isoelectric Point (pI):</b> {{ sample.isoelectric_point }}</p>
+    <p><b>Concentration [mM]:</b> {{ sample.concentration }}</p>
+    <p><b>Buffer Composition and pH:</b> {{ sample.buffer }}</p>
+    <p><b>Storage Conditions:</b> {{ sample.storage }}</p>
+    <p><b>Solubility [mM/mL]:</b> {{ sample.solubility }}</p>
+    <p><b>Running Buffer (for experiment):</b> {{ sample.running_buffer }}</p>
+    <p><b>Assay Temperature [°C]:</b> {{ sample.assay_temperature }}</p>
+    <p><b>Kd (if known) and Technique Used:</b> {{ sample.kd_technique }}</p>
+
+    {% elif sample.type == "rna" %}
+    <p><b>Target:</b> {{ sample.target }}</p>
+    <p><b>Ligand:</b> {{ sample.ligand }}</p>
+    <p><b>Molecular Weight [Da]:</b> {{ sample.molecular_weight }}</p>
+    <p><b>Isoelectric Point (pI):</b> {{ sample.isoelectric_point }}</p>
+    <p><b>Concentration [mM]:</b> {{ sample.concentration }}</p>
+    <p><b>Buffer Composition and pH:</b> {{ sample.buffer }}</p>
+    <p><b>Storage Conditions:</b> {{ sample.storage }}</p>
+    <p><b>Solubility [mM/mL]:</b> {{ sample.solubility }}</p>
+    <p><b>Running Buffer (for experiment):</b> {{ sample.running_buffer }}</p>
+    <p><b>Assay Temperature [°C]:</b> {{ sample.assay_temperature }}</p>
+    <p><b>Kd (if known) and Technique Used:</b> {{ sample.kd_technique }}</p>
+
+    {% elif sample.type == "peptides" %}
+    <p><b>Target:</b> {{ sample.target }}</p>
+    <p><b>Ligand:</b> {{ sample.ligand }}</p>
+    <p><b>Molecular Weight [Da]:</b> {{ sample.molecular_weight }}</p>
+    <p><b>Isoelectric Point (pI):</b> {{ sample.isoelectric_point }}</p>
+    <p><b>Concentration [mM]:</b> {{ sample.concentration }}</p>
+    <p><b>Buffer Composition and pH:</b> {{ sample.buffer }}</p>
+    <p><b>Storage Conditions:</b> {{ sample.storage }}</p>
+    <p><b>Solubility [mM/mL]:</b> {{ sample.solubility }}</p>
+    <p><b>Running Buffer (for experiment):</b> {{ sample.running_buffer }}</p>
+    <p><b>Assay Temperature [°C]:</b> {{ sample.assay_temperature }}</p>
+    <p><b>Kd (if known) and Technique Used:</b> {{ sample.kd_technique }}</p>
+
+    {% elif sample.type == "small_molecule" %}
+    <p><b>Target:</b> {{ sample.target }}</p>
+    <p><b>Ligand:</b> {{ sample.ligand }}</p>
+    <p><b>Molecular Weight [Da]:</b> {{ sample.molecular_weight }}</p>
+    <p><b>Isoelectric Point (pI):</b> {{ sample.isoelectric_point }}</p>
+    <p><b>Concentration [mM]:</b> {{ sample.concentration }}</p>
+    <p><b>Buffer Composition and pH:</b> {{ sample.buffer }}</p>
+    <p><b>Storage Conditions:</b> {{ sample.storage }}</p>
+    <p><b>Solubility [mM/mL]:</b> {{ sample.solubility }}</p>
+    <p><b>Running Buffer (for experiment):</b> {{ sample.running_buffer }}</p>
+    <p><b>Assay Temperature [°C]:</b> {{ sample.assay_temperature }}</p>
+    <p><b>Kd (if known) and Technique Used:</b> {{ sample.kd_technique }}</p>
+
     {% elif sample.type == "other" %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
+    <p><b>Sample info:</b> {{ sample.other }}</p>
     {% endif %}
 
   </div>
+  
   <div class="card mt-4">
-  <div class="card-header bg-secondary text-white">
-    <h4 class="mb-0">Attached Files</h4>
-  </div>
-  <div class="card-body">
-    <p><strong>Sample Sheet (if present):</strong>
-      {% if sample.sample_sheet_filename %}
+    <div class="card-header bg-secondary text-white">
+      <h4 class="mb-0">Attached Files</h4>
+    </div>
+    <div class="card-body">
+      <p><strong>Sample Sheet (if present):</strong>
+        {% if sample.sample_sheet_filename %}
         <a href="{{ sample.sample_sheet_filename.url }}" target="_blank">{{ sample.sample_sheet_filename.name }}</a>
-      {% else %}
+        {% else %}
         No file uploaded
-      {% endif %}
-    </p>
-    <p><strong>Additional Files (ZIP/TAR if more than one):</strong>
-      {% if sample.additional_filename %}
+        {% endif %}
+      </p>
+      <p><strong>Additional Files (ZIP/TAR if more than one):</strong>
+        {% if sample.additional_filename %}
         <a href="{{ sample.additional_filename.url }}" target="_blank">{{ sample.additional_filename.name }}</a>
-      {% else %}
+        {% else %}
         No file uploaded
-      {% endif %}
-    </p>
+        {% endif %}
+      </p>
+    </div>
   </div>
 </div>
-
-  </div>
