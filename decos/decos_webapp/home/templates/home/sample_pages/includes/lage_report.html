@@ -3,6 +3,7 @@
     <h4 class="mb-0">LAGE Sample Information</h4>
   </div>
   <div class="card-body">
+    <p><b>Submitted on:</b> {{ sample.submitted_at }}</p>
     <p><strong>General Description of the Sample (max 500 words):</strong> {{ sample.sample_description }}</p>
     <p><strong>Type of Sample:</strong> {{ sample.type }}</p>
     <p><strong>Is Volume Included in µL?</strong> {{ sample.is_volume_in_uL }}</p>

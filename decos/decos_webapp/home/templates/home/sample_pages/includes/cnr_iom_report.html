@@ -1,0 +1,69 @@
+<div class="card mt-4">
+  <div class="card-header bg-info">
+    <h4 class="mb-0">CNR-IOM SAMPLE INFORMATION</h4>
+  </div>
+  <div class="card-body">
+
+    <p><b>Submitted on:</b> {{ sample.submitted_at }}</p>
+
+    <p><b>Sample Name:</b> {{ sample.sample_name }}</p>
+    <p><b>Sample Acronym:</b> {{ sample.sample_acronym }}</p>
+    <p><b>Organization:</b> {{ sample.organization }}</p>
+    <p><b>Purpose of the Experiments:</b> {{ sample.purpose }}</p>
+
+    <hr>
+    <h6><b>Biological Material</b></h6>
+    <p><b>Description:</b> {{ sample.biological_material_description }}</p>
+    <p><b>Expression Methods:</b> {{ sample.expression_methods }}</p>
+
+    <hr>
+    <p><b>Methods used for sample isolation and stabilization:</b> {{ sample.purification_stabilization }}</p>
+    <p><b>Buffer conditions used during sample preparation:</b> {{ sample.buffering }}</p>
+    <p><b>Sample Concentration:</b> {{ sample.concentration }}</p>
+
+    <p><b>Sequence (FASTA format):</b> {{ sample.sequence }}</p>
+    
+    <p><strong>Sequence File:</strong>
+        {% if sample.sequence_file %}
+        <a href="{{ sample.sequence_file.url }}" target="_blank">{{ sample.sequence_file.name }}</a>
+        {% else %}
+        No file uploaded
+        {% endif %}
+    </p>
+
+    <p><b>Theoretical Molecular Weight:</b> {{ sample.molecular_weight }}</p>
+    <p><b>Grid Types:</b> {{ sample.grid_type }}</p>
+    <p><b>Description of substrate surface treatment:</b> {{ sample.substrate_treatement }}</p>
+    <p><b>Fixation Method:</b> {{ sample.fixation_method }}</p>
+
+    <hr>
+    <h6><b>Labelling Method</b></h6>
+    <p><b>Category:</b> {{ sample.labelling_method_category }}</p>
+    <p><b>Fluorescent dyes (name):</b> {{ sample.labelling_method_dyes }}</p>
+    <p><b>Immunolabeling:</b> {{ sample.immunolabelling_method }}</p>
+    <p><b>Type of Fluorescent Probe or Marker:</b> {{ sample.labelling_method_probe }}</p>
+
+  </div>
+  
+  <div class="card mt-4">
+    <div class="card-header bg-secondary text-white">
+      <h4 class="mb-0">Attached Files</h4>
+    </div>
+    <div class="card-body">
+      <p><strong>Sample Sheet (if present):</strong>
+        {% if sample.sample_sheet_filename %}
+        <a href="{{ sample.sample_sheet_filename.url }}" target="_blank">{{ sample.sample_sheet_filename.name }}</a>
+        {% else %}
+        No file uploaded
+        {% endif %}
+      </p>
+      <p><strong>Additional Files (ZIP/TAR if more than one):</strong>
+        {% if sample.additional_filename %}
+        <a href="{{ sample.additional_filename.url }}" target="_blank">{{ sample.additional_filename.name }}</a>
+        {% else %}
+        No file uploaded
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</div>

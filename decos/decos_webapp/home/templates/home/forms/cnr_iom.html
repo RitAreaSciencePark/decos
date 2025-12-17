@@ -49,14 +49,30 @@
     </div>
 {% endif %}
 
+{% if errors %}
+<div class="alert alert-danger">
+    <h4>Form Errors:</h4>
+    {{ errors }}
+    {% for form in forms %}
+        {% if form.errors %}
+            <h5>{{ form.instance.sample_short_description }} Errors:</h5>
+            {{ form.errors }}
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+
+<form action="." method="POST" enctype="multipart/form-data" id="sampleform" novalidate>
+    {% csrf_token %}
+    {% if "sr_" in proposal_id %}
+    <input type="hidden" name="proposal_id_hidden" value='{{ proposal_id }}' />
+    {% else %}
+    <input type="hidden" name="proposal_id_hidden" value="internal" />
+    {% endif %}
+    <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
 <div class="card mb-4 shadow-sm">
       <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
     <div class="card-body">
-    <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
-    {% csrf_token %}
-    <input type="hidden" name="proposal_id_hidden" value='{{ proposal_id }}' />
-    <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
-    </p>
     <p>
         <i>Please insert a brief descriptive title of your experiment (max 64 characters):</i> <br>
         {{ Cnr_IomSamples.sample_short_description }}
@@ -88,7 +104,7 @@
 
             <p><i> Methods used for sample isolation and stabilization (e.g. chromatography, crosslinking, centrifugation gradient) </i>:<br> {{ Cnr_IomSamples.purification_stabilization }}</p>
             <p><i>Buffer conditions used during sample preparation (pH, ionic strength, additives, etc.)</i>:<br> {{ Cnr_IomSamples.buffering }}</p>
-            <p><i>Sample Concentration (e.g. A280, A260/280, extinction coefficient ε) </i>:<br> {{ Cnr_IomSamples.sample_concentration }}</p>
+            <p><i>Sample Concentration (e.g. A280, A260/280, extinction coefficient ε) </i>:<br> {{ Cnr_IomSamples.concentration }}</p>
 
             <p><i>Sequence (FASTA format)</i>: {{ Cnr_IomSamples.sequence }} </p>
             <p><i>Sequence File</i>: {{ Cnr_IomSamples.sequence_file }} </p>
@@ -104,7 +120,7 @@
                 <h6><b>Labelling Method</b></h6>
                     <p><i>Category (Details on labelling used for correlated imaging)</i>:<br> {{ Cnr_IomSamples.labelling_method_category }}</p>
                     <p><i>Fluorescent dyes (name)</i>:<br> {{ Cnr_IomSamples.labelling_method_dyes }}</p>
-                    <p><i>Immunolabeling (primary/secondary antibodies)</i>:<br> {{ Cnr_IomSamples.imunolabelling_method }}</p>
+                    <p><i>Immunolabeling (primary/secondary antibodies)</i>:<br> {{ Cnr_IomSamples.immunolabelling_method }}</p>
                     <p><i>Type of Fluorescent Probe or Marker</i>:<br> {{ Cnr_IomSamples.labelling_method_probe }}</p>
             </div>
         </div>

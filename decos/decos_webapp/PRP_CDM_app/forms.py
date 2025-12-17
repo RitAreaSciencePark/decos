@@ -36,7 +36,8 @@ class FormsDefinition:
                                     'lab_id',
                                     'sample_feasibility',
                                     'sample_status',
-                                    'sample_location']
+                                    'sample_location',
+                                    'submitted_at']
                    }
         
     class Bio_Open_Lab_UnisalentoForm:
@@ -50,7 +51,8 @@ class FormsDefinition:
                                     'lab_id',
                                     'sample_feasibility',
                                     'sample_status',
-                                    'sample_location']
+                                    'sample_location',
+                                    'submitted_at']
                    }
 
     class Nanoinnovation_LaboratoryForm:
@@ -64,7 +66,8 @@ class FormsDefinition:
                                     'lab_id',
                                     'sample_feasibility',
                                     'sample_status',
-                                    'sample_location']
+                                    'sample_location',
+                                    'submitted_at']
                    }
         
     class Mass_Spectroscopy_InfrastructureForm:
@@ -78,7 +81,8 @@ class FormsDefinition:
                                     'lab_id',
                                     'sample_feasibility',
                                     'sample_status',
-                                    'sample_location']
+                                    'sample_location',
+                                    'submitted_at']
                    }
         
     class Sissi_BioForm:
@@ -92,7 +96,8 @@ class FormsDefinition:
                                     'lab_id',
                                     'sample_feasibility',
                                     'sample_status',
-                                    'sample_location']
+                                    'sample_location',
+                                    'submitted_at']
                    }
     class IuvsForm:
         # Form definition for sissi-bio samples
@@ -105,7 +110,8 @@ class FormsDefinition:
                                     'lab_id',
                                     'sample_feasibility',
                                     'sample_status',
-                                    'sample_location']
+                                    'sample_location',
+                                    'submitted_at']
                    }
     class Struct_Bio_LabForm:
         # Form definition for sissi-bio samples
@@ -118,7 +124,8 @@ class FormsDefinition:
                                     'lab_id',
                                     'sample_feasibility',
                                     'sample_status',
-                                    'sample_location']
+                                    'sample_location',
+                                    'submitted_at']
                    }
     class Cnr_IcForm:
         # Form definition for sissi-bio samples
@@ -131,7 +138,8 @@ class FormsDefinition:
                                     'lab_id',
                                     'sample_feasibility',
                                     'sample_status',
-                                    'sample_location']
+                                    'sample_location',
+                                    'submitted_at']
                    }
         
     class Cnr_IomForm:
@@ -145,5 +153,6 @@ class FormsDefinition:
                                     'lab_id',
                                     'sample_feasibility',
                                     'sample_status',
-                                    'sample_location']
+                                    'sample_location',
+                                    'submitted_at']
                    }
