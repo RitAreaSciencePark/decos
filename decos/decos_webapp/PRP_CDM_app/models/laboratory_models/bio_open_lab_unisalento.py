@@ -1,5 +1,6 @@
 from django.db import models
 from django.apps import apps
+from django.utils import timezone
 from PRP_CDM_app.utility import choices, tupleConvert
 from PRP_CDM_app.fields import MultiChoicheAndOtherWidget, BooleanIfWhat
 from PRP_CDM_app.models.common_data_model import Samples
@@ -27,6 +28,7 @@ class  Bio_Open_Lab_UnisalentoSamples(Samples):
     widgets["layer"] = MultiChoicheAndOtherWidget(choices=layer_choices)
     colloidal_solution = models.CharField(max_length=255)
     sample_expiration_date = models.DateField(blank=True, null=True)
+    submitted_at = models.DateTimeField(default=timezone.now)
     
     def user_directory_path(instance, filename):
         # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
@@ -59,6 +61,7 @@ class Bio_Open_Lab_UnisalentoMetadata(models.Model):
     stage_y = models.CharField(max_length=50, blank=True, null=True)
     stage_z = models.CharField(max_length=50, blank=True, null=True)
     active_size_pixels = models.JSONField(blank=True, null=True)
+    
 
     class Meta:
         db_table= 'bio_open_lab_unisalentometadata'.lower()

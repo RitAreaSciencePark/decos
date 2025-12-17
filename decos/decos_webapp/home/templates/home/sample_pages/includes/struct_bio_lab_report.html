@@ -3,195 +3,165 @@
     <h4 class="mb-0">STRUCTURAL BIOLOGY LAB SAMPLE INFORMATION</h4>
   </div>
   <div class="card-body">
+
+    <p><b>Submitted on:</b> {{ sample.submitted_at }}</p>
+
     {% if sample.type %}
-      <p><b>Sample Type:</b> {{ sample.type }}</p>
+    <p><b>Sample Type:</b> {{ sample.type }}</p>
     {% endif %}
-    {% if sample.type == "animal_tissue" %}
-      {% if sample.origin %}
-        <p><b>Origin:</b> {{ sample.origin }}</p>
-      {% endif %}
-      {% if sample.is_fixed %}
-        <p><b>Is Fixed:</b> {{ sample.is_fixed }}</p>
-      {% endif %}
-      {% if sample.embedding_medium %}
-        <p><b>Embedding Medium:</b> {{ sample.embedding_medium }}</p>
-      {% endif %}
-      {% if sample.slice_thickness %}
-        <p><b>Slice Thickness [μm]:</b> {{ sample.slice_thickness }}</p>
-      {% endif %}
-      {% if sample.support %}
-        <p><b>Support:</b> {{ sample.support }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "cultured_cells" %}
-      {% if sample.origin %}
-        <p><b>Origin:</b> {{ sample.origin }}</p>
-      {% endif %}
-      {% if sample.bio_safety_level %}
-        <p><b>Bio Safety Level:</b> {{ sample.bio_safety_level }}</p>
-      {% endif %}
-      {% if sample.is_fixed %}
-        <p><b>Is Fixed:</b> {{ sample.is_fixed }}</p>
-      {% endif %}
-      {% if sample.adherent_or_suspended %}
-        <p><b>Adherent or Suspended:</b> {{ sample.adherent_or_suspended }}</p>
-      {% endif %}
-      {% if sample.buffer_medium %}
-        <p><b>Buffer Medium:</b> {{ sample.buffer_medium }}</p>
-      {% endif %}
-      {% if sample.support %}
-        <p><b>Support:</b> {{ sample.support }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
+
+    {% if sample.type == "cultured_cells" %}
+    <p><b>Sample Producer:</b> {{ sample.sample_producer }}</p>
+    <p><b>Affiliation:</b> {{ sample.affiliation }}</p>
+    <p><b>Sample Purpose:</b> {{ sample.sample_purpose }}</p>
+    <p><b>Origin:</b> {{ sample.origin }}</p>
+    <p><b>Bio Safety Level:</b> {{ sample.bio_safety_level }}</p>
+    <p><b>Fixed:</b> {{ sample.is_fixed }}</p>
+    {% if sample.fixation_method %}
+    <p><b>Fixation method:</b> {{ sample.fixation_method }}</p>
+    {% endif %}
+    <p><b>Adherent or Suspended:</b> {{ sample.adherent_or_suspended }}</p>
+    {% if sample.culture_medium %}
+    <p><b>Culture medium:</b> {{ sample.culture_medium }}</p>
+    {% endif %}
+    <p><b>Mycoplasma Test:</b> {{ sample.mycoplasma_test }}</p>
+    <p><b>Storage Conditions:</b> {{ sample.storage }}</p>
+    {% if sample.other %}
+    <p><b>Other:</b> {{ sample.other }}</p>
+    {% endif %}
+    <p><b>Sample Destination Upon Usage:</b> {{ sample.sample_destination_upon_usage }}</p>
+
     {% elif sample.type == "bacteria" %}
-      {% if sample.origin %}
-        <p><b>Origin:</b> {{ sample.origin }}</p>
-      {% endif %}
-      {% if sample.adherent_or_suspended %}
-        <p><b>Adherent or Suspended:</b> {{ sample.adherent_or_suspended }}</p>
-      {% endif %}
-      {% if sample.buffer_medium %}
-        <p><b>Buffer Medium:</b> {{ sample.buffer_medium }}</p>
-      {% endif %}
-      {% if sample.support %}
-        <p><b>Support:</b> {{ sample.support }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
+    <p><b>Sample Producer:</b> {{ sample.sample_producer }}</p>
+    <p><b>Affiliation:</b> {{ sample.affiliation }}</p>
+    <p><b>Sample Purpose:</b> {{ sample.sample_purpose }}</p>
+    <p><b>Origin (Gram Stain and Shape):</b> {{ sample.origin }}</p>
+    <p><b>Bio Safety Level:</b> {{ sample.bio_safety_level }}</p>
+    <p><b>Transformed with vectors:</b> {{ sample.transformed_with_vector }}</p>
+    {% if sample.vector_file %}
+    <p><b>Vectors File:</b> <a href="{{ sample.vector_file.url }}" target="_blank">{{ sample.vector_file.name }}</a></p>
+    {% endif %}
+    <p><b>Antibiotic Resistance:</b> {{ sample.antibiotic_resistance }}</p>
+    <p><b>Inclusion Matrix or Culture medium:</b> {{ sample.culture_medium }}</p>
+    <p><b>Storage Conditions:</b> {{ sample.storage }}</p>
+    {% if sample.other %}
+    <p><b>Other:</b> {{ sample.other }}</p>
+    {% endif %}
+    <p><b>Sample Destination Upon Usage:</b> {{ sample.sample_destination_upon_usage }}</p>
+
     {% elif sample.type == "virus" %}
-      {% if sample.origin %}
-        <p><b>Origin:</b> {{ sample.origin }}</p>
-      {% endif %}
-      {% if sample.adherent_or_suspended %}
-        <p><b>Adherent or Suspended:</b> {{ sample.adherent_or_suspended }}</p>
-      {% endif %}
-      {% if sample.buffer_medium %}
-        <p><b>Buffer Medium:</b> {{ sample.buffer_medium }}</p>
-      {% endif %}
-      {% if sample.culture_medium %}
-        <p><b>Culture Medium:</b> {{ sample.culture_medium }}</p>
-      {% endif %}
-      {% if sample.support %}
-        <p><b>Support:</b> {{ sample.support }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "powder" %}
-      {% if sample.pure_or_mixture %}
-        <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
-      {% endif %}
-      {% if sample.chemical_name %}
-        <p><b>Chemical Name:</b> {{ sample.chemical_name }}</p>
-      {% endif %}
-      {% if sample.form %}
-        <p><b>Form:</b> {{ sample.form }}</p>
-      {% endif %}
-      {% if sample.chemical_hazard %}
-        <p><b>Chemical Hazard:</b> {{ sample.chemical_hazard }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "thin_film" %}
-      {% if sample.support %}
-        <p><b>Support:</b> {{ sample.support }}</p>
-      {% endif %}
-      {% if sample.film_thickness %}
-        <p><b>Film Thickness [nm]:</b> {{ sample.film_thickness }}</p>
-      {% endif %}
-      {% if sample.pure_or_mixture %}
-        <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
-      {% endif %}
-      {% if sample.chemical_name_CAS_list %}
-        <p><b>Chemical Name and CAS:</b> {{ sample.chemical_name_CAS_list }}</p>
-      {% endif %}
-      {% if sample.self_standing_or_free_standing %}
-        <p><b>Self-standing or Free-standing:</b> {{ sample.self_standing_or_free_standing }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "non_bio_slice" %}
-      {% if sample.origin %}
-        <p><b>Origin:</b> {{ sample.origin }}</p>
-      {% endif %}
-      {% if sample.self_standing_or_free_standing %}
-        <p><b>Self-standing or Free-standing:</b> {{ sample.self_standing_or_free_standing }}</p>
-      {% endif %}
-      {% if sample.support %}
-        <p><b>Support:</b> {{ sample.support }}</p>
-      {% endif %}
-      {% if sample.embedding_medium %}
-        <p><b>Embedding Medium:</b> {{ sample.embedding_medium }}</p>
-      {% endif %}
-      {% if sample.slice_thickness %}
-        <p><b>Slice Thickness:</b> {{ sample.slice_thickness }}</p>
-      {% endif %}
-      {% if sample.polishing %}
-        <p><b>Polishing:</b> {{ sample.polishing }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "gel" %}
-      {% if sample.pure_or_mixture %}
-        <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
-      {% endif %}
-      {% if sample.chemical_name_CAS_list %}
-        <p><b>Chemical Name and CAS:</b> {{ sample.chemical_name_CAS_list }}</p>
-      {% endif %}
-      {% if sample.stiffness_and_roughness_ranges %}
-        <p><b>Stiffness and Roughness Ranges:</b> {{ sample.stiffness_and_roughness_ranges }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
-    {% elif sample.type == "solid" %}
-      {% if sample.pure_or_mixture %}
-        <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
-      {% endif %}
-      {% if sample.chemical_name_CAS_list %}
-        <p><b>Chemical Name, CAS Register Number and Chemical Hazard:</b> {{ sample.chemical_name_CAS_list }}</p>
-      {% endif %}
-      {% if sample.chemical_hazard %}
-        <p><b>Chemical Hazard:</b> {{ sample.chemical_hazard }}</p>
-      {% endif %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
+    <p><b>Sample Producer:</b> {{ sample.sample_producer }}</p>
+    <p><b>Affiliation:</b> {{ sample.affiliation }}</p>
+    <p><b>Sample Purpose:</b> {{ sample.sample_purpose }}</p>
+    <p><b>Origin (Family):</b> {{ sample.origin }}</p>
+    <p><b>Bio Safety Level:</b> {{ sample.bio_safety_level }}</p>
+    <p><b>Fixed:</b> {{ sample.is_fixed }}</p>
+    {% if sample.fixation_method %}
+    <p><b>Fixation method:</b> {{ sample.fixation_method }}</p>
+    {% endif %}
+    <p><b>Storage Medium:</b> {{ sample.culture_medium }}</p>
+    <p><b>Storage Conditions:</b> {{ sample.storage }}</p>
+    {% if sample.other %}
+    <p><b>Other:</b> {{ sample.other }}</p>
+    {% endif %}
+    <p><b>Sample Destination Upon Usage:</b> {{ sample.sample_destination_upon_usage }}</p>
+
+    {% elif sample.type == "protein" %}
+    <p><b>Sample Producer:</b> {{ sample.sample_producer }}</p>
+    <p><b>Affiliation:</b> {{ sample.affiliation }}</p>
+    <p><b>Sample Purpose:</b> {{ sample.sample_purpose }}</p>
+    <p><b>Name (synonyms):</b> {{ sample.name }}</p>
+    <p><b>GeneBank ID:</b> {{ sample.genebank_id }}</p>
+    <p><b>Sequence:</b> {{ sample.sequence }}</p>
+    {% if sample.sequence_file %}
+    <p><b>Sequence File:</b> <a href="{{ sample.sequence_file.url }}" target="_blank">{{ sample.sequence_file.name }}</a></p>
+    {% endif %}
+    <p><b>Molar Weight [Da]:</b> {{ sample.molar_weight }}</p>
+    <p><b>Origin:</b> {{ sample.origin }}</p>
+    <p><b>Recombinant:</b> {{ sample.recombinant }}</p>
+    {% if sample.recombinant_source %}
+    <p><b>Source:</b> {{ sample.recombinant_source }}</p>
+    {% endif %}
+    <p><b>Pure or Mixture:</b> {{ sample.pure_or_mixture }}</p>
+    <p><b>Quantity, Concentration, Buffer:</b> {{ sample.quantity_concentration_buffer }}</p>
+    <p><b>Quality Control:</b> {{ sample.quality_control }}</p>
+    <p><b>Storage Conditions:</b> {{ sample.storage }}</p>
+    <p><b>Biological Hazard:</b> {{ sample.chemical_hazard }}</p>
+    {% if sample.other %}
+    <p><b>Other:</b> {{ sample.other }}</p>
+    {% endif %}
+    <p><b>Sample Destination Upon Usage:</b> {{ sample.sample_destination_upon_usage }}</p>
+
+    {% elif sample.type == "nucleic_acid" %}
+    <p><b>Sample Producer:</b> {{ sample.sample_producer }}</p>
+    <p><b>Affiliation:</b> {{ sample.affiliation }}</p>
+    <p><b>Sample Purpose:</b> {{ sample.sample_purpose }}</p>
+    <p><b>Name (synonyms):</b> {{ sample.name }}</p>
+    <p><b>Gene ID code:</b> {{ sample.genebank_id }}</p>
+    <p><b>Type (DNA/RNA, etc):</b> {{ sample.type_nucleic }}</p>
+    <p><b>Sequence:</b> {{ sample.sequence }}</p>
+    {% if sample.sequence_file %}
+    <p><b>Sequence File:</b> <a href="{{ sample.sequence_file.url }}" target="_blank">{{ sample.sequence_file.name }}</a></p>
+    {% endif %}
+    <p><b>Form:</b> {{ sample.form }}</p>
+    <p><b>Quantity, Concentration, Buffer:</b> {{ sample.quantity_concentration_buffer }}</p>
+    <p><b>Quality Control:</b> {{ sample.quality_control }}</p>
+    <p><b>Pure or mixture:</b> {{ sample.pure_or_mixture }}</p>
+    <p><b>Buffer Components:</b> {{ sample.buffer_medium }}</p>
+    <p><b>Storage Conditions:</b> {{ sample.storage }}</p>
+    <p><b>Biological Hazard:</b> {{ sample.chemical_hazard }}</p>
+    {% if sample.other %}
+    <p><b>Other:</b> {{ sample.other }}</p>
+    {% endif %}
+    <p><b>Sample Destination Upon Usage:</b> {{ sample.sample_destination_upon_usage }}</p>
+
+    {% elif sample.type == "chemical_sample" %}
+    <p><b>Sample Producer:</b> {{ sample.sample_producer }}</p>
+    <p><b>Affiliation:</b> {{ sample.affiliation }}</p>
+    <p><b>Sample Purpose:</b> {{ sample.sample_purpose }}</p>
+    <p><b>Name (synonyms):</b> {{ sample.name }}</p>
+    <p><b>Chemical Name/Formula:</b> {{ sample.chemical_name }}</p>
+    <p><b>Cas Number:</b> {{ sample.cas_number }}</p>
+    <p><b>Structure or Explanation:</b> {{ sample.structure }}</p>
+    <p><b>Form:</b> {{ sample.form }}</p>
+    <p><b>Quantity, Concentration; Buffer:</b> {{ sample.quantity_concentration_buffer }}</p>
+    <p><b>Storage Conditions:</b> {{ sample.storage }}</p>
+    <p><b>Buffer Composition:</b> {{ sample.buffer_medium }}</p>
+    <p><b>Pure or mixture:</b> {{ sample.pure_or_mixture }}</p>
+    <p><b>Biological/Chemical Hazard:</b> {{ sample.chemical_hazard }}</p>
+    {% if sample.other %}
+    <p><b>Other:</b> {{ sample.other }}</p>
+    {% endif %}
+    <p><b>Sample Destination Upon Usage:</b> {{ sample.sample_destination_upon_usage }}</p>
+
     {% elif sample.type == "other" %}
-      {% if sample.other %}
-        <p><b>Other:</b> {{ sample.other }}</p>
-      {% endif %}
+    {% if sample.other %}
+    <p><b>Sample info:</b> {{ sample.other }}</p>
+    {% endif %}
+    <p><b>Sample Destination Upon Usage:</b> {{ sample.sample_destination_upon_usage }}</p>
     {% endif %}
 
   </div>
+  
   <div class="card mt-4">
-  <div class="card-header bg-secondary text-white">
-    <h4 class="mb-0">Attached Files</h4>
-  </div>
-  <div class="card-body">
-    <p><strong>Sample Sheet (if present):</strong>
-      {% if sample.sample_sheet_filename %}
+    <div class="card-header bg-secondary text-white">
+      <h4 class="mb-0">Attached Files</h4>
+    </div>
+    <div class="card-body">
+      <p><strong>Sample Sheet (if present):</strong>
+        {% if sample.sample_sheet_filename %}
         <a href="{{ sample.sample_sheet_filename.url }}" target="_blank">{{ sample.sample_sheet_filename.name }}</a>
-      {% else %}
+        {% else %}
         No file uploaded
-      {% endif %}
-    </p>
-    <p><strong>Additional Files (ZIP/TAR if more than one):</strong>
-      {% if sample.additional_filename %}
+        {% endif %}
+      </p>
+      <p><strong>Additional Files (ZIP/TAR if more than one):</strong>
+        {% if sample.additional_filename %}
         <a href="{{ sample.additional_filename.url }}" target="_blank">{{ sample.additional_filename.name }}</a>
-      {% else %}
+        {% else %}
         No file uploaded
-      {% endif %}
-    </p>
+        {% endif %}
+      </p>
+    </div>
   </div>
 </div>
-
-  </div>

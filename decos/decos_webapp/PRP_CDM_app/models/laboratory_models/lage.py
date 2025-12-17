@@ -1,5 +1,6 @@
 from django.db import models
 from django.apps import apps
+from django.utils import timezone
 from PRP_CDM_app.utility import choices, tupleConvert
 from PRP_CDM_app.fields import MultiChoicheAndOtherWidget, BooleanIfWhat
 from PRP_CDM_app.models.common_data_model import Samples
@@ -21,6 +22,7 @@ class LageSamples(Samples):
     sample_back = models.BooleanField()
     reagents_provided_by_client = models.BooleanField()
     reagents_date_of_delivery = models.DateField(blank=True, null=True)
+    submitted_at = models.DateTimeField(default=timezone.now)
     
     def user_directory_path(instance, filename):
         # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>

@@ -13,6 +13,19 @@
 
 {{ page.intro | richtext }}
 
+{% if errors %}
+<div class="alert alert-danger">
+    <h4>Form Errors:</h4>
+    {{ errors }}
+    {% for form in forms %}
+        {% if form.errors %}
+            <h5>{{ form.instance.sample_short_description }} Errors:</h5>
+            {{ form.errors }}
+        {% endif %}
+    {% endfor %}
+</div>
+{% endif %}
+
 {% if table %}
     <div class="card mb-4 shadow-sm">
       <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
@@ -49,10 +62,7 @@
     </div>
 {% endif %}
 
-<div class="card mb-4 shadow-sm">
-      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
-    <div class="card-body">
-    <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
+<form action="." method="POST" enctype="multipart/form-data" id="sampleform" novalidate>
     {% csrf_token %}
     {% if "sr_" in proposal_id %}
     <input type="hidden" name="proposal_id_hidden" value='{{ proposal_id }}' />
@@ -60,7 +70,10 @@
     <input type="hidden" name="proposal_id_hidden" value="internal" />
     {% endif %}
     <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
-    </p>
+<div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+    <div class="card-body">
+
     <p>
         <i>Please insert a brief descriptive title of your experiment (max 64 characters):</i> <br>
         {{ IuvsSamples.sample_short_description }}
@@ -73,9 +86,12 @@
     </div>
 </div>
     <div class="card mb-4 shadow-sm">
+
       <div class="card-header"><b>IUVS LABORATORY SAMPLE INFORMATION</b></div>
       <div class="card-body">
-        <p>
+
+
+          <p><i>Submitted at</i>: {{ IuvsSamples.submitted_at }}</p>
 
           <i>Type of sample</i>: <br>
             <p><i>{{ IuvsSamples.type }}</i></p>
@@ -84,7 +100,7 @@
           <div class="sample-section" id="section-animal_tissue" style="display:none">
             <p><i>Origin (which animal/vegetal)</i>: {{ IuvsSamples.origin }}</p>
             <p><i>Fixed (If yes, specify fixation method)</i>: {{ IuvsSamples.is_fixed }}</p>
-            <p style="display:none"><i>Fixation method</i>: {{ IuvsSamples.fixation_method }}</p>
+
             <p><i>Embedding medium</i>: {{ IuvsSamples.embedding_medium }}</p>
             <p><i>Slice thickness [μm]</i>: {{ IuvsSamples.slice_thickness }}</p>
             <p><i>Support [material, measures]</i>: {{ IuvsSamples.support }}</p>
@@ -175,7 +191,8 @@
             <p><i>Sample info</i>: {{ IuvsSamples.other }}</p>
           </div>
           
-        </p>
+    </div>
+</div>
     <div class="card mb-4 shadow-sm">
       <div class="card-header"><b>FILES</b></div>
       <div class="card-body">
@@ -189,60 +206,64 @@
       <br>
       <p><input type="submit" value="Insert data" class="btn btn-primary"></p>
     </div>
+    </div>
+</div>
 </form>
 
 <!-- TODO: PUT THESE IN THE RIGHT STATIC JS SECTION! -->
 
- <!-- initial filtering of internal requests/ proposals -->
+<!-- initial filtering of internal requests/ proposals -->
 <script>
-    var QueryString = (new URL(location.href)).searchParams.get('filter');
-    if (QueryString != '')
-        $('#dropMenu .dropdown .dropdown-menu').show();
+  var QueryString = (new URL(location.href)).searchParams.get('filter');
+  if (QueryString != '')
+    $('#dropMenu .dropdown .dropdown-menu').show();
 </script>
 
 
- <!-- sample type dynamic menu + adherent-supended dynamic menu -->
+<!-- sample type dynamic menu + adherent-supended dynamic menu -->
 <script>
   $(document).ready(function () {
     const $sampleType = $('#id_type');
 
-    // Rebind dynamic field logic within the currently visible section
-    function activateDynamicFields($section) {
-      // --- FIXED (If yes, specify fixation method) ---
-      $(document).on('change', 'select[name*="is_fixed"]', function () {
-        const val = $(this).val()?.toLowerCase();
-        const $section = $(this).closest('.sample-section');
-        const $fixationField = $section.find('p:contains("Fixation method")');
-
-        if (val === 'yes') $fixationField.show();
-        else $fixationField.hide();
-      });
-
-      $('select[name*="adherent_or_suspended"]').each(function() {
-        const $this = $(this);
-        const $section = $this.closest('.sample-section');
-        $this.on('change', function() {
-          const val = $this.val()?.toLowerCase();
-          const $bufferField = $section.find('p:contains("Buffer medium")');
-          if (val === 'suspended') $bufferField.show();
-          else $bufferField.hide();
-      }).trigger('change'); // initial state
-});
+    function updateVisibility() {
+      // Use logical OR with empty string to handle null/undefined safely
+      const val = $sampleType.val();
+      const selected = (val ? val.trim().toLowerCase().replace(/\s+/g, '') : '');
+      
+      // Hide all sections
+      $('.sample-section').hide();
+      
+      // Show selected section
+      if (selected) {
+        $('#section-' + selected).show();
+      }
     }
 
-    // --- SAMPLE TYPE SWITCHER ---
-    $sampleType.on('change', function () {
-      const selected = $(this).val()?.trim().toLowerCase().replace(/\s+/g, '');
-      $('.sample-section').hide(); // hide all
-      const $section = $('#section-' + selected);
-      $section.show();             // show the chosen one
-      activateDynamicFields($section); // attach logic within it
+    $sampleType.on('change', updateVisibility);
+
+    // Initial check
+    updateVisibility();
+
+    // On submit, disable inputs in hidden sections to avoid duplication issues
+    $('#sampleform').on('submit', function() {
+        $('.sample-section:hidden').find(':input').prop('disabled', true);
+        $('.sample-section:visible').find(':input').prop('disabled', false);
     });
 
-    // Initialize on page load
-    $sampleType.trigger('change');
-    $('select[name*="is_fixed"]').trigger('change');
-   
+    // adherent_suspended dynamic selection
+    // Show/hide buffer medium based on "adherent_or_suspended" selection
+    // Use delegation or select all existing ones
+    // Since fields are duplicated, we have multiple selects. We should attach to all.
+    $('select[name$="adherent_or_suspended"]').on('change', function () {
+      const value = $(this).val()?.toLowerCase();
+      const $bufferField = $(this).closest('.sample-section').find('p:contains("Buffer medium")');
+
+      if (value === 'suspended') {
+        $bufferField.show();
+      } else {
+        $bufferField.hide();
+      }
+    }).trigger('change'); // Trigger for all to set initial state
   });
 </script>
 
