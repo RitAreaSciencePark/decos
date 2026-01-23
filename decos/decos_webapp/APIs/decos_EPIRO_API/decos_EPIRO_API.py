@@ -16,9 +16,9 @@ import requests
 class EPIROAPI:
     """Simple EPIRO REST client encapsulating the common read operations."""
 
-    INSTRUMENT_DUMP_ENDPOINT = "api/v2/decos/instrument_dump"
+    INSTRUMENT_DUMP_ENDPOINT = "api/v2/decos/instrument"
     PROPOSALS_ENDPOINT = "/api/v2/decos/proposal"
-    TOKEN_URL = "https://auth.pathogen-ri.eu/auth/realms/EPIRO-PRP/protocol/openid-connect/token"
+    TOKEN_URL = "https://auth.prp-ri.eu/auth/realms/EPIRO-PRP/protocol/openid-connect/token"
 
     def __init__(
         self,

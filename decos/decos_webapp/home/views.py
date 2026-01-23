@@ -203,9 +203,9 @@ from APIs.decos_EPIRO_API.decos_EPIRO_API import EPIROAPI
 def get_epiro_data(request):
         
     # --- Configuration ---
-    BASE_URL = "https://preprod.pathogen-ri.eu/" 
+    BASE_URL = "https://be.prp-ri.eu/" 
     CLIENT_ID  = "decosClientId"
-    USERNAME   = "decos"
+    USERNAME   = "decos@service-user.prp"
     PASSWORD   = "supersecretdecospassword"
 
     # --- Initialize client ---
