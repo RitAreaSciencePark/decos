@@ -347,7 +347,7 @@ class SamplePage(Page, SessionHandlerMixin, SampleFormHandlerMixin):
             proposal_list = Proposals.objects.filter(labs__lab_id=lab.lab_id).distinct()
             
             if filter_term:
-                proposal_list = proposal_id.filter(proposal_id__icontains=filter_term)
+                proposal_list = proposal_list.filter(proposal_id__icontains=filter_term)
 
             proposal_table = ProposalsTable(proposal_list)
             RequestConfig(request).configure(proposal_table)
