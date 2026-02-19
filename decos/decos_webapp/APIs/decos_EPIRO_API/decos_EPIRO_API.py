@@ -99,7 +99,7 @@ class EPIROAPI:
             else:
                 for proposal in proposal_list:
                     print(proposal)
-                    proposal_ids.append(proposal['id'])
+                    proposal_ids.append(proposal['proposal_id'])
         
         if isinstance(proposal_ids, (str, int)):
             endpoint = f"{self.PROPOSALS_ENDPOINT}/{proposal_ids}"

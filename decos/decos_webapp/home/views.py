@@ -227,14 +227,13 @@ def get_epiro_data(request):
     try:
         proposals = epiro.retrieve_proposal_list(params={"page": 0})
         print("Proposals:", proposals)
+        proposal_items = proposals["items"]
+        print("Proposal details:", proposal_items)
     except Exception as e:
         print("Failed to retrieve proposals:", e)
 
-    # --- Retrieve a single proposal by ID ---
-    try:
-        print(proposals)
-        proposal = epiro.retrieve_proposals(proposal_list=proposals)
-        print("Proposal details:", proposal)
+
+       
     except Exception as e:
         print("Failed to retrieve proposal:", e)
     return HttpResponse("Updated")
