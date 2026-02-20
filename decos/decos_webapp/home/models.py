@@ -32,6 +32,7 @@ from django.conf import settings  # For accessing Django settings
 from django.contrib.auth.models import Group, User  # User and Group models
 from django.core.exceptions import ObjectDoesNotExist  # For handling non-existing objects
 from django.db import connections, models  # ORM models and DB connections
+from django.db.models import Q  # For complex queries with OR logic
 from django.forms.models import model_to_dict  # For converting model instances to dictionaries
 from django.shortcuts import redirect, render, get_object_or_404  # For rendering templates and handling redirects
 from django.template.loader import render_to_string  # For rendering templates to strings
@@ -344,10 +345,17 @@ class SamplePage(Page, SessionHandlerMixin, SampleFormHandlerMixin):
             context = {'page': self, 'forms': forms, 'lab': lab.lab_id, 'proposal_id': proposal_id, 'table': None, 'errors': result}
         else:
             forms = form_orchestrator(user_lab=lab.lab_id, request=None, filerequest=None, get_instance=False)
-            proposal_list = Proposals.objects.filter(labs__lab_id=lab.lab_id).distinct()
+            # Fetch all EPIRO proposals from the database (not just lab-specific ones)
+            # This includes newly synced proposals from the EPIRO API
+            proposal_list = Proposals.objects.using('prpmetadata-db').all()
             
             if filter_term:
-                proposal_list = proposal_list.filter(proposal_id__icontains=filter_term)
+                proposal_list = proposal_list.filter(
+                    Q(proposal_id__icontains=filter_term) | 
+                    Q(title__icontains=filter_term) |
+                    Q(team_leader_first_name__icontains=filter_term) |
+                    Q(team_leader_last_name__icontains=filter_term)
+                )
 
             proposal_table = ProposalsTable(proposal_list)
             RequestConfig(request).configure(proposal_table)
