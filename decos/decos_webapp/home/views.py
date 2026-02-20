@@ -21,7 +21,7 @@ from PRP_CDM_app.models.common_data_model import (
 
 from django.views.decorators.http import require_POST
 from django.contrib import messages
-from PRP_CDM_app.models.common_data_model import Samples, Results
+from PRP_CDM_app.models.common_data_model import Samples, Results, Proposals
 from .secrets_models import API_Tokens
 
 # Functional view for switching between laboratories.
@@ -201,7 +201,8 @@ from APIs.decos_EPIRO_API.decos_EPIRO_API import EPIROAPI
 
 @login_required
 def get_epiro_data(request):
-        
+    from django.utils.dateparse import parse_datetime
+    
     # --- Configuration ---
     BASE_URL = "https://be.prp-ri.eu/" 
     CLIENT_ID  = "decosClientId"
@@ -229,11 +230,51 @@ def get_epiro_data(request):
         print("Proposals:", proposals)
         proposal_items = proposals["items"]
         print("Proposal details:", proposal_items)
+        
+        # --- Save proposals to database ---
+        saved_count = 0
+        for proposal_data in proposal_items:
+            try:
+                proposal, created = Proposals.objects.using('prpmetadata-db').update_or_create(
+                    proposal_id=proposal_data['proposal_id'],
+                    defaults={
+                        'title': proposal_data['title'],
+                        'status': proposal_data['status'],
+                        'submission_date': parse_datetime(proposal_data['submission_date']),
+                        'scheduled_instrument_ids': proposal_data.get('scheduled_instrument_ids', []),
+                        'team_leader_username': proposal_data['team_leader']['username'],
+                        'team_leader_first_name': proposal_data['team_leader']['first_name'],
+                        'team_leader_last_name': proposal_data['team_leader']['last_name'],
+                        'team_leader_email': proposal_data['team_leader']['email'],
+                        'team_members': proposal_data.get('team_members', []),
+                    }
+                )
+                saved_count += 1
+                action = "Created" if created else "Updated"
+                print(f"{action} proposal: {proposal.proposal_id} - {proposal.title}")
+            except Exception as e:
+                print(f"Failed to save proposal {proposal_data.get('proposal_id')}: {e}")
+        
+        print(f"\nTotal proposals saved/updated: {saved_count}")
+        
     except Exception as e:
         print("Failed to retrieve proposals:", e)
 
+    # --- Print all existing proposals in database ---
+    print("\n" + "="*80)
+    print("ALL PROPOSALS IN DATABASE:")
+    print("="*80)
+    all_proposals = Proposals.objects.using('prpmetadata-db').all()
+    for proposal in all_proposals:
+        print(f"\nProposal ID: {proposal.proposal_id}")
+        print(f"  Title: {proposal.title}")
+        print(f"  Status: {proposal.status}")
+        print(f"  Submission Date: {proposal.submission_date}")
+        print(f"  Team Leader: {proposal.team_leader_first_name} {proposal.team_leader_last_name} ({proposal.team_leader_email})")
+        print(f"  Scheduled Instruments: {proposal.scheduled_instrument_ids}")
+        print(f"  Team Members: {proposal.team_members}")
+    print("\n" + "="*80)
+    print(f"Total proposals in database: {all_proposals.count()}")
+    print("="*80 + "\n")
 
-       
-    except Exception as e:
-        print("Failed to retrieve proposal:", e)
-    return HttpResponse("Updated")
+    return HttpResponse(f"Updated - {saved_count} proposals processed")
