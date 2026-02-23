@@ -16,24 +16,4 @@ class Migration(migrations.Migration):
             name='submitted_at',
             field=models.DateTimeField(default=django.utils.timezone.now),
         ),
-        migrations.AddField(
-            model_name='cnr_icsamples',
-            name='submitted_at',
-            field=models.DateTimeField(default=django.utils.timezone.now),
-        ),
-        migrations.AddField(
-            model_name='cnr_iomsamples',
-            name='submitted_at',
-            field=models.DateTimeField(default=django.utils.timezone.now),
-        ),
-        migrations.AddField(
-            model_name='lagesamples',
-            name='submitted_at',
-            field=models.DateTimeField(default=django.utils.timezone.now),
-        ),
-        migrations.AlterField(
-            model_name='iuvssamples',
-            name='submitted_at',
-            field=models.DateTimeField(default=django.utils.timezone.now),
-        ),
     ]
