@@ -120,6 +120,9 @@ class Proposals(models.Model):
     team_leader_last_name = models.CharField(max_length=150)
     team_leader_email = models.EmailField()
     
+    # Team members stored as JSON list
+    team_members = models.JSONField(default=list)
+    
     # A proposal is linked through the steps to many laboratories (in this version the steps relation are not utilized)
     labs = models.ManyToManyField('Laboratories', through='LabXProposal')
 
