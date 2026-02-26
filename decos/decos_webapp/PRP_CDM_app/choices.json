@@ -349,7 +349,7 @@
             ["bacteria", "Bacteria"],
             ["virus", "Virus"],
             ["compound", "Compound"],
-            ["other", "Other"]
+            ["other", "other"]
         ],
 
         "bio_safety": [
@@ -364,10 +364,10 @@
     {
         "type_choices" :
         [
-            ["bacteria", "Bacteria"],
-            ["virus", "Virus"],
+            ["siRNA", "siRNA"],
+            ["miRNA", "miRNA"],
             ["compound", "Compound"],
-            ["other", "Other"]
+            ["other", "other"]
         ],
         "bio_safety": [
             ["1", "1"],

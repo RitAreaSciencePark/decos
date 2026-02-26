@@ -1,0 +1,138 @@
+{% extends "base.html" %}
+{% load static wagtailcore_tags django_tables2 %}
+
+{% block body_class %}template-form{% endblock %}
+
+{% block content %}
+
+<link rel="stylesheet" href="{% static 'css/forms/lage_form.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+<h1><b>SAMPLE ENTRY FORM</b></h1>
+
+{{ page.intro | richtext }}
+
+{% if table %}
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+      <div class="card-body">
+        <i>It is an internal entry or a EPIRO Proposal?</i>
+        <form id="proposal_selection" method="get" action="">
+            <input type="hidden" id="proposal_id_hidden" name="proposal_id" value="internal">
+            <div class="proposal_id_selection" id="dropMenu">
+                <div class="proposal_id_selection">
+                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="proposal_id" value="internal"
+                        aria-haspopup="true" aria-expanded="true">
+                        Internal Request
+                    </button>
+                </div>
+                <div class="dropdown">
+                    <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
+                        data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
+                        Proposal selection
+                    </button>
+                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuButton">
+                        <input type="text" class="form-control" id="filterText" name="filter" aria-describedby="filterText"
+                            placeholder="filter...">
+                        <button type="submit" class="btn btn-primary">search</button>
+
+                        <div class="dropdown-item" type="div" id="dropdown-div">
+                            {% render_table table %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        <i>Proposal selected: </i> {{ proposal_id }}
+      </div>
+    </div>
+{% endif %}
+
+<form action="." method="POST" enctype="multipart/form-data" id="sampleform">
+  {% csrf_token %}
+  {% if "sr_" in proposal_id %}
+  <input type="hidden" name="proposal_id_hidden" value='{{ proposal_id }}' />
+  {% else %}
+  <input type="hidden" name="proposal_id_hidden" value="internal" />
+  {% endif %}
+  <input type="hidden" name="sample_id_hidden" value="{{ sample_id }}">
+
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+    <div class="card-body">
+      </p>
+      <p>
+        <i>Please insert a brief descriptive title of your experiment (max 64 characters):</i> <br>
+        {{ Functional_Screening_FacilitySamples.sample_short_description }}
+      </p>
+      <p>
+        <!-- <i>proposal_id*</i>: <br> {{ .dmptitle }} <br> !-->
+        <i>Please describe in a few words the experiment (max 500 characters)</i>: <br>
+        {{Functional_Screening_FacilitySamples.sample_description }}
+      </p
+      <br>
+    </div>
+  </div>
+  <div class="card mb-4 shadow-sm">
+    <div class="card-header"><b>FUNCTIONAL SCREENING FACILITY - SAMPLE INFORMATION</b></div>
+    <div class="card-body">
+      <p>
+
+      <i>Type of sample</i>: <br>
+      <p><i>{{ Functional_Screening_FacilitySamples.type }}</i></p>
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header"><b>SAMPLE QUALITY</b></div>
+        <div class="card-body">
+          <p>
+            <i>Volume (ul)</i>: <br> {{ Functional_Screening_FacilitySamples.volume }} <br>
+            <i>Concentration</i>: <br> {{ Functional_Screening_FacilitySamples.concentration }} <br>
+            <i>Buffer</i>: <br> {{ Functional_Screening_FacilitySamples.buffer_medium }} <br>
+          </p>
+        </div>
+    
+
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header"><b>SAMPLE PRODUCER</b></div>
+        <div class="card-body">
+          <p>
+             <br> {{ Functional_Screening_FacilitySamples.sample_producer }} <br>
+          </p>
+        </div>
+      </div>
+
+     <div class="card mb-4 shadow-sm">
+        <div class="card-header"><b>ADDITIONAL INFORMATION</b></div>
+        <div class="card-body">
+          <p>
+             <br> {{ Functional_Screening_FacilitySamples.other }} <br>
+          </p>
+        </div>
+      </div>
+
+      
+
+      <div class="card mb-4 shadow-sm">
+        <div class="card-header"><b>FILES</b></div>
+        <div class="card-body">
+          <br>
+          <p>
+            <i>Include the sample sheet if present</i>: {{ Functional_Screening_FacilitySamples.sample_sheet_filename }} <br>
+            <i>Include additional file: <br> (If more than one compress the files in a
+              single zip or tar format)</i> {{ Functional_Screening_FacilitySamples.additional_filename }}
+
+          </p>
+          <br>
+          <p><input type="submit" value="Insert data" class="btn btn-primary"></p>
+        </div>
+      </div>
+</form>
+
+<script>
+  var QueryString = (new URL(location.href)).searchParams.get('filter');
+  if (QueryString != '')
+    $('#dropMenu .dropdown .dropdown-menu').show();
+</script>
+
+
+{% endblock %}

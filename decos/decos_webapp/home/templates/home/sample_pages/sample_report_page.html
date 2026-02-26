@@ -63,6 +63,9 @@
       {% if sample|classname == "biosafety_facilitysamples" %}
         {% include "home/sample_pages/includes/biosafety_facility_report.html" %}
       {% endif %}
+      {% if sample|classname == "functional_screening_facilitysamples" %}
+        {% include "home/sample_pages/includes/functional_screening_facility_report.html" %}
+      {% endif %}
 </div>
 
 

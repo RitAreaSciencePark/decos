@@ -22,6 +22,8 @@ from PRP_CDM_app.models.laboratory_models.struct_bio_lab import Struct_Bio_LabSa
 from PRP_CDM_app.models.laboratory_models.cnr_ic import Cnr_IcSamples
 from PRP_CDM_app.models.laboratory_models.cnr_iom import Cnr_IomSamples
 from PRP_CDM_app.models.laboratory_models.biosafety_facility import Biosafety_FacilitySamples
+from PRP_CDM_app.models.laboratory_models.functional_screening_facility import Functional_Screening_FacilitySamples
+
 
 class FormsDefinition:
     # Defines form structures for different laboratories, specifying included models and excluded fields
@@ -165,6 +167,21 @@ class FormsDefinition:
 
         # Fields to be excluded from the form to ensure only relevant data is collected
         exclude = { 'Biosafety_FacilitySamples': ['proposal',
+                                    'sample_id',
+                                    'lab_id',
+                                    'sample_feasibility',
+                                    'sample_status',
+                                    'sample_location',
+                                    'submitted_at']
+                   }
+        
+    class Functional_Screening_FacilityForm:
+        # Form definition for functional screening facility samples
+        lab = 'Functional Screening Facility'
+        content = [Functional_Screening_FacilitySamples]  # Defines the model used in the form
+
+        # Fields to be excluded from the form to ensure only relevant data is collected
+        exclude = { 'Functional_Screening_FacilitySamples': ['proposal',
                                     'sample_id',
                                     'lab_id',
                                     'sample_feasibility',
