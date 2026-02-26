@@ -6,6 +6,7 @@
 {% block content %}
 
 <link rel="stylesheet" href="{% static 'css/forms/lage_form.css' %}">
+<link rel="stylesheet" href="{% static 'css/custom_cards.css' %}">
 <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 
 <h1><b>SAMPLE ENTRY FORM</b></h1>
@@ -13,11 +14,19 @@
 {{ page.intro | richtext }}
 
 {% if table %}
-    <div class="section_div">
+    <div class="card mb-4 shadow-sm">
+      <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
+      <div class="card-body">
         <i>It is an internal entry or a EPIRO Proposal?</i>
-        <form id="sr_selection" method="get" action="">
+        <form id="proposal_selection" method="get" action="">
             <input type="hidden" id="proposal_id_hidden" name="proposal_id" value="internal">
             <div class="proposal_id_selection" id="dropMenu">
+                <div class="proposal_id_selection">
+                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="proposal_id" value="internal"
+                        aria-haspopup="true" aria-expanded="true">
+                        Internal Request
+                    </button>
+                </div>
                 <div class="dropdown">
                     <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
@@ -33,19 +42,13 @@
                         </div>
                     </div>
                 </div>
-                <div class="proposal_id_selection">
-                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="proposal_id" value="internal"
-                        aria-haspopup="true" aria-expanded="true">
-                        Internal Request
-                    </button>
-                </div>
             </div>
         </form>
         <i>Proposal selected: </i> {{ proposal_id }}
-
+      </div>
     </div>
-
 {% endif %}
+
 <form action="." method="POST" enctype="multipart/form-data" id="sampleform">
     {% csrf_token %}
 

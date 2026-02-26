@@ -13,27 +13,20 @@
 
 {{ page.intro | richtext }}
 
-{% if errors %}
-<div class="alert alert-danger">
-    <h4>Form Errors:</h4>
-    {{ errors }}
-    {% for form in forms %}
-        {% if form.errors %}
-            <h5>{{ form.instance.sample_short_description }} Errors:</h5>
-            {{ form.errors }}
-        {% endif %}
-    {% endfor %}
-</div>
-{% endif %}
-
 {% if table %}
     <div class="card mb-4 shadow-sm">
       <div class="card-header"><b>GENERAL SAMPLE INFORMATION</b></div>
       <div class="card-body">
         <i>It is an internal entry or a EPIRO Proposal?</i>
-        <form id="sr_selection" method="get" action="">
+        <form id="proposal_selection" method="get" action="">
             <input type="hidden" id="proposal_id_hidden" name="proposal_id" value="internal">
             <div class="proposal_id_selection" id="dropMenu">
+                <div class="proposal_id_selection">
+                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="proposal_id" value="internal"
+                        aria-haspopup="true" aria-expanded="true">
+                        Internal Request
+                    </button>
+                </div>
                 <div class="dropdown">
                     <button class="btn btn-link dropdown-toggle" type="button" id="dropdownMenuButton"
                         data-bs-toggle='dropdown' aria-haspopup="true" aria-expanded="true">
@@ -48,12 +41,6 @@
                             {% render_table table %}
                         </div>
                     </div>
-                </div>
-                <div class="proposal_id_selection">
-                    <button class="btn btn-link " type="submit" id="internalEntryButton" name="proposal_id" value="internal"
-                        aria-haspopup="true" aria-expanded="true">
-                        Internal Request
-                    </button>
                 </div>
             </div>
         </form>
