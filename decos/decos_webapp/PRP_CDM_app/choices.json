@@ -340,6 +340,40 @@
             ["celular_tomography", "Cellular Tomography"],
             ["cryo_fib", "Cryo-FIB"]
         ]
+    },
+
+    "Biosafety_Facility" :
+    {
+        "type_choices" :
+        [
+            ["bacteria", "Bacteria"],
+            ["virus", "Virus"],
+            ["compound", "Compound"],
+            ["other", "Other"]
+        ],
+
+        "bio_safety": [
+            ["1", "1"],
+            ["2", "2"],
+            ["3", "3"]
+        ]
+    },
+
+    
+    "Functional_Screening_Facility" :
+    {
+        "type_choices" :
+        [
+            ["bacteria", "Bacteria"],
+            ["virus", "Virus"],
+            ["compound", "Compound"],
+            ["other", "Other"]
+        ],
+        "bio_safety": [
+            ["1", "1"],
+            ["2", "2"],
+            ["3", "3"]
+        ]
     }
 
     ,

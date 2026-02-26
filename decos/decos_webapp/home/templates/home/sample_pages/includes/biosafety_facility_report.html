@@ -1,0 +1,60 @@
+<div class="card mt-4">
+  <div class="card-header bg-info">
+    <h4 class="mb-0">BIOSAFETY FACILITY SAMPLE INFORMATION</h4>
+  </div>
+  <div class="card-body">
+
+    <p><b>Submitted on:</b> {{ sample.submitted_at }}</p>
+
+    {% if sample.type %}
+    <p><b>Sample Type:</b> {{ sample.type }}</p>
+    {% endif %}
+
+    {% if sample.bio_safety_level %}
+    <p><b>Bio Safety Level:</b> {{ sample.bio_safety_level }}</p>
+    {% endif %}
+
+    {% if sample.volume %}
+    <p><b>Volume (µl):</b> {{ sample.volume }}</p>
+    {% endif %}
+
+    {% if sample.concentration %}
+    <p><b>Concentration:</b> {{ sample.concentration }}</p>
+    {% endif %}
+
+    {% if sample.buffer_medium %}
+    <p><b>Buffer Medium:</b> {{ sample.buffer_medium }}</p>
+    {% endif %}
+
+    {% if sample.sample_producer %}
+    <p><b>Sample Producer:</b> {{ sample.sample_producer }}</p>
+    {% endif %}
+
+    {% if sample.other %}
+    <p><b>Other Information:</b> {{ sample.other }}</p>
+    {% endif %}
+
+  </div>
+  
+  <div class="card mt-4">
+    <div class="card-header bg-secondary text-white">
+      <h4 class="mb-0">Attached Files</h4>
+    </div>
+    <div class="card-body">
+      <p><strong>Sample Sheet (if present):</strong>
+        {% if sample.sample_sheet_filename %}
+        <a href="{{ sample.sample_sheet_filename.url }}" target="_blank">{{ sample.sample_sheet_filename.name }}</a>
+        {% else %}
+        No file uploaded
+        {% endif %}
+      </p>
+      <p><strong>Additional Files (ZIP/TAR if more than one):</strong>
+        {% if sample.additional_filename %}
+        <a href="{{ sample.additional_filename.url }}" target="_blank">{{ sample.additional_filename.name }}</a>
+        {% else %}
+        No file uploaded
+        {% endif %}
+      </p>
+    </div>
+  </div>
+</div>

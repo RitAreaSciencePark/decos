@@ -60,6 +60,9 @@
       {% if sample|classname == "struct_bio_labsamples" %}
         {% include "home/sample_pages/includes/struct_bio_lab_report.html" %}
       {% endif %}
+      {% if sample|classname == "biosafety_facilitysamples" %}
+        {% include "home/sample_pages/includes/biosafety_facility_report.html" %}
+      {% endif %}
 </div>
 
 
