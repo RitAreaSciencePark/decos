@@ -21,7 +21,7 @@ from PRP_CDM_app.models.common_data_model import (
 
 from django.views.decorators.http import require_POST
 from django.contrib import messages
-from PRP_CDM_app.models.common_data_model import Samples, Results, Proposals
+from PRP_CDM_app.models.common_data_model import Samples, Results, Proposals, Instruments
 from .secrets_models import API_Tokens
 
 # Functional view for switching between laboratories.
@@ -219,11 +219,35 @@ def get_epiro_data(request):
 
     # --- Retrieve instrument dump ---
     try:
-        instruments = epiro.retrieve_instrument_dump()
-        print("Instruments:", instruments)
+        instruments_data = epiro.retrieve_instrument_dump()
+        #print("Instruments:", instruments_data)
+
+        saved_instruments = 0
+
+        for inst in instruments_data["items"]:
+            try:
+                instrument, created = Instruments.objects.using('prpmetadata-db').update_or_create(
+                    # Use sql_id if available, otherwise fallback
+                    instrument_id=inst["sql_id"],
+                    defaults={
+                        "sql_id": inst["sql_id"],  # ensure PK is set
+                        "instrument_name": inst["name"],  
+                        "institution": inst["institution"],
+                    }
+                ) 
+                saved_instruments += 1
+                action = "Created" if created else "Updated"
+                print(f"{action} instrument: {instrument.instrument_name}") 
+
+            except Exception as e:
+                print(f"Failed to save instrument {inst.get('name')}: {e}")
+
+        print(f"Total instruments saved: {saved_instruments}")
+
     except Exception as e:
         print("Failed to retrieve instruments:", e)
 
+    
     # --- Retrieve all proposals ---
     try:
         proposals = epiro.retrieve_proposal_list(params={"page": 0})
@@ -277,4 +301,6 @@ def get_epiro_data(request):
     print(f"Total proposals in database: {all_proposals.count()}")
     print("="*80 + "\n")
 
-    return HttpResponse(f"Updated - {saved_count} proposals processed")
+    return HttpResponse(
+    f"Updated - {saved_count} proposals processed, {saved_instruments} instruments processed"
+    )
