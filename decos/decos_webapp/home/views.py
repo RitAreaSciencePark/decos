@@ -237,7 +237,7 @@ def get_epiro_data(request):
                 ) 
                 saved_instruments += 1
                 action = "Created" if created else "Updated"
-                print(f"{action} instrument: {instrument.instrument_name}") 
+                print(f"{action} instrument: {instrument.instrument_name}(Institution: {instrument.institution} )" ) 
 
             except Exception as e:
                 print(f"Failed to save instrument {inst.get('name')}: {e}")

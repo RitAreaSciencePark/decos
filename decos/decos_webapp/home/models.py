@@ -985,7 +985,17 @@ class ExperimentDMPPage(Page, SessionHandlerMixin):
 
         # Instruments selection
         # Retrieve instruments
-        instrument_query = Instruments.objects.filter(instrument_labs__lab_id=lab)  
+        instrument_search = request.GET.get("search_instrument", "")
+        #instrument_query = Instruments.objects.filter(instrument_labs__lab_id=lab)  
+        instrument_query = Instruments.objects.all()
+
+        if instrument_search:
+            instrument_query = instrument_query.filter(
+                Q(instrument_name__icontains=instrument_search) |
+                Q(manufacturer_and_model__icontains=instrument_search) |
+                Q(institution__icontains=instrument_search)
+            )
+
         instrument_query = instrument_query.exclude(instrument_id__in=instruments_list)
 
         instrument_table = InstrumentsSelectionTable(instrument_query)

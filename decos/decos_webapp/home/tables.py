@@ -121,7 +121,7 @@ class InstrumentsSelectionTable(BaseInteractiveTable):
     class Meta:
         model = Instruments
         template_name = "django_tables2/bootstrap-responsive.html"
-        fields = ("instrument_id", "model", "vendor")
+        fields = ("instrument_id", "instrument_name", "institution")
         row_attrs = {
         "onClick": lambda record: f"document.getElementById('instrument_id_hidden').value = '{record.instrument_id}'; document.getElementById('instrument_selection').submit();"
         # "onClick": lambda record: f'alert("I am an alert box!")',
