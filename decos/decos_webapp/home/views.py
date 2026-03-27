@@ -216,6 +216,18 @@ def get_epiro_data(request):
         username=USERNAME,
         password=PASSWORD,
     )
+    try:
+        institution_data = epiro.retrieve_institution()
+        print("Institution:", institution_data)
+
+        institution_lookup = {
+            item["sql_id"]: item["short_name"]
+            for item in institution_data["items"]
+        }
+
+    except Exception as e:
+        print("Failed to retrieve institution:", e)
+
 
     # --- Retrieve instrument dump ---
     try:
@@ -232,7 +244,7 @@ def get_epiro_data(request):
                     defaults={
                         "sql_id": inst["sql_id"],  # ensure PK is set
                         "instrument_name": inst["name"],  
-                        "institution": inst["institution"],
+                        "institution": institution_lookup.get(inst["institution"]),
                     }
                 ) 
                 saved_instruments += 1

@@ -18,6 +18,7 @@ class EPIROAPI:
 
     INSTRUMENT_DUMP_ENDPOINT = "api/v2/decos/instrument"
     PROPOSALS_ENDPOINT = "/api/v2/decos/proposal"
+    INSTITUTION_ENDPOINT = "/api/v2/decos/institution"
     TOKEN_URL = "https://auth.prp-ri.eu/auth/realms/EPIRO-PRP/protocol/openid-connect/token"
 
     def __init__(
@@ -69,6 +70,12 @@ class EPIROAPI:
         """Return the full instrument dump from EPIRO."""
 
         return self._request("GET", self.INSTRUMENT_DUMP_ENDPOINT, params=params)
+    
+    def retrieve_institution(self, *, params: Optional[Dict[str, Any]] = None) -> Any:
+        """Return the list of institutions available to the caller."""
+
+        return self._request("GET", self.INSTITUTION_ENDPOINT, params=params)
+
 
     def retrieve_proposal_list(self, *, params: Optional[Dict[str, Any]] = None) -> Any:
         """Return the list of proposals available to the caller."""
