@@ -38,7 +38,7 @@ class Functional_Screening_FacilitySamples(Samples):
     def user_directory_path(instance, filename):
         # file will be uploaded to MEDIA_ROOT/user_<id>/<filename>
         if(instance.proposal_id):
-            return 'uploads/samples/{0}/{1}/{2}'.format(instance.proposal_id.proposal_id, instance.sample_id, filename)
+            return 'uploads/samples/{0}/{1}/{2}'.format(instance.proposal_id, instance.sample_id, filename)
         else:
             return 'uploads/samples/{0}/{1}/{2}'.format(instance.lab_id, instance.sample_id, filename)
 
